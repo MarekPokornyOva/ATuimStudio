@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<!--AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault-->
+	</PropertyGroup>
+
+	<ItemGroup>
+		<AvaloniaResource Include="Assets\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Avalonia" />
+		<PackageReference Include="Avalonia.Controls.ItemsRepeater" />
+		<PackageReference Include="Avalonia.Themes.Fluent" />
+		<PackageReference Include="Avalonia.Fonts.Inter" />
+		<PackageReference Include="CommunityToolkit.Mvvm" />
+		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+		<PackageReference Include="Dock.Avalonia" />
+		<PackageReference Include="Dock.Avalonia.Themes.Fluent" />
+		<PackageReference Include="Dock.Model.Avalonia" />
+		<PackageReference Include="Dock.Model.Mvvm" />
+		<PackageReference Include="Avalonia.AvaloniaEdit" />
+		<PackageReference Include="AvaloniaEdit.TextMate" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ATuimStudio.Common\ATuimStudio.Common.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Extensions.Build.Ui\ATuimStudio.Extensions.Build.Ui.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Extensions.Core.Abstractions\ATuimStudio.Extensions.Core.Abstractions.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Extensions.Core.Ui.Abstractions\ATuimStudio.Extensions.Core.Ui.Abstractions.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Extensions.Core\ATuimStudio.Extensions.Core.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Extensions.Debug.Ui\ATuimStudio.Extensions.Debug.Ui.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Extensions.Git.Ui\ATuimStudio.Extensions.Git.Ui.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Extensions.TextEditCompletion.Ui\ATuimStudio.Extensions.TextEditCompletion.Ui.csproj" />
+	</ItemGroup>
+</Project>

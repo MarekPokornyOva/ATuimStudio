@@ -1,0 +1,35 @@
+<Solution>
+  <Folder Name="/Mono.DebuggerLibs/">
+    <Project Path="src/Mono.DebuggerLibs/CorApi2/CorApi2.csproj" />
+    <Project Path="src/Mono.DebuggerLibs/Mono.Debugging.ClrDebug/Mono.Debugging.ClrDebug.csproj" />
+    <Project Path="src/Mono.DebuggerLibs/Mono.Debugging/Mono.Debugging.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="CONTRIBUTING.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="LICENSE" />
+    <File Path="Logo.png" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="src/ATuimStudio.Cli/ATuimStudio.Cli.csproj" />
+  <Project Path="src/ATuimStudio.Common/ATuimStudio.Common.csproj" />
+  <Project Path="src/ATuimStudio.Desktop/ATuimStudio.Desktop.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.Build.Abstractions/ATuimStudio.Extensions.Build.Abstractions.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.Build.Ui/ATuimStudio.Extensions.Build.Ui.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.Build/ATuimStudio.Extensions.Build.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.Core.Abstractions/ATuimStudio.Extensions.Core.Abstractions.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.Core.Ui.Abstractions/ATuimStudio.Extensions.Core.Ui.Abstractions.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.Core/ATuimStudio.Extensions.Core.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.Debug.Abstractions/ATuimStudio.Extensions.Debug.Abstractions.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.Debug.Ui/ATuimStudio.Extensions.Debug.Ui.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.Debug/ATuimStudio.Extensions.Debug.csproj" Id="11c613d6-8486-4948-8703-de043db9f950" />
+  <Project Path="src/ATuimStudio.Extensions.Git.Abstractions/ATuimStudio.Extensions.Git.Abstractions.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.Git.Ui/ATuimStudio.Extensions.Git.Ui.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.Git/ATuimStudio.Extensions.Git.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.TextEditCompletion.Abstractions/ATuimStudio.Extensions.TextEditCompletion.Abstractions.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.TextEditCompletion.Ui/ATuimStudio.Extensions.TextEditCompletion.Ui.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.TextEditCompletion/ATuimStudio.Extensions.TextEditCompletion.csproj" />
+  <Project Path="src/ATuimStudio/ATuimStudio.csproj" />
+</Solution>

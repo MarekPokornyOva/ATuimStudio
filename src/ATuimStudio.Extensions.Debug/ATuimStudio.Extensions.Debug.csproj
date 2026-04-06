@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<NoWarn>CS612</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ATuimStudio.Common\ATuimStudio.Common.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Extensions.Core.Abstractions\ATuimStudio.Extensions.Core.Abstractions.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Extensions.Debug.Abstractions\ATuimStudio.Extensions.Debug.Abstractions.csproj" />
+		<ProjectReference Include="..\Mono.DebuggerLibs\Mono.Debugging.ClrDebug\Mono.Debugging.ClrDebug.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Diagnostics.DbgShim" />
+		<PackageReference Include="Microsoft.Diagnostics.DbgShim.Win-x64" GeneratePathProperty="true" />
+		<PackageReference Include="Microsoft.Diagnostics.DbgShim.Linux-x64" GeneratePathProperty="true" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<Content Include="$(pkgMicrosoft_Diagnostics_DbgShim_Win-x64)\**\dbgshim.dll" CopyToOutputDirectory="PreserveNewest" />
+		<Content Include="$(pkgMicrosoft_Diagnostics_DbgShim_Linux-x64)\**\libdbgshim.so" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+</Project>

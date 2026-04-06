@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ATuimStudio.Common\ATuimStudio.Common.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Extensions.Core.Ui.Abstractions\ATuimStudio.Extensions.Core.Ui.Abstractions.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Extensions.TextEditCompletion\ATuimStudio.Extensions.TextEditCompletion.csproj" />
+	</ItemGroup>
+
+</Project>

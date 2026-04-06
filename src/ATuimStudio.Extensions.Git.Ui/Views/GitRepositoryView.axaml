@@ -1,0 +1,55 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:ATuimStudio.Extensions.Git"
+			 xmlns:ui="using:ATuimStudio.Extensions.Git"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="ATuimStudio.Extensions.Git.GitRepositoryView"
+			 x:DataType="vm:GitRepositoryViewModel"
+			>
+	<Design.DataContext>
+		<vm:GitRepositoryViewModel />
+	</Design.DataContext>
+
+	<UserControl.Resources>
+		<ui:GitCommitMessageConverter x:Key="GitCommitMessageConverter"/>
+	</UserControl.Resources>
+
+	<StackPanel>
+		<TreeView ItemsSource="{Binding Repos}" SelectedItem="{Binding SelectedRepo}" BorderBrush="White" BorderThickness="2">
+			<TreeView.DataTemplates>
+				<TreeDataTemplate DataType="vm:ViewModelBase+RepoNodeBase">
+					<TextBlock Text="{Binding Title}" Padding="0" Margin="0"/>
+				</TreeDataTemplate>
+			</TreeView.DataTemplates>
+		</TreeView>
+
+		<TextBlock Text="Branches:"/>
+		<TreeView ItemsSource="{Binding Branches}" SelectedItem="{Binding SelectedBranch, Mode=TwoWay}" BorderBrush="White" BorderThickness="2">
+			<TreeView.Styles>
+				<Style Selector="TreeViewItem">
+					<Setter Property="IsExpanded" Value="{Binding IsExpanded}" x:DataType="vm:ViewModelBase+BranchNode"/>
+				</Style>
+			</TreeView.Styles>
+			<TreeView.DataTemplates>
+				<TreeDataTemplate DataType="vm:ViewModelBase+BranchNode" ItemsSource="{Binding Children}">
+					<TextBlock Text="{Binding Name}" Padding="0" Margin="0"/>
+				</TreeDataTemplate>
+			</TreeView.DataTemplates>
+		</TreeView>
+
+		<TreeView ItemsSource="{Binding Commits}" BorderBrush="White" BorderThickness="2">
+			<TreeView.DataTemplates>
+				<TreeDataTemplate DataType="vm:ICommit">
+					<StackPanel Orientation="Vertical" Margin="0 0 0 20">
+						<TextBlock Text="{Binding Sha}"/>
+						<TextBlock Text="{Binding Message, Converter={StaticResource GitCommitMessageConverter}}"/>
+						<TextBlock Text="{Binding When}"/>
+					</StackPanel>
+				</TreeDataTemplate>
+			</TreeView.DataTemplates>
+		</TreeView>
+	</StackPanel>
+
+</UserControl>

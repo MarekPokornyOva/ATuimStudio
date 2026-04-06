@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:vm="clr-namespace:ATuimStudio.ViewModels"
+		xmlns:v="clr-namespace:ATuimStudio.Views"
+		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+		x:Class="ATuimStudio.Views.MainView"
+		x:DataType="vm:MainViewModel">
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+		to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:MainViewModel />
+	</Design.DataContext>
+
+	<Grid RowDefinitions="Auto,Auto,*">
+		<Menu Grid.Row="0" x:Name="MainMenu">
+			<MenuItem Header="_File">
+				<MenuItem Header="_Open solution..." Command="{Binding OpenSolutionCommand}"/>
+				<MenuItem Header="_Save" Command="{Binding SaveDocumentCommand}" InputGesture="Ctrl+S">
+					<MenuItem.Icon>
+						<Image Source="avares://ATuimStudio/Assets/SaveDocument.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Save _All" Command="{Binding SaveAllCommand}" InputGesture="Ctrl+Shift+S">
+					<MenuItem.Icon>
+						<Image Source="avares://ATuimStudio/Assets/SaveAll.png"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator/>
+				<MenuItem Header="_Exit" Command="{Binding ExitApplicationCommand}"/>
+			</MenuItem>
+			<MenuItem Header="_Edit">
+				<MenuItem Header="Copy"/>
+				<MenuItem Header="Paste"/>
+			</MenuItem>
+		</Menu>
+		<StackPanel Grid.Row="1" Orientation="Horizontal" x:Name="Toolbar">
+			<Button Command="{Binding SaveDocumentCommand}">
+				<Image Width="16" Height="16" Source="avares://ATuimStudio/Assets/SaveDocument.png"/>
+			</Button>
+			<Button Command="{Binding SaveAllCommand}">
+				<Image Width="16" Height="16" Source="avares://ATuimStudio/Assets/SaveAll.png"/>
+			</Button>
+		</StackPanel>
+		<DockControl Grid.Row="2" Layout="{Binding Layout}" Margin="4"/>
+	</Grid>
+</UserControl>

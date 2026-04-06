@@ -1,0 +1,116 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:ATuimStudio.Extensions.Git"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="ATuimStudio.Extensions.Git.GitView"
+			 x:DataType="vm:GitViewModel"
+			>
+	<Design.DataContext>
+		<vm:GitViewModel />
+	</Design.DataContext>
+
+	<StackPanel>
+		<StackPanel IsVisible="{Binding Repos.Count}">
+			<TextBlock Text="Repos:"/>
+			<TreeView ItemsSource="{Binding Repos}" SelectedItem="{Binding SelectedRepo}" BorderBrush="White" BorderThickness="2">
+				<TreeView.DataTemplates>
+					<TreeDataTemplate DataType="vm:GitViewModel+RepoNode">
+						<TextBlock Text="{Binding Title}" Padding="0" Margin="0"/>
+					</TreeDataTemplate>
+				</TreeView.DataTemplates>
+			</TreeView>
+
+			<StackPanel IsVisible="{Binding !!SelectedRepo.Path}">
+				<TextBlock Text="Branches:"/>
+				<TreeView ItemsSource="{Binding Branches}" SelectedItem="{Binding SelectedBranch, Mode=TwoWay}" BorderBrush="White" BorderThickness="2">
+					<TreeView.Styles>
+						<Style Selector="TreeViewItem">
+							<Setter Property="IsExpanded" Value="{Binding IsExpanded}" x:DataType="vm:ViewModelBase+BranchNode"/>
+						</Style>
+					</TreeView.Styles>
+					<TreeView.DataTemplates>
+						<TreeDataTemplate DataType="vm:ViewModelBase+BranchNode" ItemsSource="{Binding Children}">
+							<TextBlock Text="{Binding Name}" Padding="0" Margin="0"/>
+						</TreeDataTemplate>
+					</TreeView.DataTemplates>
+				</TreeView>
+
+				<TextBox Watermark="A commit message..." Text="{Binding CommitMessage}"/>
+				<StackPanel Orientation="Horizontal">
+					<Label Content="Amend:"/>
+					<CheckBox IsChecked="{Binding Amend}"/>
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<Button Content="Commit all" Command="{Binding CommitAllCommand}" IsEnabled="{Binding !StatusStaged.Count}"/>
+					<Button Content="Commit staged" Command="{Binding CommitStagedCommand}" IsEnabled="{Binding StatusStaged.Count}"/>
+					<!--Button Content="Stash" IsEnabled="False"/-->
+				</StackPanel>
+			</StackPanel>
+
+			<StackPanel IsVisible="{Binding StatusStaged.Count}">
+				<Grid ColumnDefinitions="*,Auto">
+					<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+						<TextBlock Text="Staged:"/>
+					</StackPanel>
+					<StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0 0 5 0">
+						<Button ToolTip.Tip="Unstage all" Command="{Binding UnstageAllCommand}">-</Button>
+					</StackPanel>
+				</Grid>
+				<TreeView ItemsSource="{Binding StatusStaged}" BorderBrush="White" BorderThickness="2">
+					<TreeView.Styles>
+						<Style Selector="TreeViewItem">
+							<Setter Property="IsExpanded" Value="{Binding IsExpanded}" x:DataType="vm:GitViewModel+StatusNode"/>
+						</Style>
+					</TreeView.Styles>
+					<TreeView.DataTemplates>
+						<TreeDataTemplate DataType="vm:GitViewModel+StatusNode" ItemsSource="{Binding Children}">
+							<Grid ColumnDefinitions="*,Auto">
+								<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+									<TextBlock Text="{Binding Name}" Padding="0" Margin="0"/>
+									<StackPanel Orientation="Horizontal" IsVisible="{Binding !!Status}">
+										<TextBlock Text=" - " Padding="0" Margin="0"/>
+										<TextBlock Text="{Binding Status}" Padding="0" Margin="0"/>
+									</StackPanel>
+								</StackPanel>
+								<StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0 0 5 0">
+									<Button ToolTip.Tip="Unstage" Command="{Binding DataContext.UnstageCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" CommandParameter="{Binding}">-</Button>
+								</StackPanel>
+							</Grid>
+						</TreeDataTemplate>
+					</TreeView.DataTemplates>
+				</TreeView>
+			</StackPanel>
+		
+			<TextBlock Text="Changes:"/>
+			<TreeView ItemsSource="{Binding StatusUnstaged}" BorderBrush="White" BorderThickness="2">
+				<TreeView.Styles>
+					<Style Selector="TreeViewItem">
+						<Setter Property="IsExpanded" Value="{Binding IsExpanded}" x:DataType="vm:GitViewModel+StatusNode"/>
+					</Style>
+				</TreeView.Styles>
+				<TreeView.DataTemplates>
+					<TreeDataTemplate DataType="vm:GitViewModel+StatusNode" ItemsSource="{Binding Children}">
+						<Grid ColumnDefinitions="*,Auto">
+							<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+								<TextBlock Text="{Binding Name}" Padding="0" Margin="0"/>
+								<StackPanel Orientation="Horizontal" IsVisible="{Binding !!Status}">
+									<TextBlock Text=" - " Padding="0" Margin="0"/>
+									<TextBlock Text="{Binding Status}" Padding="0" Margin="0"/>
+								</StackPanel>
+							</StackPanel>
+							<StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0 0 5 0">
+								<Button ToolTip.Tip="Undo changes" Command="{Binding DataContext.UndoChangesCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" CommandParameter="{Binding}">&lt;-</Button>
+								<Button ToolTip.Tip="Stage" Command="{Binding DataContext.StageCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" CommandParameter="{Binding}">+</Button>
+							</StackPanel>
+						</Grid>
+					</TreeDataTemplate>
+				</TreeView.DataTemplates>
+			</TreeView>
+		</StackPanel>
+		<StackPanel IsVisible="{Binding !Repos.Count}">
+			<TextBlock Text="No repositories - add the solution to GIT repository"/>			
+		</StackPanel>
+	</StackPanel>
+</UserControl>

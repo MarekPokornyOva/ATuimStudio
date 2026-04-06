@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="ATuimStudio.Views.NewProjectFileNameDialogView"
+		xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:vm="using:ATuimStudio.ViewModels"
+		mc:Ignorable="d"
+		d:DesignWidth="300" d:DesignHeight="400"
+		x:DataType="vm:NewProjectFileNameDialogViewModel" x:CompileBindings="True">
+	<Design.DataContext>
+		<vm:NewProjectFileNameDialogViewModel />
+	</Design.DataContext>
+
+	<StackPanel>
+		<TextBlock Text="{Binding Path}" />
+		<TextBox Text="{Binding FileName}" x:Name="tbFileName"/>
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+			<Button Content="Ok" IsDefault="true" Command="{Binding OkCommand}" />
+			<Button Content="Cancel" IsCancel="true" Command="{Binding CancelCommand}" />
+		</StackPanel>
+	</StackPanel>
+</UserControl>

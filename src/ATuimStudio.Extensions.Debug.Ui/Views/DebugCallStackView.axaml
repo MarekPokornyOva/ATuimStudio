@@ -1,0 +1,27 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:ATuimStudio.Extensions.Debug"
+			 xmlns:ui="using:ATuimStudio.Extensions.Debug"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="ATuimStudio.Extensions.Debug.DebugCallStackView"
+			 x:DataType="vm:DebugCallStackViewModel">
+	<Design.DataContext>
+		<vm:DebugCallStackViewModel />
+	</Design.DataContext>
+
+	<UserControl.Resources>
+		<ui:StackFrameItemConverter x:Key="StackFrameItemConverter"/>
+	</UserControl.Resources>
+
+	<ScrollViewer HorizontalScrollBarVisibility="Auto">
+		<ListBox ItemsSource="{Binding CallStack}" SelectedItem="{Binding SelectedFrame}">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding, Converter={StaticResource StackFrameItemConverter}}"/>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</ScrollViewer>
+</UserControl>

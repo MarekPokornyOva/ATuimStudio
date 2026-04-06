@@ -1,0 +1,40 @@
+<Project>
+  <PropertyGroup>
+    <!-- Enable central package management, https://learn.microsoft.com/en-us/nuget/consume-packages/Central-Package-Management -->
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Avalonia" Version="11.3.9" />
+    <PackageVersion Include="Avalonia.Controls.ItemsRepeater" Version="11.1.5" />
+    <PackageVersion Include="Avalonia.Controls.TreeDataGrid" Version="11.1.0" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.3.9" />
+    <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.3.9" />
+    <PackageVersion Include="Avalonia.Desktop" Version="11.3.9" />
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageVersion Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.9" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.3" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
+    <PackageVersion Include="Dock.Avalonia" Version="11.3.8" />
+    <PackageVersion Include="Dock.Avalonia.Themes.Fluent" Version="11.3.8" />
+    <PackageVersion Include="Dock.Model.Avalonia" Version="11.3.8" />
+    <PackageVersion Include="Dock.Model.Mvvm" Version="11.3.8" />
+    <PackageVersion Include="Avalonia.AvaloniaEdit" Version="11.3.0" />
+    <PackageVersion Include="AvaloniaEdit.TextMate" Version="11.3.0" />
+    <PackageVersion Include="System.Collections.Immutable" Version="10.0.3" />
+    <PackageVersion Include="Microsoft.Build" Version="18.3.3" />
+    <PackageVersion Include="Microsoft.Build.Locator" Version="1.10.12" /> <!--1.11.1--> <!-- https://developercommunity.visualstudio.com/t/MSBL001triggeredbytransitiveMicrosoft.Build.FrameworkreferencesfromMicrosoft.CodeAnalysis.Workspaces.MSBuilddespiteExcludeAssetsconfiguratio/11003897 -->
+    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="18.3.3" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.NET.HostModel" Version="3.1.16" />
+    <PackageVersion Include="LibGit2Sharp" Version="0.31.0" />
+    <PackageVersion Include="Microsoft.Diagnostics.DbgShim" Version="9.0.661903" />
+    <PackageVersion Include="Microsoft.Diagnostics.DbgShim.Win-x64" Version="9.0.661903" />
+    <PackageVersion Include="Microsoft.Diagnostics.DbgShim.Linux-x64" Version="9.0.661903" />
+    <PackageVersion Include="ClrDebug" Version="0.3.4" />
+    <PackageVersion Include="System.Xml.XmlDocument" version="4.3.0" />
+    <PackageVersion Include="System.Reflection.Metadata" Version="10.0.5" />
+  </ItemGroup>
+</Project>
