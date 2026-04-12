@@ -11,6 +11,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
     <PackageReference Include="System.Collections.Immutable" />
     <PackageReference Include="System.Xml.XmlDocument" />
+    <PackageReference Include="System.Text.RegularExpressions" />  <!-- Just to resolve vulnerability. Transitive from ???. -->
   </ItemGroup>
 
 </Project>
