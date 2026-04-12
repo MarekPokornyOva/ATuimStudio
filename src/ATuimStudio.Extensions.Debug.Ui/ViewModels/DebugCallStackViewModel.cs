@@ -5,7 +5,6 @@ namespace ATuimStudio.Extensions.Debug;
 
 public sealed partial class DebugCallStackViewModel : Tool, IDisposable
 {
-
 	[ObservableProperty]
 	IReadOnlyList<IStackFrame>? _callStack;
 
@@ -40,6 +39,4 @@ public sealed partial class DebugCallStackViewModel : Tool, IDisposable
 	{
 		_stackTraceProvider.SelectedFrame = value;
 	}
-
-	public record VariableItem(string Name, string Value, string TypeName);
 }

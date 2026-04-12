@@ -137,7 +137,10 @@ namespace ATuimStudio.Extensions.Debug
 			public int Count => _count;
 
 			public IEnumerator<IStackFrame> GetEnumerator()
-				=> this;
+			{
+				Reset();
+				return this;
+			}
 
 			IEnumerator IEnumerable.GetEnumerator()
 				=> GetEnumerator();
