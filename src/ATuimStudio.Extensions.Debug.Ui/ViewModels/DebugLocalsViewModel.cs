@@ -40,23 +40,35 @@ public sealed class DebugLocalsViewModel : Tool, IDisposable
 	static readonly VariableItem _dummyItem = new VariableItem("Expanding...", "", "", static x => { });
 	void SelectedFrameChanged(object? sender, EventArgs e)
 	{
+		VariableItem MapDebugItem(IDebugItem debugItem)
+		{
+			VariableItem res = new VariableItem(debugItem.Name, debugItem.Value, debugItem.TypeName, varItem =>
+			{
+				if (!debugItem.HasChildren)
+					return;
+				ObservableCollection<VariableItem> children = varItem.Children;
+				if (children.Count == 1 && children[0] == _dummyItem)
+				{
+					children.Clear();
+					FillCollection(debugItem.GetAllChildren(), children);
+				}
+			});
+			if (debugItem.HasChildren)
+				res.Children.Add(_dummyItem);
+			return res;
+		}
+
 		void FillCollection(IEnumerable<IDebugItem> items, ObservableCollection<VariableItem> result)
 		{
-			result.AddRange(items.Select(x =>
+			result.AddRange(items.Select((x, i) =>
 			{
-				VariableItem res = new VariableItem(x.Name, x.Value, x.TypeName, varItem =>
+				VariableItem res = MapDebugItem(x);
+				void ValueChangedHandler(object? sender, EventArgs e)
 				{
-					if (!x.HasChildren)
-						return;
-					ObservableCollection<VariableItem> children = varItem.Children;
-					if (children.Count == 1 && children[0] == _dummyItem)
-					{
-						children.Clear();
-						FillCollection(x.GetAllChildren(), children);
-					}
-				});
-				if (x.HasChildren)
-					res.Children.Add(_dummyItem);
+					x.ValueChanged -= ValueChangedHandler;
+					result[i] = MapDebugItem(x);
+				}
+				x.ValueChanged += ValueChangedHandler;
 				return res;
 			}));
 		}
@@ -86,6 +98,6 @@ public sealed class DebugLocalsViewModel : Tool, IDisposable
 		public string TypeName { get; }
 
 		public ObservableCollection<VariableItem> Children { get; } = [];
-		public bool IsExpanded { get; set { field = value; _expandChildren(this); } }
+		public bool IsExpanded { get; set { field = value; if (value) _expandChildren(this); } }
 	};
 }

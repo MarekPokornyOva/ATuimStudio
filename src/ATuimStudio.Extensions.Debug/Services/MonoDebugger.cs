@@ -205,15 +205,13 @@ namespace ATuimStudio.Extensions.Debug
 
 			public DebugItem(ObjectValue inner)
 			{
-				if (inner.IsEvaluating)
-					inner.WaitHandle.WaitOne();
 				_inner = inner;
 			}
 
 			public readonly string Name => _inner.Name;
 			public readonly string Value => _inner.Value;
 			public readonly string TypeName => _inner.TypeName;
-
+			public event EventHandler ValueChanged { add { if (_inner.IsEvaluating) _inner.ValueChanged += value; } remove => _inner.ValueChanged -= value; }
 			public readonly bool HasChildren => _inner.HasChildren;
 			public IReadOnlyCollection<IDebugItem> GetAllChildren()
 				=> new MappingReadOnlyCollection<ObjectValue, IDebugItem>(_inner.GetAllChildren(), x => new DebugItem(x));

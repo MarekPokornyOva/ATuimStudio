@@ -57,6 +57,7 @@
 		string Name { get; }
 		string Value { get; }
 		string TypeName { get; }
+		event EventHandler ValueChanged;
 
 		bool HasChildren { get; }
 		IReadOnlyCollection<IDebugItem> GetAllChildren();
