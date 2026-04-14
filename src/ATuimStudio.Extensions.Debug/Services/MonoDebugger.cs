@@ -32,7 +32,10 @@ namespace ATuimStudio.Extensions.Debug
 		void Session_TargetHitBreakpoint(object? sender, TargetEventArgs e)
 			=> OnBreakpoint?.Invoke(this, _currentBreakpoint = CreateBreakpointArgs(e.Backtrace));
 		void Session_TargetStopped(object? sender, TargetEventArgs e)
-			=> OnBreakpoint?.Invoke(this, _currentBreakpoint = CreateBreakpointArgs(e.Backtrace));
+		{
+			if (e.Backtrace != null)
+				OnBreakpoint?.Invoke(this, _currentBreakpoint = CreateBreakpointArgs(e.Backtrace));
+		}
 		void Session_TargetExited(object? sender, TargetEventArgs e)
 		{
 			((DebuggerSession)sender!).Exit();

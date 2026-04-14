@@ -54,11 +54,7 @@ namespace Mono.Debugging.ClrDebug
 				}
 				waiter.Set();
 			};
-			nint hResults = dbgShimInterop.RegisterForRuntimeStartup(processId, runtimeStartupCallback, 0);
-			if (hResults == 0)
-			{
-				throw new DebugException($"Failed call RegisterForRuntimeStartup: {hResults}", (HRESULT)hResults);
-			}
+			nint unregisterToken = dbgShimInterop.RegisterForRuntimeStartup(processId, runtimeStartupCallback, 0);
 			if (resumeHandle != nint.Zero)
 			{
 				dbgShimInterop.ResumeProcess(resumeHandle);
@@ -68,7 +64,7 @@ namespace Mono.Debugging.ClrDebug
 			//	throw new TimeoutException($".NET core load awaiting timed out for {runtimeLoadTimeout}");
 			//}
 			waiter.WaitOne();
-			GC.KeepAlive(runtimeStartupCallback);
+			dbgShimInterop.UnregisterForRuntimeStartup(unregisterToken);
 			if (callbackException != null)
 			{
 				throw callbackException;
