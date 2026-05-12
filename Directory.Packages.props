@@ -22,9 +22,10 @@
     <PackageVersion Include="Avalonia.AvaloniaEdit" Version="11.3.0" />
     <PackageVersion Include="AvaloniaEdit.TextMate" Version="11.3.0" />
     <PackageVersion Include="System.Collections.Immutable" Version="10.0.3" />
-    <PackageVersion Include="Microsoft.Build" Version="18.3.3" />
-    <PackageVersion Include="Microsoft.Build.Locator" Version="1.10.12" /> <!--1.11.1--> <!-- https://developercommunity.visualstudio.com/t/MSBL001triggeredbytransitiveMicrosoft.Build.FrameworkreferencesfromMicrosoft.CodeAnalysis.Workspaces.MSBuilddespiteExcludeAssetsconfiguratio/11003897 -->
-    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="18.3.3" />
+    <PackageVersion Include="Microsoft.Build" Version="18.4.0" />
+    <PackageVersion Include="Microsoft.Build.Locator" Version="1.11.2" />
+    <PackageVersion Include="Microsoft.Build.Framework" Version="18.4.0" /> <!-- We no need the package as it's transitive from Microsoft.Build. But we need this registration to be able to configure Package reference with ExcludeAssets="runtime" PrivateAssets="all" to break copying the assembly to app's output directory. https://developercommunity.visualstudio.com/t/MSBL001triggeredbytransitiveMicrosoft.Build.FrameworkreferencesfromMicrosoft.CodeAnalysis.Workspaces.MSBuilddespiteExcludeAssetsconfiguratio/11003897; https://github.com/microsoft/MSBuildLocator/issues/364-->
+    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="18.4.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="5.0.0" />
@@ -36,7 +37,9 @@
     <PackageVersion Include="ClrDebug" Version="0.3.4" />
     <PackageVersion Include="System.Xml.XmlDocument" version="4.3.0" />
     <PackageVersion Include="System.Reflection.Metadata" Version="10.0.5" />
-	 <PackageVersion Include="Tmds.DBus.Protocol" Version="0.21.3" /> <!-- Just to resolve vulnerability. Transitive from Avalonia.FreeDesktop. -->
-	 <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" /> <!-- Just to resolve vulnerability. Transitive from ???. -->
+    <PackageVersion Include="Tmds.DBus.Protocol" Version="0.21.3" />
+    <!-- Just to resolve vulnerability. Transitive from Avalonia.FreeDesktop. -->
+    <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
+    <!-- Just to resolve vulnerability. Transitive from ???. -->
   </ItemGroup>
 </Project>

@@ -14,9 +14,14 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-		<PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" PrivateAssets="all">
+			<IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="Microsoft.Build.Locator" />
-		<PackageReference Include="Microsoft.Build.Utilities.Core" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" PrivateAssets="all" /> <!-- We no need the package as it's transitive from Microsoft.Build. But we need this registration to be able to configure Package reference with ExcludeAssets="runtime" PrivateAssets="all" to break copying the assembly to app's output directory. https://developercommunity.visualstudio.com/t/MSBL001triggeredbytransitiveMicrosoft.Build.FrameworkreferencesfromMicrosoft.CodeAnalysis.Workspaces.MSBuilddespiteExcludeAssetsconfiguratio/11003897; https://github.com/microsoft/MSBuildLocator/issues/364-->
+		<PackageReference Include="Microsoft.Build.Utilities.Core" ExcludeAssets="runtime" PrivateAssets="all">
+			<IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" />
