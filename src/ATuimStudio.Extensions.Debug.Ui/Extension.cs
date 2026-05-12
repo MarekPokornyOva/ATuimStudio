@@ -24,8 +24,10 @@ namespace ATuimStudio.Extensions.Debug
 		const string OutputType = "Build";
 		const string IdDebugCallStack = "DebugCallStack";
 		const string IdDebugLocals = "DebugLocals";
+		const string IdDebugBreakpoints = "Breakpoints";
 		readonly static Guid TypeDebugCallStack = new Guid(0x511df1f7, 0x2ce1, 0x41d3, 0xaa, 0x56, 0xff, 0xaf, 0x57, 0xbe, 0x49, 0x72);
 		readonly static Guid TypeDebugLocals = new Guid(0x46b21adf, 0xbb91, 0x4ca4, 0x96, 0x81, 0x64, 0x32, 0x7f, 0x2b, 0x69, 0xd0);
+		readonly static Guid TypeDebugBreakpoints = new Guid(0xdc9a22f3, 0xe8dd, 0x44d4, 0xb6, 0xb1, 0x80, 0xe2, 0x40, 0x94, 0x91, 0x41);
 
 		public override void RegisterCommand(ICommandRegistrator commandRegistrator)
 		{
@@ -187,6 +189,9 @@ namespace ATuimStudio.Extensions.Debug
 			layoutWindowRegistrator.RegisterPaneFactory(TypeDebugLocals,
 				static sp => ActivatorUtilities.CreateInstance<DebugLocalsViewModel>(sp),
 				static sp => new DebugLocalsView());
+			layoutWindowRegistrator.RegisterPaneFactory(TypeDebugBreakpoints,
+				static sp => ActivatorUtilities.CreateInstance<DebugBreakpointsViewModel>(sp),
+				static sp => new DebugBreakpointsView());
 
 			layoutWindowRegistrator.RegisterParts("Debug", static ctx =>
 			{
@@ -194,6 +199,8 @@ namespace ATuimStudio.Extensions.Debug
 					.AddPane(IdDebugCallStack, "Call Stack", TypeDebugCallStack);
 				ctx.Layout.FindPanesContainer(WellKnownLayoutConstants.IdBasicInfo)
 					.AddPane(IdDebugLocals, "Debug Locals", TypeDebugLocals);
+				ctx.Layout.FindPanesContainer(WellKnownLayoutConstants.IdBasicInfo)
+					.AddPane(IdDebugBreakpoints, "Breakpoints", TypeDebugBreakpoints);
 			});
 		}
 

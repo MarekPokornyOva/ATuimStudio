@@ -3,7 +3,7 @@
 	public interface IBreakpointManager
 	{
 		bool ToggleBreakpoint(string filepath, int line, int col);
-		IEnumerable<Breakpoint> Breakpoints { get; }
+		IReadOnlyCollection<Breakpoint> Breakpoints { get; }
 
 		event EventHandler<Breakpoint> BreakpointAdded;
 		event EventHandler<Breakpoint> BreakpointRemoved;

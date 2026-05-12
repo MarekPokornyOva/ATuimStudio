@@ -10,7 +10,7 @@
 
 		readonly List<Breakpoint> _breakpoints = new List<Breakpoint>();
 
-		public IEnumerable<Breakpoint> Breakpoints => _breakpoints;
+		public IReadOnlyCollection<Breakpoint> Breakpoints => _breakpoints;
 
 		public bool ToggleBreakpoint(string filepath, int line, int col)
 		{
