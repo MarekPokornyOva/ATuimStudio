@@ -22,6 +22,11 @@ namespace ATuimStudio.Extensions.Debug
 		const string StepOutCommandCode = "DebugStepOut";
 		const string StopCommandCode = "DebugStop";
 		const string OutputType = "Build";
+		const string IdDebugCallStack = "DebugCallStack";
+		const string IdDebugLocals = "DebugLocals";
+		readonly static Guid TypeDebugCallStack = new Guid(0x511df1f7, 0x2ce1, 0x41d3, 0xaa, 0x56, 0xff, 0xaf, 0x57, 0xbe, 0x49, 0x72);
+		readonly static Guid TypeDebugLocals = new Guid(0x46b21adf, 0xbb91, 0x4ca4, 0x96, 0x81, 0x64, 0x32, 0x7f, 0x2b, 0x69, 0xd0);
+
 		public override void RegisterCommand(ICommandRegistrator commandRegistrator)
 		{
 			IDebuggerService debuggerService = commandRegistrator.ServiceProvider.GetRequiredService<IDebuggerService>();
@@ -29,6 +34,7 @@ namespace ATuimStudio.Extensions.Debug
 			IBreakpointManager breakpointManager = commandRegistrator.ServiceProvider.GetRequiredService<IBreakpointManager>();
 			IBuildService buildService = commandRegistrator.ServiceProvider.GetRequiredService<IBuildService>();
 			IOutputWriter outputWriter = commandRegistrator.ServiceProvider.GetRequiredService<IOutputWriter>();
+			ILayoutManager layoutManager = commandRegistrator.ServiceProvider.GetRequiredService<ILayoutManager>();
 			bool debuggerIsStopped = true;
 
 			bool CanStart()
@@ -87,6 +93,8 @@ namespace ATuimStudio.Extensions.Debug
 					{
 						debugger.OnStarted -= OnStarted;
 
+						layoutManager.SwitchLayout("Debug");
+
 						foreach (Breakpoint bp in breakpointManager.Breakpoints)
 							debugger.ToggleBreakpoint(bp.Filepath, new SourcePosition(bp.Range.Start.Line, bp.Range.Start.Column));
 
@@ -100,6 +108,8 @@ namespace ATuimStudio.Extensions.Debug
 						debugger.OnContinued -= DebugContinued;
 						debugger.OnTerminated -= DebugTerminated;
 						RefreshCommands();
+
+						layoutManager.SwitchLayout(WellKnownLayoutConstants.LayoutBasic);
 					}
 
 					void DebugBreakpoint(object? sender, BreakpointEventArgs e)
@@ -171,8 +181,20 @@ namespace ATuimStudio.Extensions.Debug
 
 		public override void RegisterLayoutWindow(ILayoutWindowRegistrator layoutWindowRegistrator)
 		{
-			layoutWindowRegistrator.Register(UiLayoutId.BelowDocuments, context => context.CreateViewModel<DebugCallStackViewModel>("DebugCallStack", "Call Stack"));
-			layoutWindowRegistrator.Register(UiLayoutId.BelowDocuments, context => context.CreateViewModel<DebugLocalsViewModel>("DebugLocals", "Debug Locals"));
+			layoutWindowRegistrator.RegisterPaneFactory(TypeDebugCallStack,
+				static sp => ActivatorUtilities.CreateInstance<DebugCallStackViewModel>(sp),
+				static sp => new DebugCallStackView());
+			layoutWindowRegistrator.RegisterPaneFactory(TypeDebugLocals,
+				static sp => ActivatorUtilities.CreateInstance<DebugLocalsViewModel>(sp),
+				static sp => new DebugLocalsView());
+
+			layoutWindowRegistrator.RegisterParts("Debug", static ctx =>
+			{
+				ctx.Layout.FindPanesContainer(WellKnownLayoutConstants.IdBasicInfo)
+					.AddPane(IdDebugCallStack, "Call Stack", TypeDebugCallStack);
+				ctx.Layout.FindPanesContainer(WellKnownLayoutConstants.IdBasicInfo)
+					.AddPane(IdDebugLocals, "Debug Locals", TypeDebugLocals);
+			});
 		}
 
 		public override void RegisterEditorDecorator(IEditorDecoratorRegistrator editorDecoratorRegistrator)

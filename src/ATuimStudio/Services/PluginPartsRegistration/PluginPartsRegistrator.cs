@@ -1,6 +1,6 @@
 ﻿using ATuimStudio.Extensibility;
+using Avalonia.Controls;
 using Avalonia.Input;
-using Dock.Model.Core;
 using System.Windows.Input;
 
 namespace ATuimStudio.Services
@@ -34,11 +34,17 @@ namespace ATuimStudio.Services
 		#endregion ICommandRegistrator
 
 		#region ILayoutWindowRegistrator
-		readonly List<LayoutRegistration> _layoutRegistrations = [];
+		readonly List<LayoutPaneFactoryRegistration> _layoutPaneFactories = [];
+		readonly List<(string LayoutName, Action<ILayoutWindowRegistratorContext> Registrator)> _layoutPartRegistrations = [];
 
-		public void Register(string parentIds, Func<ILayoutWindowRegistratorContext, IDockable> factory)
+		public void RegisterPaneFactory(Guid type, Func<IServiceProvider, object> viewPanelFactory, Func<IServiceProvider, Control> viewFactory)
 		{
-			_layoutRegistrations.Add(new LayoutRegistration(parentIds, factory));
+			_layoutPaneFactories.Add(new LayoutPaneFactoryRegistration(type, viewPanelFactory, viewFactory));
+		}
+
+		public void RegisterParts(string layoutName, Action<ILayoutWindowRegistratorContext> registrator)
+		{
+			_layoutPartRegistrations.Add((layoutName, registrator));
 		}
 		#endregion ILayoutWindowRegistrator
 
@@ -53,22 +59,25 @@ namespace ATuimStudio.Services
 		#region IPluginPartsRegistrator
 		public record struct MenuRegistration(IEnumerable<string> Segments, string CommandCode, KeyGesture? Gesture);
 		public record struct CommandRegistration(ICommand Command, Func<Stream>? ImageDataProvider);
-		public record struct LayoutRegistration(string ParentIds, Func<ILayoutWindowRegistratorContext, object> Factory);
+		public record struct LayoutPaneFactoryRegistration(Guid Type, Func<IServiceProvider, object> ViewPanelFactory, Func<IServiceProvider, Control> ViewFactory);
 		public record struct EditorDecoratorRegistration(Action<IEditorDecoratorRegistratorContext> Callback);
 
 		IEnumerable<MenuRegistration> IPluginPartsRegistrator.GetMenus()
 			=> _menuRegistrations;
 		IReadOnlyDictionary<string, CommandRegistration> IPluginPartsRegistrator.GetCommands()
 			=> _commandRegistrations;
-		IReadOnlyCollection<LayoutRegistration> IPluginPartsRegistrator.GetLayoutWindows()
-			=> _layoutRegistrations;
+		IReadOnlyCollection<LayoutPaneFactoryRegistration> IPluginPartsRegistrator.GetLayoutPaneFactories()
+			=> _layoutPaneFactories;
+		IReadOnlyCollection<(string LayoutName, Action<ILayoutWindowRegistratorContext> Registrator)> IPluginPartsRegistrator.GetLayoutPartRegistrations()
+			=> _layoutPartRegistrations;
 		IReadOnlyCollection<EditorDecoratorRegistration> IPluginPartsRegistrator.GetEditorDecorators()
 			=> _editorLayoutRegistrations;
 		void IPluginPartsRegistrator.Clear()
 		{
 			_menuRegistrations.Clear();
 			_commandRegistrations.Clear();
-			_layoutRegistrations.Clear();
+			_layoutPaneFactories.Clear();
+			_layoutPartRegistrations.Clear();
 		}
 		#endregion IPluginPartsRegistrator
 	}

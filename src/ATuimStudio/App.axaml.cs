@@ -24,14 +24,13 @@ public partial class App : Application
 		BindingPlugins.DataValidators.RemoveAt(0);
 
 		//https://docs.avaloniaui.net/docs/guides/implementation-guides/how-to-implement-dependency-injection
-		DefaultUiLayoutAccessor uiLayoutAccessor = new DefaultUiLayoutAccessor();
 		TopLevelVisualProvider topLevelVisualProvider = new TopLevelVisualProvider();
-		ServiceProvider sp = AppServicesBuilder.BuildServiceProvider(uiLayoutAccessor, topLevelVisualProvider);
+		ServiceProvider sp = AppServicesBuilder.BuildServiceProvider(topLevelVisualProvider);
 		ViewLocator.ServiceProvider = sp;
 
 		PluginManager.Register(sp);
 
-		MainViewModel vm = ActivatorUtilities.CreateInstance<MainViewModel>(sp, uiLayoutAccessor);
+		MainViewModel vm = ActivatorUtilities.CreateInstance<MainViewModel>(sp);
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 		{
 			topLevelVisualProvider.Visual = desktop.MainWindow = new MainWindow(sp)

@@ -1,11 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
-using Dock.Model.Mvvm.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 
 namespace ATuimStudio.Extensions.Debug;
 
-public sealed class DebugLocalsViewModel : Tool, IDisposable
+public sealed class DebugLocalsViewModel : ObservableObject, IDisposable
 {
 	readonly ObservableCollection<VariableItem> _locals = [];
 	public HierarchicalTreeDataGridSource<VariableItem> Source { get; }
@@ -30,6 +30,9 @@ public sealed class DebugLocalsViewModel : Tool, IDisposable
 					new TextColumn<VariableItem, string>("Type", static x => x.TypeName),
 				},
 		};
+
+		if (stackTraceProvider.SelectedFrame != null)
+			ProcessSelectedFrameChanged();
 	}
 
 	public void Dispose()
@@ -39,6 +42,9 @@ public sealed class DebugLocalsViewModel : Tool, IDisposable
 
 	static readonly VariableItem _dummyItem = new VariableItem("Expanding...", "", "", static x => { });
 	void SelectedFrameChanged(object? sender, EventArgs e)
+		=> ProcessSelectedFrameChanged();
+
+	void ProcessSelectedFrameChanged()
 	{
 		VariableItem MapDebugItem(IDebugItem debugItem)
 		{

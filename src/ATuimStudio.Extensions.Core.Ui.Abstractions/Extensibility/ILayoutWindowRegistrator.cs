@@ -1,14 +1,16 @@
-﻿using Dock.Model.Core;
+﻿using ATuimStudio.Extensions.Core.Ui;
+using Avalonia.Controls;
 
 namespace ATuimStudio.Extensibility
 {
 	public interface ILayoutWindowRegistrator
 	{
-		void Register(string parentIds, Func<ILayoutWindowRegistratorContext, IDockable> factory);
+		void RegisterPaneFactory(Guid type, Func<IServiceProvider, object> viewPanelFactory, Func<IServiceProvider, Control> viewFactory);
+		void RegisterParts(string layoutName, Action<ILayoutWindowRegistratorContext> registrator);
 	}
 
 	public interface ILayoutWindowRegistratorContext
 	{
-		T CreateViewModel<T>(string id, string title) where T : IDockable;
+		ILayout Layout { get; }
 	}
 }

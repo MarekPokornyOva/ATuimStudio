@@ -9,7 +9,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Avalonia.AvaloniaEdit" />
-		<PackageReference Include="Dock.Model.Mvvm" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
 		<PackageReference Include="System.Collections.Immutable" />
 	</ItemGroup>

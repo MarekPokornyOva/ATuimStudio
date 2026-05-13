@@ -1,10 +1,10 @@
 ﻿using ATuimStudio.Extensions.Core;
 using AvaloniaEdit.Document;
-using Dock.Model.Mvvm.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace ATuimStudio.ViewModels
 {
-	public class DocumentViewModel : Document
+	public class DocumentViewModel : ObservableObject
 	{
 		readonly ISolutionService _solutionService;
 		public DocumentViewModel(ISolutionService solutionService)

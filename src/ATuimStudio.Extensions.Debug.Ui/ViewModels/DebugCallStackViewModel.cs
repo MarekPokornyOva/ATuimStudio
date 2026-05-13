@@ -1,9 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Dock.Model.Mvvm.Controls;
 
 namespace ATuimStudio.Extensions.Debug;
 
-public sealed partial class DebugCallStackViewModel : Tool, IDisposable
+public sealed partial class DebugCallStackViewModel : ObservableObject, IDisposable
 {
 	[ObservableProperty]
 	IReadOnlyList<IStackFrame>? _callStack;

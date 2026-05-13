@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace ATuimStudio.ViewModels;
 
-public sealed partial class SolutionViewModel : Tool
+public sealed partial class SolutionViewModel : ViewModelBase
 {
 	public ObservableCollection<SolutionDataNode> SolutionNodes { get; } = [];
 	private SolutionDataNode? _selectedItem;

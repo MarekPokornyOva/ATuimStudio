@@ -8,7 +8,7 @@ using Avalonia.Threading;
 
 namespace ATuimStudio.ViewModels
 {
-	public sealed partial class OutputViewModel : Tool
+	public sealed partial class OutputViewModel : ViewModelBase
 	{
 		public ObservableCollection<string> Types { get; } = [];
 		[ObservableProperty]

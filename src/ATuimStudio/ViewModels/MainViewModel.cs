@@ -31,20 +31,25 @@ public sealed partial class MainViewModel : ViewModelBase
 	readonly DockFactory _dockFactory;
 	readonly ITopLevelVisualProvider _topLevelVisualProvider;
 	internal readonly IPluginPartsRegistrator _pluginPartsRegistrator;
-	public MainViewModel(DockFactory dockFactory, ISolutionService solutionService, IPluginPartsRegistrator pluginPartsRegistrator, DefaultUiLayoutAccessor uiLayoutAccessor, ITopLevelVisualProvider topLevelVisualProvider) : this()
+	public MainViewModel(DockFactory dockFactory, ISolutionService solutionService, IPluginPartsRegistrator pluginPartsRegistrator, ITopLevelVisualProvider topLevelVisualProvider) : this()
 	{
 		_solutionService = solutionService;
 		_pluginPartsRegistrator = pluginPartsRegistrator;
 		_topLevelVisualProvider = topLevelVisualProvider;
-
-		IRootDock layout = dockFactory.CreateLayout();
-		dockFactory.InitLayout(layout);
 		_dockFactory = dockFactory;
-		Layout = layout;
-		uiLayoutAccessor.UiLayout = new DefaultUiLayout(layout, dockFactory);
+
+		dockFactory.LayoutRecreateRequested += DockFactory_LayoutRecreateRequested;
+		dockFactory.InitializeLayouts();
 
 		solutionService.OnSolutionLoaded += SolutionService_OnSolutionLoaded;
 		solutionService.OnSolutionUnloaded += SolutionService_OnSolutionUnloaded;
+	}
+
+	private void DockFactory_LayoutRecreateRequested(object? sender, EventArgs e)
+	{
+		IRootDock layout = _dockFactory.CreateLayout();
+		_dockFactory.InitLayout(layout);
+		Layout = layout;
 	}
 
 	void SolutionService_OnSolutionLoaded(object? sender, SolutionLoadedEventArgs e)

@@ -3,6 +3,8 @@ using ATuimStudio.Extensions.Core;
 using Dock.Model.Mvvm.Controls;
 using System.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
+using ATuimStudio.Views;
+using Avalonia.Controls;
 
 namespace ATuimStudio.ViewModels
 {
@@ -34,16 +36,16 @@ namespace ATuimStudio.ViewModels
 		void CreateNewDocument(IProjectFileData fileData)
 		{
 			string id = "doc-" + fileData.Path;
-			AddDocument(id, sp => new DocumentViewModel(_serviceProvider.GetRequiredService<ISolutionService>()) { Id = id, Title = fileData.Name, FileData = fileData });
+			AddDocument(id, fileData.Name, sp => new DocumentViewModel(_serviceProvider.GetRequiredService<ISolutionService>()) { FileData = fileData }, static sp => ActivatorUtilities.CreateInstance<DocumentView>(sp));
 		}
 
-		internal void AddDocument(string id, Func<IServiceProvider, Document> factory)
+		internal void AddDocument(string id, string title, Func<IServiceProvider, object> viewModelFactory, Func<IServiceProvider, Control> viewFactory)
 		{
 			if (Factory == null)
 				return;
 
-			if (Factory.FindDockable(this, x => x.Id == id) is not Document document)
-				Factory.AddDockable(this, document = factory(_serviceProvider));
+			if (Factory.FindDockable(this, x => x.Id == id) is not GeneralDocument document)
+				Factory.AddDockable(this, document = new GeneralDocument(viewModelFactory(_serviceProvider), viewFactory) { Id = id, Title = title });
 			Factory.SetActiveDockable(document);
 			Factory.SetFocusedDockable(this, document);
 		}

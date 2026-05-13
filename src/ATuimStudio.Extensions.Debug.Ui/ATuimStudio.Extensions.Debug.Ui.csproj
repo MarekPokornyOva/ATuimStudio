@@ -23,7 +23,6 @@
 		<PackageReference Include="Avalonia" />
 		<PackageReference Include="Avalonia.Controls.TreeDataGrid" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
-		<PackageReference Include="Dock.Model.Mvvm" />
 	</ItemGroup>
 
 </Project>

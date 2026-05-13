@@ -1,7 +1,6 @@
 ﻿using ATuimStudio.Common;
 using ATuimStudio.Extensions.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Dock.Model.Mvvm.Controls;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
@@ -16,7 +15,7 @@ namespace ATuimStudio.Extensions.Git
 		public record RepoNodeBase(string Path, string Title, ISourceRepository Repository);
 	}
 
-	public abstract partial class ViewModelBase<TRepoNode> : Document, IDisposable where TRepoNode: ViewModelBase.RepoNodeBase
+	public abstract partial class ViewModelBase<TRepoNode> : ObservableObject, IDisposable where TRepoNode: ViewModelBase.RepoNodeBase
 	{
 		public ObservableCollection<TRepoNode> Repos { get; } = [];
 
@@ -49,6 +48,12 @@ namespace ATuimStudio.Extensions.Git
 
 			solutionService.OnSolutionLoaded += SolutionService_OnSolutionLoaded;
 			solutionService.OnSolutionUnloaded += SolutionService_OnSolutionUnloaded;
+		}
+
+		protected void PostInitialize()
+		{
+			if (_solutionService.CurrentSolution != null)
+				Load(_solutionService.CurrentSolution);
 		}
 
 		void Load(ISolutionData solutionData)

@@ -9,6 +9,7 @@ namespace ATuimStudio.Extensions.Git
 
 		public GitRepositoryViewModel(ISourceRepositoryFactory sourceRepositoryFactory, ISolutionService solutionService) : base(sourceRepositoryFactory, solutionService, false)
 		{
+			PostInitialize();
 		}
 
 		protected override ViewModelBase.RepoNodeBase CreateRepoNode(string path, string title, ISourceRepository repository)

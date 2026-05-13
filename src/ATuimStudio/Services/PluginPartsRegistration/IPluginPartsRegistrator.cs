@@ -6,7 +6,8 @@ namespace ATuimStudio.Services
 	{
 		IEnumerable<PluginPartsRegistrator.MenuRegistration> GetMenus();
 		IReadOnlyDictionary<string, PluginPartsRegistrator.CommandRegistration> GetCommands();
-		IReadOnlyCollection<PluginPartsRegistrator.LayoutRegistration> GetLayoutWindows();
+		IReadOnlyCollection<PluginPartsRegistrator.LayoutPaneFactoryRegistration> GetLayoutPaneFactories();
+		IReadOnlyCollection<(string LayoutName, Action<ILayoutWindowRegistratorContext> Registrator)> GetLayoutPartRegistrations();
 		IReadOnlyCollection<PluginPartsRegistrator.EditorDecoratorRegistration> GetEditorDecorators();
 		void Clear();
 	}

@@ -23,6 +23,8 @@ public sealed partial class GitViewModel : ViewModelBase<GitViewModel.RepoNode>
 	{
 		_diskWatchService = diskWatchService;
 		_diskWatchHandler = new DebouncingHandler(DiskContentChanged, 100).Handle;
+
+		PostInitialize();
 	}
 
 	protected override void SelectedRepoChanged(RepoNode? value)
