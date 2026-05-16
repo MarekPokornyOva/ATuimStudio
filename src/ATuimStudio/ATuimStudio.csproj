@@ -26,6 +26,7 @@
 		<PackageReference Include="Dock.Model.Mvvm" />
 		<PackageReference Include="Avalonia.AvaloniaEdit" />
 		<PackageReference Include="AvaloniaEdit.TextMate" />
+		<PackageReference Include="Microsoft.Extensions.ObjectPool" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -37,5 +38,11 @@
 		<ProjectReference Include="..\ATuimStudio.Extensions.Debug.Ui\ATuimStudio.Extensions.Debug.Ui.csproj" />
 		<ProjectReference Include="..\ATuimStudio.Extensions.Git.Ui\ATuimStudio.Extensions.Git.Ui.csproj" />
 		<ProjectReference Include="..\ATuimStudio.Extensions.TextEditCompletion.Ui\ATuimStudio.Extensions.TextEditCompletion.Ui.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Views\ErrorListView.axaml.cs">
+	    <DependentUpon>ErrorListView.axaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 </Project>

@@ -25,6 +25,7 @@ namespace ATuimStudio
 				.AddSingleton<ILayoutManager>(ServiceProviderServiceExtensions.GetRequiredService<DockFactory>)
 				.AddSingleton<ITopLevelVisualProvider>(topLevelVisualProvider)
 				.AddSingleton<IDialogService, DefaultDialogService>()
+				.AddSingleton<ICodeDiagnosticsManager, DefaultCodeDiagnosticsManages>()
 				.AddExtensionsCore();
 			PluginManager.Register(services);
 			return services.BuildServiceProvider();

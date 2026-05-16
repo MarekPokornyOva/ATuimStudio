@@ -17,8 +17,10 @@ namespace ATuimStudio.Extensions.Core.Ui
 		public const string IdOpenedDocuments = "OpenedDocuments";
 		public const string IdSolutionExplorer = "SolutionExplorer";
 		public const string IdOutput = "Output";
+		public const string IdErrorList = "ErrorList";
 		public readonly static Guid TypeSolutionExplorer = new Guid(0x2af1df58, 0x2341, 0x4a89, 0xb9, 0xa5, 0x67, 0xff, 0x3e, 0x72, 0xd1, 0x2a);
 		public readonly static Guid TypeOutput = new Guid(0x2eea10dc, 0x501f, 0x48ae, 0xb9, 0xae, 0x76, 0x4f, 0x57, 0x7b, 0x31, 0x15);
+		public readonly static Guid TypeErrorList = new Guid(0x41c7f54a, 0x30c3, 0x475a, 0xa9, 0x87, 0x28, 0xcf, 0xa5, 0x54, 0x80, 0x52);
 	}
 
 	public class PartProperties : Dictionary<string, object?>

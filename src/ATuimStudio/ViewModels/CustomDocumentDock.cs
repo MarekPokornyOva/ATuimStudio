@@ -33,10 +33,14 @@ namespace ATuimStudio.ViewModels
 		void FileOpen(IFileOpenEvent e)
 			=> CreateNewDocument(e.FileData);
 
+		static readonly ObjectFactory<DocumentViewModel> _documentViewModelFactory = ActivatorUtilities.CreateFactory<DocumentViewModel>(Type.EmptyTypes);
+		static readonly object?[] _emptyArgs = [];
 		void CreateNewDocument(IProjectFileData fileData)
 		{
 			string id = "doc-" + fileData.Path;
-			AddDocument(id, fileData.Name, sp => new DocumentViewModel(_serviceProvider.GetRequiredService<ISolutionService>()) { FileData = fileData }, static sp => ActivatorUtilities.CreateInstance<DocumentView>(sp));
+			AddDocument(id, fileData.Name,
+				sp => { DocumentViewModel dvm = _documentViewModelFactory(sp, _emptyArgs); dvm.FileData = fileData; return dvm; },
+				static sp => ActivatorUtilities.CreateInstance<DocumentView>(sp));
 		}
 
 		internal void AddDocument(string id, string title, Func<IServiceProvider, object> viewModelFactory, Func<IServiceProvider, Control> viewFactory)

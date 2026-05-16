@@ -28,13 +28,15 @@ public class DockFactory : Factory, IUiDocumentService, ILayoutManager
 		//Initialize LayoutManager
 		RegisterPaneFactory(WellKnownLayoutConstants.TypeSolutionExplorer, static sp => ActivatorUtilities.CreateInstance<SolutionViewModel>(sp), static sp => new SolutionView());
 		RegisterPaneFactory(WellKnownLayoutConstants.TypeOutput, static sp => ActivatorUtilities.CreateInstance<OutputViewModel>(sp), static sp => new OutputView());
+		RegisterPaneFactory(WellKnownLayoutConstants.TypeErrorList, static sp => ActivatorUtilities.CreateInstance<ErrorListViewModel>(sp), static sp => new ErrorListView());
 
 		Layout layout = new Layout();
 		_currentLayout = layout;
 		_layouts.Add(WellKnownLayoutConstants.LayoutBasic, layout);
 		InitializeLayout(layout);
 		layout.FindPanesContainer(WellKnownLayoutConstants.IdBasicInfo)
-			.AddPane(WellKnownLayoutConstants.IdOutput, "Output", WellKnownLayoutConstants.TypeOutput);
+			.AddPane(WellKnownLayoutConstants.IdOutput, "Output", WellKnownLayoutConstants.TypeOutput)
+			.AddPane(WellKnownLayoutConstants.IdErrorList, "Error List", WellKnownLayoutConstants.TypeErrorList);
 	}
 	#endregion ctor
 
