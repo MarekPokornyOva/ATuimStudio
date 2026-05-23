@@ -1,0 +1,26 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:ATuimStudio.Extensions.Debug"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="ATuimStudio.Extensions.Debug.DebugWatchView"
+			 x:DataType="vm:DebugWatchViewModel">
+	<Design.DataContext>
+		<vm:DebugWatchViewModel />
+	</Design.DataContext>
+
+	<TreeDataGrid Source="{Binding Source}">
+		<TreeDataGrid.Resources>
+			<DataTemplate x:Key="ExpressionCell" DataType="vm:DebugWatchViewModel+VariableItemBase">
+				<StackPanel Orientation="Horizontal">
+					<TextBlock FontStyle="Italic" Text="Add item to watch" IsVisible="{Binding Expression, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+					<TextBlock Text="{Binding Expression}" IsVisible="{Binding Expression, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+				</StackPanel>
+			</DataTemplate>
+			<DataTemplate x:Key="ExpressionCellEdit" DataType="vm:DebugWatchViewModel+VariableItemBase">
+				<TextBox Text="{Binding Expression, UpdateSourceTrigger=LostFocus}" Watermark="Add item to watch"/>
+			</DataTemplate>
+		</TreeDataGrid.Resources>
+	</TreeDataGrid>
+</UserControl>

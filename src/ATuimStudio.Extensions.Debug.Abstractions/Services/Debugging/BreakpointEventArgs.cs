@@ -50,6 +50,7 @@
 		string SourceFilePath { get; }
 		SourceRange? Range { get; }
 		string FullStackFrameText { get; }
+		IDebugItem Evaluate(string expressions);
 	}
 
 	public interface IDebugItem

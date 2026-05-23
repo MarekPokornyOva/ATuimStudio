@@ -192,21 +192,24 @@ namespace ATuimStudio.Extensions.Debug
 			public SourceRange? Range { get { SourceLocation loc = _inner.SourceLocation; return new SourceRange(loc.Line, loc.Column, loc.EndLine, loc.EndColumn); } }
 
 			public IReadOnlyCollection<IDebugItem> GetArguments()
-				=> [.. _inner.GetParameters().Select(static x => new DebugItem(x))];
+				=> [.. _inner.GetParameters().Select(static x => new ReadOnlyDebugItem(x))];
 
 			public IReadOnlyCollection<IDebugItem> GetLocals()
-				=> [.. _inner.GetLocalVariables().Select(static x => new DebugItem(x))];
+				=> [.. _inner.GetLocalVariables().Select(static x => new ReadOnlyDebugItem(x))];
+
+			public IDebugItem Evaluate(string expression)
+				=> new ExpressionDebugItem(expression, _inner.GetExpressionValue(expression, true));
 
 #pragma warning disable CS0612
 			public string FullStackFrameText => string.Concat(_inner.FullStackframeText, ":0x", _inner.Address.ToString("x"));
 #pragma warning restore CS0612
 		}
 
-		readonly struct DebugItem : IDebugItem
+		readonly struct ReadOnlyDebugItem : IDebugItem
 		{
 			readonly ObjectValue _inner;
 
-			public DebugItem(ObjectValue inner)
+			public ReadOnlyDebugItem(ObjectValue inner)
 			{
 				_inner = inner;
 			}
@@ -217,7 +220,27 @@ namespace ATuimStudio.Extensions.Debug
 			public event EventHandler ValueChanged { add { if (_inner.IsEvaluating) _inner.ValueChanged += value; } remove => _inner.ValueChanged -= value; }
 			public readonly bool HasChildren => _inner.HasChildren;
 			public IReadOnlyCollection<IDebugItem> GetAllChildren()
-				=> new MappingReadOnlyCollection<ObjectValue, IDebugItem>(_inner.GetAllChildren(), x => new DebugItem(x));
+				=> new MappingReadOnlyCollection<ObjectValue, IDebugItem>(_inner.GetAllChildren(), x => new ReadOnlyDebugItem(x));
+		}
+
+		readonly struct ExpressionDebugItem : IDebugItem
+		{
+			readonly ObjectValue _inner;
+
+			public ExpressionDebugItem(string expression, ObjectValue inner)
+			{
+				_inner = inner;
+				Expression = expression;
+			}
+
+			public readonly string Name => _inner.Name;
+			public readonly string Value => _inner.Value;
+			public readonly string TypeName => _inner.TypeName;
+			public event EventHandler ValueChanged { add { if (_inner.IsEvaluating) _inner.ValueChanged += value; } remove => _inner.ValueChanged -= value; }
+			public readonly string Expression { get; }
+			public readonly bool HasChildren => _inner.HasChildren;
+			public IReadOnlyCollection<IDebugItem> GetAllChildren()
+				=> new MappingReadOnlyCollection<ObjectValue, IDebugItem>(_inner.GetAllChildren(), x => new ReadOnlyDebugItem(x));
 		}
 	}
 }
