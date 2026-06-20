@@ -1,0 +1,55 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:ATuimStudio.Extensions.Git"
+			 xmlns:ui="using:ATuimStudio.Extensions.Git"
+			 xmlns:commonui="using:ATuimStudio"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="ATuimStudio.Extensions.Git.ReposAndBranchesView"
+			 x:DataType="{x:Type vm:ViewModelBase, x:TypeArguments=vm:ViewModelBase+RepoNodeBase}"
+			 x:Name="ThisControl"
+			>
+	<Design.DataContext>
+		<vm:ViewModelBase TypeArguments="vm:ViewModelBase+RepoNodeBase" />
+	</Design.DataContext>
+
+	<StackPanel>
+		<StackPanel IsVisible="{Binding !SelectionsArePinned}">
+			<StackPanel Orientation="Horizontal">
+				<Button Content="Pin" Command="{Binding PinSelectionsCommand}"/>
+
+				<Button x:Name="SelectionOpenButton">
+					<Interaction.Behaviors>
+						<EventTriggerBehavior EventName="Click">
+							<ChangePropertyAction TargetObject="{Binding #DropdownPopup}"
+														 PropertyName="IsOpen"
+														 Value="true"/>
+						</EventTriggerBehavior>
+					</Interaction.Behaviors>
+
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="{Binding SelectedRepo.Title}"/>
+						<StackPanel Orientation="Horizontal" IsVisible="{Binding !!SelectedRepo.Path}">
+							<TextBlock Text="-"/>
+							<TextBlock Text="{Binding SelectedBranch.Name}"/>
+						</StackPanel>
+						<TextBlock Text="..."/>
+					</StackPanel>
+				</Button>
+			</StackPanel>
+
+			<Popup x:Name="DropdownPopup" Placement="BottomEdgeAlignedLeft" PlacementTarget="{Binding #SelectionOpenButton}" IsLightDismissEnabled="True">
+				<Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}" BorderBrush="{DynamicResource SystemControlForeground}" BorderThickness="1">
+					<ui:ReposAndBranchesSubView/>
+				</Border>
+			</Popup>
+		</StackPanel>
+
+		<StackPanel IsVisible="{Binding SelectionsArePinned}">
+			<Button Content="Unpin" Command="{Binding UnpinSelectionsCommand}"/>
+
+			<ui:ReposAndBranchesSubView/>
+		</StackPanel>
+	</StackPanel>
+</UserControl>

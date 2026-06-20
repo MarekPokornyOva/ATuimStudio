@@ -1,4 +1,5 @@
 ﻿using ATuimStudio.Extensibility;
+using ATuimStudio.Extensions.Core;
 using ATuimStudio.Extensions.Core.Ui;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,9 @@ namespace ATuimStudio.Extensions.Git
 		readonly static Guid TypeGitRepository = new Guid(0xb301b536, 0xbd20, 0x40a8, 0xbf, 0xf9, 0x14, 0xd7, 0x70, 0xfc, 0xa6, 0x48);
 		public override void RegisterCommand(ICommandRegistrator commandRegistrator)
 		{
+			commandRegistrator.ServiceProvider.GetRequiredService<IUserOptionsRegistrator>()
+				.RegisterDefault(UserOptionsCodes.ReposAndBranchesPinned, true);
+
 			commandRegistrator.Register(CommandCode, new AsyncRelayCommand(async () =>
 				{
 					IUiDocumentService documentService = commandRegistrator.ServiceProvider.GetRequiredService<IUiDocumentService>();

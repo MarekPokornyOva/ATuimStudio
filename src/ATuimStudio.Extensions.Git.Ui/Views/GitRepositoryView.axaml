@@ -7,6 +7,7 @@
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:Class="ATuimStudio.Extensions.Git.GitRepositoryView"
 			 x:DataType="vm:GitRepositoryViewModel"
+			 x:Name="ThisControl"
 			>
 	<Design.DataContext>
 		<vm:GitRepositoryViewModel />
@@ -14,42 +15,70 @@
 
 	<UserControl.Resources>
 		<ui:GitCommitMessageConverter x:Key="GitCommitMessageConverter"/>
+		<ui:GitCommitTimeConverter x:Key="GitCommitTimeConverter"/>
 	</UserControl.Resources>
 
-	<StackPanel>
-		<TreeView ItemsSource="{Binding Repos}" SelectedItem="{Binding SelectedRepo}" BorderBrush="White" BorderThickness="2">
-			<TreeView.DataTemplates>
-				<TreeDataTemplate DataType="vm:ViewModelBase+RepoNodeBase">
-					<TextBlock Text="{Binding Title}" Padding="0" Margin="0"/>
-				</TreeDataTemplate>
-			</TreeView.DataTemplates>
-		</TreeView>
+	<Grid RowDefinitions="Auto,*">
+		<ui:ReposAndBranchesView Grid.Row="0"/>
 
-		<TextBlock Text="Branches:"/>
-		<TreeView ItemsSource="{Binding Branches}" SelectedItem="{Binding SelectedBranch, Mode=TwoWay}" BorderBrush="White" BorderThickness="2">
-			<TreeView.Styles>
-				<Style Selector="TreeViewItem">
-					<Setter Property="IsExpanded" Value="{Binding IsExpanded}" x:DataType="vm:ViewModelBase+BranchNode"/>
-				</Style>
-			</TreeView.Styles>
-			<TreeView.DataTemplates>
-				<TreeDataTemplate DataType="vm:ViewModelBase+BranchNode" ItemsSource="{Binding Children}">
-					<TextBlock Text="{Binding Name}" Padding="0" Margin="0"/>
-				</TreeDataTemplate>
-			</TreeView.DataTemplates>
-		</TreeView>
+		<DataGrid Grid.Row="1" ItemsSource="{Binding Commits}" CanUserResizeColumns="True">
+			<DataGrid.Columns>
+				<DataGridTemplateColumn Width="15" IsReadOnly="True" CanUserResize="False">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate DataType="vm:ICommit">
+							<ui:StatusCell ViewModel="{Binding #ThisControl.DataContext}" RowIndex="{Binding Index, RelativeSource={RelativeSource AncestorType=DataGridRow}}"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
 
-		<TreeView ItemsSource="{Binding Commits}" BorderBrush="White" BorderThickness="2">
-			<TreeView.DataTemplates>
-				<TreeDataTemplate DataType="vm:ICommit">
-					<StackPanel Orientation="Vertical" Margin="0 0 0 20">
-						<TextBlock Text="{Binding Sha}"/>
-						<TextBlock Text="{Binding Message, Converter={StaticResource GitCommitMessageConverter}}"/>
-						<TextBlock Text="{Binding When}"/>
-					</StackPanel>
-				</TreeDataTemplate>
-			</TreeView.DataTemplates>
-		</TreeView>
-	</StackPanel>
+				<DataGridTemplateColumn MinWidth="80" CanUserResize="True" IsReadOnly="True" Width="*">
+					<DataGridTemplateColumn.Header>
+						<TextBlock Classes="table_header" Text="Message"/>
+					</DataGridTemplateColumn.Header>
 
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate DataType="vm:ICommit">
+							<TextBlock Text="{Binding Message, Converter={StaticResource GitCommitMessageConverter}}" Margin="0 0 10 0" VerticalAlignment="Center"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn MinWidth="80" CanUserResize="True" IsReadOnly="True" Width="80">
+					<DataGridTemplateColumn.Header>
+						<TextBlock Classes="table_header" Text="Author"/>
+					</DataGridTemplateColumn.Header>
+
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate DataType="vm:ICommit">
+							<TextBlock Text="{Binding Author.Name}" Margin="0 0 10 0" VerticalAlignment="Center"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn MinWidth="100" CanUserResize="True" IsReadOnly="True" Width="100">
+					<DataGridTemplateColumn.Header>
+						<TextBlock Classes="table_header" Text="SHA"/>
+					</DataGridTemplateColumn.Header>
+
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate DataType="vm:ICommit">
+							<TextBlock Text="{Binding Sha}" Margin="0 0 10 0" VerticalAlignment="Center"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn MinWidth="100" CanUserResize="True" IsReadOnly="True" Width="50">
+					<DataGridTemplateColumn.Header>
+						<TextBlock Classes="table_header" Text="Time"/>
+					</DataGridTemplateColumn.Header>
+
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate DataType="vm:ICommit">
+							<TextBlock Text="{Binding When, Converter={StaticResource GitCommitTimeConverter}}" VerticalAlignment="Center"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
 </UserControl>

@@ -14,6 +14,7 @@
     <File Path="README.md" />
   </Folder>
   <Project Path="src/ATuimStudio.Cli/ATuimStudio.Cli.csproj" />
+  <Project Path="src/ATuimStudio.Common.Ui/ATuimStudio.Common.Ui.csproj" />
   <Project Path="src/ATuimStudio.Common/ATuimStudio.Common.csproj" />
   <Project Path="src/ATuimStudio.Desktop/ATuimStudio.Desktop.csproj" />
   <Project Path="src/ATuimStudio.Extensions.Build.Abstractions/ATuimStudio.Extensions.Build.Abstractions.csproj" />

@@ -1,13 +1,17 @@
 ﻿using ATuimStudio.Extensions.Core;
-using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ATuimStudio.Extensions.Git
 {
-	public sealed class GitRepositoryViewModel : ViewModelBase<ViewModelBase.RepoNodeBase>
+	public sealed partial class GitRepositoryViewModel : ViewModelBase<ViewModelBase.RepoNodeBase>
 	{
-		public ObservableCollection<ICommit> Commits { get; } = [];
+		public int IncommingCount { get; private set; }
+		public int OutgoingCount { get; private set; }
+		[ObservableProperty]
+		public IEnumerable<ICommit>? _commits;
 
-		public GitRepositoryViewModel(ISourceRepositoryFactory sourceRepositoryFactory, ISolutionService solutionService) : base(sourceRepositoryFactory, solutionService, false)
+		public GitRepositoryViewModel(ISourceRepositoryFactory sourceRepositoryFactory, ISolutionService solutionService, IUserOptionsManager userOptionsManager) : base(sourceRepositoryFactory, solutionService, userOptionsManager, false)
 		{
 			PostInitialize();
 		}
@@ -17,14 +21,42 @@ namespace ATuimStudio.Extensions.Git
 
 		protected override void SelectedBranchChanged(ViewModelBase.BranchNode? value)
 		{
-			Commits.Clear();
 			ISourceRepository? repository = SelectedRepo?.Repository;
 			if (repository != null)
 			{
 				IBranch? branch = value?.Branch;
 				if (branch != null)
-					Commits.AddRange(repository.GetCommits(branch));
+				{
+					ICommit[] commits = [.. repository.GetCommits(branch)];
+					List<ICommit>? incomming = null;
+					OutgoingCount = 0;
+					if (!branch.IsRemote)
+					{
+						IBranch? remote = branch.GetRemote();
+						if (remote != null && remote.Tip != branch.Tip)
+						{
+							List<ICommit> inc = new List<ICommit>(16);
+							foreach (ICommit commit in repository.GetCommits(remote))
+							{
+								int pos = Array.IndexOf(commits, commit);
+								if (pos == -1)
+									inc.Add(commit);
+								else
+								{
+									OutgoingCount = pos;
+									break;
+								}
+							}
+							if (inc.Count != 0)
+								incomming = inc;
+						}
+					}
+
+					(IncommingCount, Commits) = incomming == null ? (0, commits) : (incomming.Count, incomming.Concat(commits));
+					return;
+				}
 			}
+			Commits = null;
 		}
 
 		internal void SelectBranch(string repo, string branch)
@@ -38,6 +70,20 @@ namespace ATuimStudio.Extensions.Git
 			if (branchToSelect == null)
 				return;
 			SelectedBranch = branchToSelect;
+		}
+
+		class CommitComparer : IEqualityComparer<ICommit>
+		{
+			internal static CommitComparer Instance { get; } = new CommitComparer();
+
+			private CommitComparer()
+			{ }
+
+			public bool Equals(ICommit? x, ICommit? y)
+				=> x != null && y != null && x.Equals(y);
+
+			public int GetHashCode([DisallowNull] ICommit obj)
+				=> obj.Sha.GetHashCode();
 		}
 	}
 }

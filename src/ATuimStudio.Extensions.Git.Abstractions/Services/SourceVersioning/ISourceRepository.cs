@@ -2,6 +2,7 @@
 {
 	public interface ISourceRepository : IDisposable
 	{
+		IBranch Head { get; }
 		IEnumerable<IBranch> GetBranches();
 		IEnumerable<IFileStatus> GetFilesStatus();
 		IEnumerable<ICommit> GetCommits(IBranch branch);

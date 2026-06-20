@@ -1,6 +1,7 @@
 ﻿using ATuimStudio.Common;
 using ATuimStudio.Extensions.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
@@ -20,12 +21,12 @@ namespace ATuimStudio.Extensions.Git
 		public ObservableCollection<TRepoNode> Repos { get; } = [];
 
 		[ObservableProperty]
-		private TRepoNode? _selectedRepo;
+		TRepoNode? _selectedRepo;
 
 		public ObservableCollection<ViewModelBase.BranchNode> Branches { get; } = [];
 
 		[ObservableProperty]
-		private ViewModelBase.BranchNode? _selectedBranch;
+		ViewModelBase.BranchNode? _selectedBranch;
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 #pragma warning disable CS8618
@@ -37,12 +38,16 @@ namespace ATuimStudio.Extensions.Git
 
 		protected readonly ISourceRepositoryFactory _sourceRepositoryFactory;
 		readonly ISolutionService _solutionService;
+		readonly IUserOptionsManager _userOptionsManager;
 		readonly bool _supportAllRepos;
-		public ViewModelBase(ISourceRepositoryFactory sourceRepositoryFactory, ISolutionService solutionService, bool supportAllRepos) : this()
+		public ViewModelBase(ISourceRepositoryFactory sourceRepositoryFactory, ISolutionService solutionService, IUserOptionsManager userOptionsManager, bool supportAllRepos) : this()
 		{
 			_sourceRepositoryFactory = sourceRepositoryFactory;
 			_solutionService = solutionService;
+			_userOptionsManager = userOptionsManager;
 			_supportAllRepos = supportAllRepos;
+
+			_selectionsArePinned = _userOptionsManager.GetBool(UserOptionsCodes.ReposAndBranchesPinned);
 
 			_allRepos = CreateRepoNode(null!, "All", null!);
 
@@ -153,5 +158,27 @@ namespace ATuimStudio.Extensions.Git
 			return ConvertNodes(tree, currentBranch, viewModel);
 		}
 		#endregion build structures
+
+		#region Un/Pin selections
+		[ObservableProperty]
+		bool _selectionsArePinned;
+
+		void SetSelectionsArePinned(bool value)
+		{
+			SelectionsArePinned = value;
+
+			IUserOptionsEdit edit = _userOptionsManager.GetEdit();
+			edit.SetValue(UserOptionsCodes.ReposAndBranchesPinned, value);
+			edit.Apply();
+		}
+
+		[RelayCommand]
+		void UnpinSelections()
+			=> SetSelectionsArePinned(false);
+
+		[RelayCommand]
+		void PinSelections()
+			=> SetSelectionsArePinned(true);
+		#endregion Un/Pin selections
 	}
 }

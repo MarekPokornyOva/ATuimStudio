@@ -19,7 +19,7 @@ public sealed partial class GitViewModel : ViewModelBase<GitViewModel.RepoNode>
 	bool _amend;
 
 	readonly IDiskWatchService _diskWatchService;
-	public GitViewModel(ISourceRepositoryFactory sourceRepositoryFactory, ISolutionService solutionService, IDiskWatchService diskWatchService) : base(sourceRepositoryFactory, solutionService, true)
+	public GitViewModel(ISourceRepositoryFactory sourceRepositoryFactory, ISolutionService solutionService, IDiskWatchService diskWatchService, IUserOptionsManager userOptionsManager) : base(sourceRepositoryFactory, solutionService, userOptionsManager, true)
 	{
 		_diskWatchService = diskWatchService;
 		_diskWatchHandler = new DebouncingHandler(DiskContentChanged, 100).Handle;

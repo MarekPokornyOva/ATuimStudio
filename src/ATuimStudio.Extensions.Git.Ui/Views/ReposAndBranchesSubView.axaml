@@ -1,0 +1,66 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:ATuimStudio.Extensions.Git"
+			 xmlns:ui="using:ATuimStudio.Extensions.Git"
+			 xmlns:commonui="using:ATuimStudio"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="ATuimStudio.Extensions.Git.ReposAndBranchesSubView"
+			 x:DataType="{x:Type vm:ViewModelBase, x:TypeArguments=vm:ViewModelBase+RepoNodeBase}"
+			 x:Name="ThisControl"
+			>
+	<Design.DataContext>
+		<vm:ViewModelBase TypeArguments="vm:ViewModelBase+RepoNodeBase" />
+	</Design.DataContext>
+
+	<UserControl.Resources>
+		<commonui:BoolToFontWeightConverterParams x:Key="FontWeightParams" True="Bold" False="Normal" />
+		<commonui:MultiValueChainConverter x:Key="IsHeadConverter">
+			<commonui:MultiValueChainConverter.Entry>
+				<commonui:EqualValuesConverter />
+			</commonui:MultiValueChainConverter.Entry>
+			<commonui:MultiValueChainConverter.Other>
+				<commonui:ConverterWithParameter Parameter="{StaticResource FontWeightParams}">
+					<commonui:ConverterWithParameter.Converter>
+						<commonui:BoolToFontWeightConverter/>
+					</commonui:ConverterWithParameter.Converter>
+				</commonui:ConverterWithParameter>
+			</commonui:MultiValueChainConverter.Other>
+		</commonui:MultiValueChainConverter>
+	</UserControl.Resources>
+
+	<StackPanel>
+		<TextBlock Text="Repos:"/>
+		<TreeView ItemsSource="{Binding Repos}" SelectedItem="{Binding SelectedRepo}" BorderBrush="White" BorderThickness="2">
+			<TreeView.DataTemplates>
+				<TreeDataTemplate DataType="vm:ViewModelBase+RepoNodeBase">
+					<TextBlock Text="{Binding Title}" Padding="0" Margin="0"/>
+				</TreeDataTemplate>
+			</TreeView.DataTemplates>
+		</TreeView>
+
+		<StackPanel IsVisible="{Binding !!SelectedRepo.Path}">
+			<TextBlock Text="Branches:"/>
+			<TreeView ItemsSource="{Binding Branches}" SelectedItem="{Binding SelectedBranch, Mode=TwoWay}" BorderBrush="White" BorderThickness="2">
+				<TreeView.Styles>
+					<Style Selector="TreeViewItem">
+						<Setter Property="IsExpanded" Value="{Binding IsExpanded}" x:DataType="vm:ViewModelBase+BranchNode"/>
+					</Style>
+				</TreeView.Styles>
+				<TreeView.DataTemplates>
+					<TreeDataTemplate DataType="vm:ViewModelBase+BranchNode" ItemsSource="{Binding Children}">
+						<TextBlock Text="{Binding Name}" Padding="0" Margin="0">
+							<TextBlock.FontWeight>
+								<MultiBinding Converter="{StaticResource IsHeadConverter}">
+									<Binding Path="Branch"/>
+									<Binding Path="#ThisControl.DataContext.SelectedRepo.Repository.Head"/>
+								</MultiBinding>
+							</TextBlock.FontWeight>
+						</TextBlock>
+					</TreeDataTemplate>
+				</TreeView.DataTemplates>
+			</TreeView>
+		</StackPanel>
+	</StackPanel>
+</UserControl>

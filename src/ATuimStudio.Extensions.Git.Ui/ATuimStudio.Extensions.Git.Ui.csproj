@@ -7,6 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\ATuimStudio.Common.Ui\ATuimStudio.Common.Ui.csproj" />
 		<ProjectReference Include="..\ATuimStudio.Common\ATuimStudio.Common.csproj" />
 		<ProjectReference Include="..\ATuimStudio.Extensions.Core.Abstractions\ATuimStudio.Extensions.Core.Abstractions.csproj" />
 		<ProjectReference Include="..\ATuimStudio.Extensions.Core.Ui.Abstractions\ATuimStudio.Extensions.Core.Ui.Abstractions.csproj" />
@@ -16,7 +17,19 @@
 
 	<ItemGroup>
 		<PackageReference Include="Avalonia" />
+		<PackageReference Include="Avalonia.Controls.DataGrid" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
+		<PackageReference Include="Xaml.Behaviors" />
+		<PackageReference Include="Xaml.Behaviors.Interactivity" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Views\ReposAndBranchesView.axaml.cs">
+	    <DependentUpon>ReposAndBranchesView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\ReposAndBranchesSubView.axaml.cs">
+	    <DependentUpon>ReposAndBranchesSubView.axaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 </Project>
