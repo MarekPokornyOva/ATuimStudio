@@ -14,18 +14,18 @@
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageVersion Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.13" />
-    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.3" />
-    <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.3" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.3" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
     <PackageVersion Include="Dock.Avalonia" Version="11.3.8" />
     <PackageVersion Include="Dock.Avalonia.Themes.Fluent" Version="11.3.8" />
     <PackageVersion Include="Dock.Model.Avalonia" Version="11.3.8" />
     <PackageVersion Include="Dock.Model.Mvvm" Version="11.3.8" />
     <PackageVersion Include="Avalonia.AvaloniaEdit" Version="11.3.0" />
     <PackageVersion Include="AvaloniaEdit.TextMate" Version="11.3.0" />
-    <PackageVersion Include="Microsoft.Extensions.ObjectPool" Version="10.0.3" />
-    <PackageVersion Include="System.Collections.Immutable" Version="10.0.3" />
+    <PackageVersion Include="Microsoft.Extensions.ObjectPool" Version="10.0.9" />
+    <PackageVersion Include="System.Collections.Immutable" Version="10.0.9" />
     <PackageVersion Include="Microsoft.Build" Version="18.4.0" />
     <PackageVersion Include="Microsoft.Build.Locator" Version="1.11.2" />
     <PackageVersion Include="Microsoft.Build.Framework" Version="18.4.0" /> <!-- We no need the package as it's transitive from Microsoft.Build. But we need this registration to be able to configure Package reference with ExcludeAssets="runtime" PrivateAssets="all" to break copying the assembly to app's output directory. https://developercommunity.visualstudio.com/t/MSBL001triggeredbytransitiveMicrosoft.Build.FrameworkreferencesfromMicrosoft.CodeAnalysis.Workspaces.MSBuilddespiteExcludeAssetsconfiguratio/11003897; https://github.com/microsoft/MSBuildLocator/issues/364-->
@@ -45,5 +45,6 @@
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" /> <!-- Just to resolve vulnerability. Transitive from ???. -->
     <PackageVersion Include="Xaml.Behaviors" Version="11.3.9.6" />
     <PackageVersion Include="Xaml.Behaviors.Interactivity" Version="11.3.9.6" />
+	 <PackageVersion Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.3" /> <!-- Just to resolve vulnerability. Transitive from Microsoft.Data.Sqlite. -->
   </ItemGroup>
 </Project>
