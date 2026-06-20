@@ -15,6 +15,8 @@ namespace ATuimStudio.Extensions.Core
 				.AddSingleton<ITimeProvider, LocalTimeProvider>()
 				.AddSingleton<IDiskWatchService, DefaultDiskWatchService>()
 				.AddSingleton<IDocumentService, InternalDocumentService>()
+				.AddSingleton<IUserProfilePathProvider, DefaultUserProfilePathProvider>()
+				.AddSingleton<IUserInfoProvider, DefaultUserInfoProvider>()
 				;
 		}
 	}

@@ -20,6 +20,7 @@
   <Project Path="src/ATuimStudio.Extensions.Build.Ui/ATuimStudio.Extensions.Build.Ui.csproj" />
   <Project Path="src/ATuimStudio.Extensions.Build/ATuimStudio.Extensions.Build.csproj" />
   <Project Path="src/ATuimStudio.Extensions.Core.Abstractions/ATuimStudio.Extensions.Core.Abstractions.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.Core.Sqlite/ATuimStudio.Extensions.Core.Sqlite.csproj" />
   <Project Path="src/ATuimStudio.Extensions.Core.Ui.Abstractions/ATuimStudio.Extensions.Core.Ui.Abstractions.csproj" />
   <Project Path="src/ATuimStudio.Extensions.Core/ATuimStudio.Extensions.Core.csproj" />
   <Project Path="src/ATuimStudio.Extensions.Debug.Abstractions/ATuimStudio.Extensions.Debug.Abstractions.csproj" />

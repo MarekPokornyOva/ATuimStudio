@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
-using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using System.Windows.Input;
 
@@ -29,18 +28,5 @@ public partial class MainWindow : Window
 				if (gesture != null && (command = menuItem.Command) != null)
 					KeyBindings.Add(new KeyBinding { Gesture = gesture, Command = command });
 			}
-	}
-
-	readonly ServiceProvider _serviceProvider;
-	public MainWindow(ServiceProvider serviceProvider) : this()
-	{
-		_serviceProvider = serviceProvider;
-	}
-
-	/// <inheritdoc/>
-	protected override void OnClosed(EventArgs e)
-	{
-		_serviceProvider.Dispose();
-		base.OnClosed(e);
 	}
 }

@@ -1,4 +1,5 @@
-﻿using ATuimStudio.ViewModels;
+﻿using ATuimStudio.Extensions.Core;
+using ATuimStudio.ViewModels;
 using ATuimStudio.Views;
 using Avalonia;
 using Avalonia.Controls;
@@ -6,7 +7,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
-using System.Globalization;
 
 namespace ATuimStudio;
 
@@ -29,12 +29,23 @@ public partial class App : Application
 		ServiceProvider sp = AppServicesBuilder.BuildServiceProvider(topLevelVisualProvider);
 		ViewLocator.ServiceProvider = sp;
 
+		if (ApplicationLifetime is IControlledApplicationLifetime controlled)
+			controlled.Exit += async (sender, args) => await sp.DisposeAsync();
+
+		#region UserOptions
+		IUserOptionsRepository userOptionsRepository = sp.GetRequiredService<IUserOptionsRepository>();
+		DefaultUserOptionsManager userOptionsManager = sp.GetRequiredService<DefaultUserOptionsManager>();
+		userOptionsManager.Changed += (_, values) =>
+			userOptionsRepository.SaveAsync(values, CancellationToken.None).GetAwaiter().GetResult();
+		userOptionsManager.LoadAsync(userOptionsRepository, CancellationToken.None).GetAwaiter().GetResult();
+		#endregion UserOptions
+
 		PluginManager.Register(sp);
 
 		MainViewModel vm = ActivatorUtilities.CreateInstance<MainViewModel>(sp);
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 		{
-			topLevelVisualProvider.Visual = desktop.MainWindow = new MainWindow(sp)
+			topLevelVisualProvider.Visual = desktop.MainWindow = new MainWindow
 			{
 				DataContext = vm,
 				WindowState = WindowState.Maximized

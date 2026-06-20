@@ -33,6 +33,7 @@
 		<ProjectReference Include="..\ATuimStudio.Common\ATuimStudio.Common.csproj" />
 		<ProjectReference Include="..\ATuimStudio.Extensions.Build.Ui\ATuimStudio.Extensions.Build.Ui.csproj" />
 		<ProjectReference Include="..\ATuimStudio.Extensions.Core.Abstractions\ATuimStudio.Extensions.Core.Abstractions.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Extensions.Core.Sqlite\ATuimStudio.Extensions.Core.Sqlite.csproj" />
 		<ProjectReference Include="..\ATuimStudio.Extensions.Core.Ui.Abstractions\ATuimStudio.Extensions.Core.Ui.Abstractions.csproj" />
 		<ProjectReference Include="..\ATuimStudio.Extensions.Core\ATuimStudio.Extensions.Core.csproj" />
 		<ProjectReference Include="..\ATuimStudio.Extensions.Debug.Ui\ATuimStudio.Extensions.Debug.Ui.csproj" />

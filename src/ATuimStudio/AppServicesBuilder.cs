@@ -26,9 +26,18 @@ namespace ATuimStudio
 				.AddSingleton<ITopLevelVisualProvider>(topLevelVisualProvider)
 				.AddSingleton<IDialogService, DefaultDialogService>()
 				.AddSingleton<ICodeDiagnosticsManager, DefaultCodeDiagnosticsManages>()
-				.AddExtensionsCore();
+				.AddSingleton<DefaultUserOptionsManager>()
+				.AddTransient<IUserOptionsManager>(GetDefaultUserOptionsManager)
+				.AddTransient<IUserOptions>(GetDefaultUserOptionsManager)
+				.AddTransient<IUserOptionsRegistrator>(GetDefaultUserOptionsManager)
+				.AddExtensionsCore()
+				.AddSqlLiteRepository()
+				;
 			PluginManager.Register(services);
 			return services.BuildServiceProvider();
 		}
+
+		static DefaultUserOptionsManager GetDefaultUserOptionsManager(IServiceProvider sp)
+			=> sp.GetRequiredService<DefaultUserOptionsManager>();
 	}
 }
