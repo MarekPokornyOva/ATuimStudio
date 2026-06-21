@@ -1,9 +1,9 @@
 ﻿using ATuimStudio.Models;
 using ATuimStudio.Extensions.Core;
-using Dock.Model.Mvvm.Controls;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ATuimStudio.Extensions.Core.Ui;
 
 namespace ATuimStudio.ViewModels;
 

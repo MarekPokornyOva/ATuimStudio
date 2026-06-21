@@ -17,8 +17,13 @@
 		<Grid RowDefinitions="Auto,*" IsVisible="{Binding Repos.Count}">
 			<StackPanel Grid.Row="0">
 				<ui:ReposAndBranchesView />
-
+				
 				<StackPanel IsVisible="{Binding !!SelectedRepo.Path}">
+					<StackPanel Orientation="Horizontal">
+						<Button Command="{Binding CheckoutCommand}">Checkout</Button>
+						<Button Command="{Binding PullCommand}">Pull</Button>
+						<Button Command="{Binding PushCommand}">Push</Button>
+					</StackPanel>
 					<TextBox Watermark="A commit message..." Text="{Binding CommitMessage}"/>
 					<StackPanel Orientation="Horizontal">
 						<Label Content="Amend:"/>

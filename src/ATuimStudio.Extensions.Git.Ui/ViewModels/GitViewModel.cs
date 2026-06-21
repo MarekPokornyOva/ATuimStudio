@@ -1,5 +1,6 @@
 ﻿using ATuimStudio.Common;
 using ATuimStudio.Extensions.Core;
+using ATuimStudio.Extensions.Core.Ui;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -19,9 +20,11 @@ public sealed partial class GitViewModel : ViewModelBase<GitViewModel.RepoNode>
 	bool _amend;
 
 	readonly IDiskWatchService _diskWatchService;
-	public GitViewModel(ISourceRepositoryFactory sourceRepositoryFactory, ISolutionService solutionService, IDiskWatchService diskWatchService, IUserOptionsManager userOptionsManager) : base(sourceRepositoryFactory, solutionService, userOptionsManager, true)
+	readonly IDialogService _dialogService;
+	public GitViewModel(ISourceRepositoryFactory sourceRepositoryFactory, ISolutionService solutionService, IDiskWatchService diskWatchService, IUserOptionsManager userOptionsManager, IDialogService dialogService) : base(sourceRepositoryFactory, solutionService, userOptionsManager, true)
 	{
 		_diskWatchService = diskWatchService;
+		_dialogService = dialogService;
 		_diskWatchHandler = new DebouncingHandler(DiskContentChanged, 100).Handle;
 
 		PostInitialize();
@@ -167,5 +170,39 @@ public sealed partial class GitViewModel : ViewModelBase<GitViewModel.RepoNode>
 
 		CommitMessage = "";
 		RefreshStatus();
+	}
+
+	[RelayCommand]
+	void Checkout()
+	{
+		if (SelectedRepo == null || SelectedRepo == _allRepos)
+			return;
+		IBranch? b = SelectedBranch?.Branch;
+		if (b == null)
+			return;
+		if (!SelectedRepo.Repository.Checkout(b))
+		{
+			_dialogService.ShowMessage("Can't checkout the branch because of conflicts.");
+			return;
+		}
+		RefreshStatus();
+	}
+
+	[RelayCommand]
+	void Pull()
+	{
+		if (SelectedRepo == null || SelectedRepo == _allRepos)
+			return;
+		IMergeResult res = SelectedRepo.Repository.Pull();
+		if (res.Status == MergeStatus.Conflicts)
+			_dialogService.ShowMessage("Git pull resulted with conflict.");
+	}
+
+	[RelayCommand]
+	void Push()
+	{
+		if (SelectedRepo == null || SelectedRepo == _allRepos)
+			return;
+		SelectedRepo.Repository.Push();
 	}
 }

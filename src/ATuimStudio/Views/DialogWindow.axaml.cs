@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using ATuimStudio.Extensions.Core.Ui;
+using Avalonia.Controls;
 using System.ComponentModel;
 
 namespace ATuimStudio.Views;
