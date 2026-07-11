@@ -1,5 +1,6 @@
 ﻿using ATuimStudio.Extensibility;
 using ATuimStudio.Extensions.Core;
+using ATuimStudio.Extensions.Core.Ui;
 using ATuimStudio.ViewModels;
 using Avalonia;
 using Avalonia.Controls;
@@ -18,17 +19,20 @@ namespace ATuimStudio
 		const string SaveDocumentCommandCode = "SaveDocument";
 		const string SaveAllCommandCode = "SaveAll";
 		const string ExitCommandCode = "Exit";
+		const string UserOptionsCommandCode = "UserOptions";
 
 		public override void RegisterCommand(ICommandRegistrator commandRegistrator)
 		{
 			DockFactory dockFactory = commandRegistrator.ServiceProvider.GetRequiredService<DockFactory>();
 			ISolutionService solutionService = commandRegistrator.ServiceProvider.GetRequiredService<ISolutionService>();
 			ITopLevelVisualProvider topLevelVisualProvider = commandRegistrator.ServiceProvider.GetRequiredService<ITopLevelVisualProvider>();
+			IDialogService dialogService = commandRegistrator.ServiceProvider.GetRequiredService<IDialogService>();
 
 			commandRegistrator.Register(OpenSolutionCommandCode, new AsyncRelayCommand(() => OpenSolution(solutionService, topLevelVisualProvider)), null);
 			commandRegistrator.Register(SaveDocumentCommandCode, new AsyncRelayCommand(() => SaveDocument(dockFactory)), () => AssetLoader.Open(new Uri("avares://ATuimStudio/Assets/SaveDocument.png")));
 			commandRegistrator.Register(SaveAllCommandCode, new AsyncRelayCommand(() => SaveAll(dockFactory)), () => AssetLoader.Open(new Uri("avares://ATuimStudio/Assets/SaveAll.png")));
 			commandRegistrator.Register(ExitCommandCode, new RelayCommand(ExitApplication), null);
+			commandRegistrator.Register(UserOptionsCommandCode, new RelayCommand(() => Options(dialogService)), null);
 		}
 
 		public override void RegisterMenu(IMenuRegistrator menuRegistrator)
@@ -37,6 +41,8 @@ namespace ATuimStudio
 			menuRegistrator.Register([("_File", 100), ("_Save", 20)], SaveDocumentCommandCode, new KeyGesture(Key.S, KeyModifiers.Control));
 			menuRegistrator.Register([("_File", 100), ("Save _All", 30)], SaveAllCommandCode, new KeyGesture(Key.S, KeyModifiers.Control | KeyModifiers.Shift));
 			menuRegistrator.Register([("_File", 100), ("_Exit", 40)], ExitCommandCode, null);
+
+			menuRegistrator.Register([("_Tools", 1000), ("_Options", 10)], UserOptionsCommandCode, null);
 		}
 		
 		static async Task OpenSolution(ISolutionService solutionService, ITopLevelVisualProvider topLevelVisualProvider)
@@ -69,5 +75,8 @@ namespace ATuimStudio
 			if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopApp)
 				desktopApp.Shutdown(); // Gracefully shuts down the application
 		}
+
+		static Task Options(IDialogService dialogService)
+			=> dialogService.OpenModal<OptionsDialogViewModel>(new DialogWindowParameters("Options"), []);
 	}
 }

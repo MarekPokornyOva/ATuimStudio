@@ -27,6 +27,8 @@
 
 		void ResetToDefault(string key);
 		void Apply();
+
+		IEnumerable<KeyValuePair<string, object>> GetAllOptions();
 	}
 
 	public interface IUserOptionsRegistrator

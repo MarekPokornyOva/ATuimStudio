@@ -28,11 +28,14 @@ namespace ATuimStudio
 			return dialogWindow.ShowDialog<TResult>(mainWindow);
 		}
 
-		public Task ShowMessage(string message)
+		public Task OpenModal<TViewModel>(DialogWindowParameters dialogWindowParameters, params object[] viewModelParameters)
 		{
-			(DialogWindow dialogWindow, Window mainWindow) = CreateDialog<MessageBoxViewModel>(new DialogWindowParameters("Message"), [message]);
+			(DialogWindow dialogWindow, Window mainWindow) = CreateDialog<TViewModel>(dialogWindowParameters, viewModelParameters);
 			return dialogWindow.ShowDialog(mainWindow);
 		}
+
+		public Task ShowMessage(string message)
+			=> OpenModal<MessageBoxViewModel>(new DialogWindowParameters("Message"), message);
 
 		(DialogWindow DialogWindow, Window MainWindow) CreateDialog<TViewModel>(DialogWindowParameters dialogWindowParameters, params object[] viewModelParameters)
 		{

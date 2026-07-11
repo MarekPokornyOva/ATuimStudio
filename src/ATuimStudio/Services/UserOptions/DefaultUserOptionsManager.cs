@@ -146,7 +146,8 @@ namespace ATuimStudio.Extensions.Core
 						_manager.SetValue(newValue.Key, newValue.Value);
 				}
 
-				_manager.SignalChanged(_newValues);
+				if (_newValues.Count != 0)
+					_manager.SignalChanged(_newValues.ToDictionary(static x => x.Key, static x => x.Value == _resetToDefault ? null : x.Value));
 			}
 
 			public bool TryGetString(string key, out string? value)
@@ -175,6 +176,23 @@ namespace ATuimStudio.Extensions.Core
 					return true;
 				}
 				return _manager.TryGetValue(key, out value);
+			}
+
+			public IEnumerable<KeyValuePair<string, object>> GetAllOptions()
+				=> _manager._values.Concat(_manager._defaults.Except(_manager._values, OptionItemEqualityComparer.Instance));
+
+			class OptionItemEqualityComparer : IEqualityComparer<KeyValuePair<string, object>>
+			{
+				internal static OptionItemEqualityComparer Instance { get; } = new OptionItemEqualityComparer();
+
+				private OptionItemEqualityComparer()
+				{ }
+
+				public bool Equals(KeyValuePair<string, object> x, KeyValuePair<string, object> y)
+					=> x.Key.Equals(y.Key);
+
+				public int GetHashCode([DisallowNull] KeyValuePair<string, object> obj)
+					=> obj.Key.GetHashCode();
 			}
 		}
 		#endregion IUserOptionsEdit

@@ -1,0 +1,85 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:ATuimStudio.ViewModels"
+			 xmlns:v="using:ATuimStudio.Views"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="ATuimStudio.Views.OptionsDialogView"
+			 x:DataType="vm:OptionsDialogViewModel"
+			>
+	<Design.DataContext>
+		<vm:OptionsDialogViewModel />
+	</Design.DataContext>
+
+	<UserControl.Resources>
+		<v:BytesStringConverter x:Key="BytesStringConverter"/>
+	</UserControl.Resources>
+
+	<Grid RowDefinitions="Auto,*,Auto">
+		<TextBox Grid.Row="0" Text="{Binding SearchText}" Watermark="Filter..."/>
+		<DataGrid Grid.Row="1" ItemsSource="{Binding Options}" CanUserResizeColumns="True">
+			<DataGrid.Columns>
+				<DataGridTemplateColumn MinWidth="80" CanUserResize="True" IsReadOnly="True" Width="*">
+					<DataGridTemplateColumn.Header>
+						<TextBlock Text="Name"/>
+					</DataGridTemplateColumn.Header>
+
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate DataType="vm:OptionsDialogViewModel+OptionItem">
+							<TextBlock Text="{Binding Key}" Margin="0 0 10 0" VerticalAlignment="Center" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn MinWidth="80" CanUserResize="True" Width="*">
+					<DataGridTemplateColumn.Header>
+						<TextBlock Text="Value"/>
+					</DataGridTemplateColumn.Header>
+
+					<DataGridTemplateColumn.CellTemplate>
+						<v:OptionValueTemplateSelector DefaultKey="_">
+							<DataTemplate x:Key="String" DataType="vm:OptionsDialogViewModel+StringOptionItem">
+								<TextBox Text="{Binding Value}" />
+							</DataTemplate>
+							<DataTemplate x:Key="Int32" DataType="vm:OptionsDialogViewModel+IntOptionItem">
+								<TextBox Text="{Binding Value}" />
+							</DataTemplate>
+							<DataTemplate x:Key="Int64" DataType="vm:OptionsDialogViewModel+LongOptionItem">
+								<TextBox Text="{Binding Value}" />
+							</DataTemplate>
+							<DataTemplate x:Key="Double" DataType="vm:OptionsDialogViewModel+DoubleOptionItem">
+								<TextBox Text="{Binding Value}" />
+							</DataTemplate>
+							<DataTemplate x:Key="Boolean" DataType="vm:OptionsDialogViewModel+BoolOptionItem">
+								<CheckBox IsChecked="{Binding Value}" />
+							</DataTemplate>
+							<DataTemplate x:Key="Byte[]" DataType="vm:OptionsDialogViewModel+BytesOptionItem">
+								<TextBox Text="{Binding Value, UpdateSourceTrigger=LostFocus, Converter={StaticResource BytesStringConverter}}" />
+							</DataTemplate>
+							<DataTemplate x:Key="_" DataType="vm:OptionsDialogViewModel+OptionItem">
+								<TextBox Text="{Binding Value}" />
+							</DataTemplate>
+						</v:OptionValueTemplateSelector>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Width="Auto">
+					<DataGridTemplateColumn.Header>
+						<TextBlock Text="Clear"/>
+					</DataGridTemplateColumn.Header>
+
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate DataType="vm:OptionsDialogViewModel+OptionItem">
+							<Button Content="X" VerticalAlignment="Center" Command="{Binding ClearOptionValueCommand}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+		<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+			<Button Content="Ok" IsDefault="true" Command="{Binding OkCommand}" />
+			<Button Content="Cancel" IsCancel="true" Command="{Binding CancelCommand}" />
+		</StackPanel>
+	</Grid>
+</UserControl>
