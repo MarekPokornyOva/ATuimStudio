@@ -56,8 +56,8 @@ namespace ATuimStudio.Extensions.Build
 
 		public override void RegisterMenu(IMenuRegistrator menuRegistrator)
 		{
-			menuRegistrator.Register(["Build", "Build"], CommandCode, null);
-			menuRegistrator.Register(["Debug", "Start no debug"], NoDebugStartCommandCode, new KeyGesture(Key.F5, KeyModifiers.Control));
+			menuRegistrator.Register([("Build", 500), ("Build", 10)], CommandCode, null);
+			menuRegistrator.Register([("Debug", 600), ("Start no debug", 10)], NoDebugStartCommandCode, new KeyGesture(Key.F5, KeyModifiers.Control));
 		}
 
 		public override void RegisterServices(IServiceCollection services)

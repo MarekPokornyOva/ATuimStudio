@@ -7,6 +7,7 @@ namespace ATuimStudio
 	static class PluginManager
 	{
 		readonly static UiExtension[] _extensions = [
+			new SystemExtension(),
 			new ATuimStudio.Extensions.Git.Extension(),
 			new ATuimStudio.Extensions.Build.Extension(),
 			new ATuimStudio.Extensions.Debug.Extension(),

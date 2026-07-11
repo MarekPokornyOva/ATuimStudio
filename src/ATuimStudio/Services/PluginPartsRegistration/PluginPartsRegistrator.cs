@@ -18,14 +18,14 @@ namespace ATuimStudio.Services
 
 		public IServiceProvider ServiceProvider => _serviceProvider;
 
-		public void Register(IEnumerable<string> segments, string commandCode, KeyGesture? gesture)
+		public void Register(IEnumerable<(string Title, int Priority)> segments, string commandCode, KeyGesture? gesture)
 		{
 			_menuRegistrations.Add(new MenuRegistration(segments, commandCode, gesture));
 		}
 		#endregion IMenuRegistrator
 
 		#region ICommandRegistrator
-		readonly Dictionary<string, CommandRegistration> _commandRegistrations = [];
+		readonly Dictionary<string, CommandRegistration> _commandRegistrations = new Dictionary<string, CommandRegistration>(StringComparer.Ordinal);
 
 		public void Register(string commandCode, ICommand command, Func<Stream>? imageDataProvider)
 		{
@@ -57,7 +57,7 @@ namespace ATuimStudio.Services
 		#endregion IEditorDecoratorRegistrator
 
 		#region IPluginPartsRegistrator
-		public record struct MenuRegistration(IEnumerable<string> Segments, string CommandCode, KeyGesture? Gesture);
+		public record struct MenuRegistration(IEnumerable<(string Title, int Priority)> Segments, string CommandCode, KeyGesture? Gesture);
 		public record struct CommandRegistration(ICommand Command, Func<Stream>? ImageDataProvider);
 		public record struct LayoutPaneFactoryRegistration(Guid Type, Func<IServiceProvider, object> ViewPanelFactory, Func<IServiceProvider, Control> ViewFactory);
 		public record struct EditorDecoratorRegistration(Action<IEditorDecoratorRegistratorContext> Callback);

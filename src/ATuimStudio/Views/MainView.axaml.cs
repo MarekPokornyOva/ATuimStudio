@@ -46,11 +46,14 @@ public partial class MainView : UserControl
 	
 			ItemsControl parentItem = MainMenu;
 			MenuItem? menuItem = null;
-			foreach (string segment in menuRegistration.Segments)
+			foreach ((string segmentTitle, int segmentPriority) in menuRegistration.Segments)
 			{
-				menuItem = parentItem.Items.OfType<MenuItem>().FirstOrDefault(x => x.Header is string title && title.EqualsOrdinal(segment));
+				menuItem = parentItem.Items.OfType<MenuItem>().FirstOrDefault(x => x.Header is string title && title.EqualsOrdinal(segmentTitle));
 				if (menuItem == null)
-					parentItem.Items.Add(menuItem = new MenuItem { Header = segment });
+				{
+					int pos = parentItem.Items.OfType<MenuItem>().Count(i => i.Tag is int prio && prio <= segmentPriority);
+					parentItem.Items.Insert(pos, menuItem = new MenuItem { Header = segmentTitle, Tag = segmentPriority });
+				}
 				parentItem = menuItem;
 			}
 			if (menuItem != null)

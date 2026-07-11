@@ -175,12 +175,12 @@ namespace ATuimStudio.Extensions.Debug
 
 		public override void RegisterMenu(IMenuRegistrator menuRegistrator)
 		{
-			menuRegistrator.Register(["Debug", "Start"], StartCommandCode, new KeyGesture(Key.F5));
-			menuRegistrator.Register(["Debug", "Continue"], ContinueCommandCode, new KeyGesture(Key.F5));
-			menuRegistrator.Register(["Debug", "Stop"], StopCommandCode, new KeyGesture(Key.F5, KeyModifiers.Shift));
-			menuRegistrator.Register(["Debug", "Step In"], StepInCommandCode, new KeyGesture(Key.F11));
-			menuRegistrator.Register(["Debug", "Step Over"], StepOverCommandCode, new KeyGesture(Key.F10));
-			menuRegistrator.Register(["Debug", "Step Out"], StepOutCommandCode, new KeyGesture(Key.F11, KeyModifiers.Shift));
+			menuRegistrator.Register([("Debug", 600), ("Start", 20)], StartCommandCode, new KeyGesture(Key.F5));
+			menuRegistrator.Register([("Debug", 600), ("Continue", 30)], ContinueCommandCode, new KeyGesture(Key.F5));
+			menuRegistrator.Register([("Debug", 600), ("Stop", 40)], StopCommandCode, new KeyGesture(Key.F5, KeyModifiers.Shift));
+			menuRegistrator.Register([("Debug", 600), ("Step In", 50)], StepInCommandCode, new KeyGesture(Key.F11));
+			menuRegistrator.Register([("Debug", 600), ("Step Over", 60)], StepOverCommandCode, new KeyGesture(Key.F10));
+			menuRegistrator.Register([("Debug", 600), ("Step Out", 70)], StepOutCommandCode, new KeyGesture(Key.F11, KeyModifiers.Shift));
 		}
 
 		public override void RegisterLayoutWindow(ILayoutWindowRegistrator layoutWindowRegistrator)

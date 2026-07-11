@@ -46,7 +46,7 @@ namespace ATuimStudio.Extensions.Git
 
 		public override void RegisterMenu(IMenuRegistrator menuRegistrator)
 		{
-			menuRegistrator.Register(["View", "Git repository"], CommandCode, null);
+			menuRegistrator.Register([("View", 300), ("Git repository", 10)], CommandCode, null);
 		}
 
 		public override void RegisterLayoutWindow(ILayoutWindowRegistrator layoutWindowRegistrator)
