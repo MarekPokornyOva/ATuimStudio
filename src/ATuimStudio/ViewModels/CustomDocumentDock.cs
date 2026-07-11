@@ -35,7 +35,7 @@ namespace ATuimStudio.ViewModels
 
 		static readonly ObjectFactory<DocumentViewModel> _documentViewModelFactory = ActivatorUtilities.CreateFactory<DocumentViewModel>(Type.EmptyTypes);
 		static readonly object?[] _emptyArgs = [];
-		void CreateNewDocument(IProjectFileData fileData)
+		internal void CreateNewDocument(IProjectFileData fileData)
 		{
 			string id = "doc-" + fileData.Path;
 			AddDocument(id, fileData.Name,

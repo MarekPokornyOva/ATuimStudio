@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using ATuimStudio.Extensions.Core.Ui;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace ATuimStudio.Extensions.Debug;
 
@@ -11,9 +12,12 @@ public sealed partial class DebugCallStackViewModel : ObservableObject, IDisposa
 	private IStackFrame? _selectedFrame;
 
 	readonly IStackTraceProvider _stackTraceProvider;
-	public DebugCallStackViewModel(IStackTraceProvider stackTraceProvider)
+	readonly IUiDocumentService _documentService;
+	public DebugCallStackViewModel(IStackTraceProvider stackTraceProvider, IUiDocumentService documentService)
 	{
 		_stackTraceProvider = stackTraceProvider;
+		_documentService = documentService;
+
 		stackTraceProvider.OnCallStackChanged += CallStackChanged;
 		stackTraceProvider.OnSelectedFrameChanged += OutsideSelectedFrameChanged;
 	}
@@ -31,7 +35,11 @@ public sealed partial class DebugCallStackViewModel : ObservableObject, IDisposa
 
 	void OutsideSelectedFrameChanged(object? sender, EventArgs e)
 	{
-		SelectedFrame = ((IStackTraceProvider?)sender)?.SelectedFrame;
+		IStackFrame? selectedFrame = ((IStackTraceProvider?)sender)?.SelectedFrame;
+		SelectedFrame = selectedFrame;
+
+		if (selectedFrame != null)
+			_documentService.SetActiveDocument(selectedFrame.SourceFilePath);
 	}
 
 	partial void OnSelectedFrameChanged(IStackFrame? value)

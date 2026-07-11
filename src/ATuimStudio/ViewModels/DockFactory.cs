@@ -117,6 +117,15 @@ public class DockFactory : Factory, IUiDocumentService, ILayoutManager
 			ActiveDocument = dv;
 	}
 
+	public void SetActiveDocument(string path)
+	{
+		Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+		{
+			DocumentDock.CreateNewDocument(new ProjectFileData(Path.GetFileName(path), path));
+		});
+	}
+	sealed record ProjectFileData(string Name, string Path) : IProjectFileData;
+
 	public IProjectInfo? GetActiveDocumentProject()
 	{
 		string? path = ActiveDocument?.FileData?.Path;
