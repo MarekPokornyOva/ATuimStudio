@@ -8,6 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		{
 			return services
 				.AddSingleton<ITextEditCompletionProvider, RecommenderCompletionProvider>()
+				.AddSingleton<ICodeInsightProvider, RoslynCodeInsightProvider>()
 				;
 		}
 	}

@@ -1,11 +1,12 @@
 ﻿using ATuimStudio.Extensions.Core;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Recommendations;
-using System.Collections.Immutable;
+using System.Xml.Linq;
 
 namespace ATuimStudio.Extensions.TextEditCompletion
 {
-	class RecommenderCompletionProvider : ITextEditCompletionProvider
+	sealed class RecommenderCompletionProvider : ITextEditCompletionProvider
 	{
 		readonly IDocumentService _documentService;
 		public RecommenderCompletionProvider(IDocumentService documentService)
@@ -13,15 +14,37 @@ namespace ATuimStudio.Extensions.TextEditCompletion
 			_documentService = documentService;
 		}
 
-		public async Task<IReadOnlyCollection<ITextEditCompletionItem>> GetCompletions(string path, int position, CancellationToken cancellationToken)
+		static readonly TextEditCompletionResult _emptyResult = new TextEditCompletionResult([], null);
+		public async Task<ITextEditCompletionResult> GetCompletions(string path, int position, CancellationToken cancellationToken)
 		{
 			Document? document = _documentService.GetDocument(path);
 			if (document == null)
-				return [];
+				return _emptyResult;
 
-			ImmutableArray<ISymbol> symbols = await Recommender.GetRecommendedSymbolsAtPositionAsync(document, position, cancellationToken: cancellationToken);
-			return [.. symbols.GroupBy(static x => x.Name).Select(static x => new TextEditCompletionItem(x.Key, [.. x])).OrderBy(static x => x.Text)];
+			//CompletionService? service = CompletionService.GetService(document);
+			//if (service == null)
+			//	return _emptyResult;
+			//CompletionList data = await service.GetCompletionsAsync(document, position, cancellationToken: cancellationToken);
+
+			IEnumerable<ISymbol> symbols = await Recommender.GetRecommendedSymbolsAtPositionAsync(document, position, cancellationToken: cancellationToken);
+
+			TextEditCompletionIdentifier? identifier = null;
+			//Filter symbols if caret is in middle of identifier
+			SyntaxNode? syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken);
+			if (syntaxRoot != null && syntaxRoot.FindToken(position).Parent is IdentifierNameSyntax ins)
+			{
+				var ident = ins.Identifier;
+				int start = ident.Span.Start;
+				identifier = new TextEditCompletionIdentifier(ident.Text, start, ident.Span.End);
+				string prefix = ident.Text[..(position - start)];
+				if (prefix.Length != 0)
+					symbols = symbols.Where(x => x.Name.Contains(prefix, StringComparison.InvariantCultureIgnoreCase));
+			}
+
+			return new TextEditCompletionResult([.. symbols.GroupBy(static x => x.Name).Select(static x => new TextEditCompletionItem(x.Key, [.. x])).OrderBy(static x => x.Text)], identifier);
 		}
+
+		record TextEditCompletionResult(IReadOnlyCollection<ITextEditCompletionItem> Items, TextEditCompletionIdentifier? Identifier) : ITextEditCompletionResult;
 
 		class TextEditCompletionItem : ITextEditCompletionItem
 		{
@@ -54,6 +77,34 @@ namespace ATuimStudio.Extensions.TextEditCompletion
 				public string Text => _symbol.ToString() ?? _symbol.Name;
 
 				public CodeEditCompletionItemType Type => _symbol is IMethodSymbol ? CodeEditCompletionItemType.Method : CodeEditCompletionItemType.Other;
+
+				string? _description;
+				bool _descriptionLoaded;
+				public string? Description
+				{
+					get
+					{
+						if (!_descriptionLoaded)
+						{
+							_descriptionLoaded = true;
+							string? xmlDocumentation = _symbol.GetDocumentationCommentXml();
+							if (!string.IsNullOrEmpty(xmlDocumentation))
+							{
+								try
+								{
+									XElement xmlDoc = XElement.Parse(xmlDocumentation);
+									XElement? summaryElement = xmlDoc.Element("summary");
+									if (summaryElement != null)
+										_description = DocumentationHelper.CleanXmlText(summaryElement.Value);
+								}
+								catch
+								{ }
+							}
+						}
+
+						return _description;
+					}
+				}
 			}
 		}
 	}

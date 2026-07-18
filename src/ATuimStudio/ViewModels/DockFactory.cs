@@ -166,14 +166,14 @@ public class DockFactory : Factory, IUiDocumentService, ILayoutManager
 	public void AddSpecialDocument(string id, string title, Func<IServiceProvider, object> viewModelFactory, Func<IServiceProvider, Control> viewFactory)
 		=> DocumentDock.AddDocument(id, title, viewModelFactory, viewFactory);
 
-	internal IEnumerable<DocumentViewModel> Documents
+	IEnumerable<DocumentViewModel> Documents
 	{
 		get
 		{
 			IList<IDockable>? docks = DocumentDock.VisibleDockables;
-			if (docks == null)
-				return [];
-			return docks.OfType<DocumentViewModel>();
+			return docks == null
+				? []
+				: docks.Select(static x => x is GeneralDocument gd && gd.ViewModel is DocumentViewModel dv ? dv : null!).Where(static x => x != null);
 		}
 	}
 

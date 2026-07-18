@@ -2,6 +2,6 @@
 {
 	public interface ITextEditCompletionProvider
 	{
-		Task<IReadOnlyCollection<ITextEditCompletionItem>> GetCompletions(string path, int position, CancellationToken cancellationToken);
+		Task<ITextEditCompletionResult> GetCompletions(string path, int position, CancellationToken cancellationToken);
 	}
 }
