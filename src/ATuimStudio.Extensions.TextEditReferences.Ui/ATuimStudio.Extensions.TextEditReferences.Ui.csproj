@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ATuimStudio.Common.Ui\ATuimStudio.Common.Ui.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Common\ATuimStudio.Common.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Extensions.Core.Ui.Abstractions\ATuimStudio.Extensions.Core.Ui.Abstractions.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Extensions.TextEditReferences\ATuimStudio.Extensions.TextEditReferences.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Avalonia.Controls.DataGrid" />
+		<PackageReference Include="CommunityToolkit.Mvvm" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="AllReferencesView.axaml.cs">
+	    <DependentUpon>AllReferencesView.axaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+</Project>

@@ -5,6 +5,8 @@ namespace ATuimStudio.Extensions.Core.Ui
 	public interface IUiDocumentService
 	{
 		void SetActiveDocument(string path);
+		void SetActiveDocument(string path, int line, int? column);
+		void SetActiveDocument(string path, int offset);
 		IProjectInfo? GetActiveDocumentProject();
 		Task SaveCurrentDocument(CancellationToken cancellationToken);
 		Task SaveAllOpenedDocuments(CancellationToken cancellationToken);

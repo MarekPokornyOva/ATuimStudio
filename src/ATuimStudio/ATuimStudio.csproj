@@ -40,5 +40,6 @@
 		<ProjectReference Include="..\ATuimStudio.Extensions.Debug.Ui\ATuimStudio.Extensions.Debug.Ui.csproj" />
 		<ProjectReference Include="..\ATuimStudio.Extensions.Git.Ui\ATuimStudio.Extensions.Git.Ui.csproj" />
 		<ProjectReference Include="..\ATuimStudio.Extensions.TextEditCompletion.Ui\ATuimStudio.Extensions.TextEditCompletion.Ui.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Extensions.TextEditReferences.Ui\ATuimStudio.Extensions.TextEditReferences.Ui.csproj" />
 	</ItemGroup>
 </Project>

@@ -44,17 +44,27 @@ namespace ATuimStudio.ViewModels
 	public interface IGeneralDocumentDockBase : IGeneralDockBase
 	{
 		object ViewModel { get; }
+		bool TryGetView(out Control? view);
 	}
 
 	sealed class GeneralDocument : Document, IGeneralDocumentDockBase
 	{
+		WeakReference<Control>? _view;
 		internal GeneralDocument(object viewModel, Func<IServiceProvider, Control> viewFactory)
 		{
 			ViewModel = viewModel;
-			ViewFactory = viewFactory;
+			ViewFactory = sp => { Control view = viewFactory(sp); _view = new WeakReference<Control>(view); return view; };
 		}
 
 		public object ViewModel { get; }
 		public Func<IServiceProvider, Control> ViewFactory { get; }
+
+		public bool TryGetView(out Control? view)
+		{
+			if (_view != null && _view.TryGetTarget(out view))
+				return true;
+			view = default;
+			return false;
+		}
 	}
 }

@@ -8,6 +8,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Avalonia" />
+		<PackageReference Include="Avalonia.Controls.DataGrid" />
+		<PackageReference Include="Xaml.Behaviors.Interactivity" />
 	</ItemGroup>
 
 </Project>

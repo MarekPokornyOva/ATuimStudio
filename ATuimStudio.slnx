@@ -33,5 +33,8 @@
   <Project Path="src/ATuimStudio.Extensions.TextEditCompletion.Abstractions/ATuimStudio.Extensions.TextEditCompletion.Abstractions.csproj" />
   <Project Path="src/ATuimStudio.Extensions.TextEditCompletion.Ui/ATuimStudio.Extensions.TextEditCompletion.Ui.csproj" />
   <Project Path="src/ATuimStudio.Extensions.TextEditCompletion/ATuimStudio.Extensions.TextEditCompletion.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.TextEditReferences.Abstractions/ATuimStudio.Extensions.TextEditReferences.Abstractions.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.TextEditReferences.Ui/ATuimStudio.Extensions.TextEditReferences.Ui.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.TextEditReferences/ATuimStudio.Extensions.TextEditReferences.csproj" />
   <Project Path="src/ATuimStudio/ATuimStudio.csproj" />
 </Solution>

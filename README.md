@@ -15,6 +15,10 @@ Tested on:
 - Tool and document windows un/docking
 - Edit
   - Members recommendations
+  - Code insights
+  - Find all refrences
+  - Go to definition
+  - Go to implementation
 - Git
   - Multi repo support
   - Stage/Unstage files

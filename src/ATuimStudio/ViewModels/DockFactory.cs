@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ATuimStudio.ViewModels;
 
-public class DockFactory : Factory, IUiDocumentService, ILayoutManager
+public class DockFactory : Factory, IUiDocumentService, ILayoutManager, IUiWindowService
 {
 	#region ctor
 	readonly IServiceProvider _serviceProvider;
@@ -118,10 +118,18 @@ public class DockFactory : Factory, IUiDocumentService, ILayoutManager
 	}
 
 	public void SetActiveDocument(string path)
+		=> SetActiveDocument(path, null);
+	public void SetActiveDocument(string path, int line, int? column)
+		=> SetActiveDocument(path, dv => dv.NavigateTo(line, column));
+	public void SetActiveDocument(string path, int offset)
+		=> SetActiveDocument(path, dv => dv.NavigateTo(offset));
+	void SetActiveDocument(string path, Action<DocumentView>? viewHandler)
 	{
 		Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
 		{
-			DocumentDock.CreateNewDocument(new ProjectFileData(Path.GetFileName(path), path));
+			GeneralDocument? doc = DocumentDock.CreateNewDocument(new ProjectFileData(Path.GetFileName(path), path));
+			if (doc != null && viewHandler != null && doc.TryGetView(out Control? view) && view is DocumentView dv)
+				viewHandler(dv);
 		});
 	}
 	sealed record ProjectFileData(string Name, string Path) : IProjectFileData;
@@ -194,10 +202,10 @@ public class DockFactory : Factory, IUiDocumentService, ILayoutManager
 		);
 	}
 
-	readonly Dictionary<Guid, (Func<IServiceProvider, object> ViewPanelFactory, Func<IServiceProvider, Control> ViewFactory)> _paneTypeFactories = new Dictionary<Guid, (Func<IServiceProvider, object> ViewPanelFactory, Func<IServiceProvider, Control> ViewFactory)>();
-	public void RegisterPaneFactory(Guid type, Func<IServiceProvider, object> viewPanelFactory, Func<IServiceProvider, Control> viewFactory)
+	readonly Dictionary<Guid, (Func<IServiceProvider, object> ViewModelFactory, Func<IServiceProvider, Control> ViewFactory)> _paneTypeFactories = new Dictionary<Guid, (Func<IServiceProvider, object> ViewPanelFactory, Func<IServiceProvider, Control> ViewFactory)>();
+	public void RegisterPaneFactory(Guid type, Func<IServiceProvider, object> viewModelFactory, Func<IServiceProvider, Control> viewFactory)
 	{
-		_paneTypeFactories.Add(type, (viewPanelFactory, viewFactory));
+		_paneTypeFactories.Add(type, (viewModelFactory, viewFactory));
 	}
 
 	static string RandomId()
@@ -226,7 +234,7 @@ public class DockFactory : Factory, IUiDocumentService, ILayoutManager
 		leftTools.AddPane(WellKnownLayoutConstants.IdSolutionExplorer, "Solution Explorer", WellKnownLayoutConstants.TypeSolutionExplorer);
 		ILayoutWindow mainSub2Window = mainWindow.AddWindow("", new PartProperties { { "Orientation", (int)Orientation.Vertical } });
 		mainSub2Window.AddDocuments(WellKnownLayoutConstants.IdOpenedDocuments);
-		ILayoutPanesContainer bottomTools = mainSub2Window.AddPanesContainer(WellKnownLayoutConstants.IdBasicInfo, new PartProperties { { "Proportion", 0.25 } });
+		/*ILayoutPanesContainer bottomTools = */mainSub2Window.AddPanesContainer(WellKnownLayoutConstants.IdBasicInfo, new PartProperties { { "Proportion", 0.25 } });
 	}
 
 	#region layout model implementation
@@ -247,7 +255,7 @@ public class DockFactory : Factory, IUiDocumentService, ILayoutManager
 			=> ContainerHelper.AddWindow(_parts, id, properties);
 
 		public ILayoutPanesContainer AddPanesContainer(string id, PartProperties properties)
-			=> ContainerHelper.AddPanesContaner(_parts, id, properties);
+			=> ContainerHelper.AddPanesContainer(_parts, id, properties);
 
 		public void AddDocuments(string id)
 			=> ContainerHelper.AddDocuments(_parts, id);
@@ -273,7 +281,7 @@ public class DockFactory : Factory, IUiDocumentService, ILayoutManager
 			=> ContainerHelper.AddWindow(_parts, id, properties);
 
 		public ILayoutPanesContainer AddPanesContainer(string id, PartProperties properties)
-			=> ContainerHelper.AddPanesContaner(_parts, id, properties);
+			=> ContainerHelper.AddPanesContainer(_parts, id, properties);
 
 		public void AddDocuments(string id)
 			=> ContainerHelper.AddDocuments(_parts, id);
@@ -332,7 +340,7 @@ public class DockFactory : Factory, IUiDocumentService, ILayoutManager
 		internal static ILayoutWindow AddWindow(List<ILayoutPart> parts, string id, PartProperties properties)
 			=> AddPart<ILayoutWindow, PartProperties>(parts, id, properties, static (id, props) => new LayoutWindow(id, props));
 
-		internal static ILayoutPanesContainer AddPanesContaner(List<ILayoutPart> parts, string id, PartProperties properties)
+		internal static ILayoutPanesContainer AddPanesContainer(List<ILayoutPart> parts, string id, PartProperties properties)
 			=> AddPart<ILayoutPanesContainer, PartProperties>(parts, id, properties, static (id, props) => new LayoutPanesContaner(id, props));
 
 		internal static void AddDocuments(List<ILayoutPart> parts, string id)
@@ -361,4 +369,26 @@ public class DockFactory : Factory, IUiDocumentService, ILayoutManager
 	}
 	#endregion layout model implementation
 	#endregion ILayoutManager
+
+	#region IUiWindowService
+	public void OpenPane(Guid type, string parentId, string id, string title)
+	{
+		if (this.Find(RootDock, x => x.Id == parentId).FirstOrDefault() is not IDock parent)
+			return;
+
+		IDockable? paneCandidate = this.Find(RootDock, x => x.Id == id && x.Owner?.Id == parentId).FirstOrDefault();
+		if (paneCandidate != null && paneCandidate is not GeneralTool)
+			return;
+		GeneralTool? pane = (GeneralTool?)paneCandidate;
+		if (pane == null)
+		{
+			if (!_paneTypeFactories.TryGetValue(type, out var facts))
+				return;
+			pane = new GeneralTool(id, facts.ViewModelFactory, facts.ViewFactory) { Id = id, Title = title };
+			(parent.VisibleDockables ??= CreateList<IDockable>()).Add(pane);
+		}
+
+		parent.ActiveDockable = pane;
+	}
+	#endregion IUiWindowService
 }

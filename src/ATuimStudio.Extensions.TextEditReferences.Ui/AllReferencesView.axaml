@@ -1,0 +1,58 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:ATuimStudio.Extensions.TextEditReferences"
+			 xmlns:common="using:ATuimStudio.Common.Ui"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="ATuimStudio.Extensions.TextEditReferences.AllReferencesView"
+			 x:DataType="vm:AllReferencesViewModel"
+			>
+	<Design.DataContext>
+		<vm:AllReferencesViewModel />
+	</Design.DataContext>
+
+	<DataGrid ItemsSource="{Binding References}" CanUserResizeColumns="True">
+		<Interaction.Behaviors>
+			<common:DataGridDoubleClickBehavior Command="{Binding RowDoubleClickCommand}" />
+		</Interaction.Behaviors>
+		<DataGrid.Columns>
+			<DataGridTemplateColumn MinWidth="80" CanUserResize="True" IsReadOnly="True" Width="*">
+				<DataGridTemplateColumn.Header>
+					<TextBlock Classes="table_header" Text="File"/>
+				</DataGridTemplateColumn.Header>
+
+				<DataGridTemplateColumn.CellTemplate>
+					<DataTemplate DataType="vm:ReferenceItem">
+						<TextBlock Text="{Binding FilePath}" Margin="0 0 10 0" VerticalAlignment="Center"/>
+					</DataTemplate>
+				</DataGridTemplateColumn.CellTemplate>
+			</DataGridTemplateColumn>
+
+			<DataGridTemplateColumn MinWidth="80" CanUserResize="True" IsReadOnly="True" Width="80">
+				<DataGridTemplateColumn.Header>
+					<TextBlock Classes="table_header" Text="Line"/>
+				</DataGridTemplateColumn.Header>
+
+				<DataGridTemplateColumn.CellTemplate>
+					<DataTemplate DataType="vm:ReferenceItem">
+						<TextBlock Text="{Binding Line}" Margin="0 0 10 0" VerticalAlignment="Center"/>
+					</DataTemplate>
+				</DataGridTemplateColumn.CellTemplate>
+			</DataGridTemplateColumn>
+
+			<DataGridTemplateColumn MinWidth="100" CanUserResize="True" IsReadOnly="True" Width="100">
+				<DataGridTemplateColumn.Header>
+					<TextBlock Classes="table_header" Text="Column"/>
+				</DataGridTemplateColumn.Header>
+
+				<DataGridTemplateColumn.CellTemplate>
+					<DataTemplate DataType="vm:ReferenceItem">
+						<TextBlock Text="{Binding Column}" Margin="0 0 10 0" VerticalAlignment="Center"/>
+					</DataTemplate>
+				</DataGridTemplateColumn.CellTemplate>
+			</DataGridTemplateColumn>
+		</DataGrid.Columns>
+	</DataGrid>
+
+</UserControl>

@@ -35,23 +35,24 @@ namespace ATuimStudio.ViewModels
 
 		static readonly ObjectFactory<DocumentViewModel> _documentViewModelFactory = ActivatorUtilities.CreateFactory<DocumentViewModel>(Type.EmptyTypes);
 		static readonly object?[] _emptyArgs = [];
-		internal void CreateNewDocument(IProjectFileData fileData)
+		internal GeneralDocument? CreateNewDocument(IProjectFileData fileData)
 		{
 			string id = "doc-" + fileData.Path;
-			AddDocument(id, fileData.Name,
+			return AddDocument(id, fileData.Name,
 				sp => { DocumentViewModel dvm = _documentViewModelFactory(sp, _emptyArgs); dvm.FileData = fileData; return dvm; },
 				static sp => ActivatorUtilities.CreateInstance<DocumentView>(sp));
 		}
 
-		internal void AddDocument(string id, string title, Func<IServiceProvider, object> viewModelFactory, Func<IServiceProvider, Control> viewFactory)
+		internal GeneralDocument? AddDocument(string id, string title, Func<IServiceProvider, object> viewModelFactory, Func<IServiceProvider, Control> viewFactory)
 		{
 			if (Factory == null)
-				return;
+				return null;
 
 			if (Factory.FindDockable(this, x => x.Id == id) is not GeneralDocument document)
 				Factory.AddDockable(this, document = new GeneralDocument(viewModelFactory(_serviceProvider), viewFactory) { Id = id, Title = title });
 			Factory.SetActiveDockable(document);
 			Factory.SetFocusedDockable(this, document);
+			return document;
 		}
 	}
 }

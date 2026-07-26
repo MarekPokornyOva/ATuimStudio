@@ -39,7 +39,16 @@ public sealed partial class DebugCallStackViewModel : ObservableObject, IDisposa
 		SelectedFrame = selectedFrame;
 
 		if (selectedFrame != null)
-			_documentService.SetActiveDocument(selectedFrame.SourceFilePath);
+		{
+			SourceRange? pos = selectedFrame.Range;
+			if (pos.HasValue)
+			{
+				SourcePosition start = pos.Value.Start;
+				_documentService.SetActiveDocument(selectedFrame.SourceFilePath, start.Line, start.Column);
+			}
+			else
+				_documentService.SetActiveDocument(selectedFrame.SourceFilePath);
+		}
 	}
 
 	partial void OnSelectedFrameChanged(IStackFrame? value)
