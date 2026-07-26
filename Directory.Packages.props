@@ -4,28 +4,27 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Avalonia" Version="11.3.13" />
-    <PackageVersion Include="Avalonia.Controls.ItemsRepeater" Version="11.1.5" />
-    <PackageVersion Include="Avalonia.Controls.TreeDataGrid" Version="11.1.0" />
-    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.3.13" />
-    <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.3.13" />
-    <PackageVersion Include="Avalonia.Desktop" Version="11.3.13" />
-    <PackageVersion Include="Avalonia.Controls.DataGrid" Version="11.3.13" />
-    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageVersion Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.13" />
-    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.9" />
-    <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.9" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.9" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
-    <PackageVersion Include="Dock.Avalonia" Version="11.3.8" />
-    <PackageVersion Include="Dock.Avalonia.Themes.Fluent" Version="11.3.8" />
-    <PackageVersion Include="Dock.Model.Avalonia" Version="11.3.8" />
-    <PackageVersion Include="Dock.Model.Mvvm" Version="11.3.8" />
-    <PackageVersion Include="Avalonia.AvaloniaEdit" Version="11.3.0" />
-    <PackageVersion Include="AvaloniaEdit.TextMate" Version="11.3.0" />
-    <PackageVersion Include="Microsoft.Extensions.ObjectPool" Version="10.0.9" />
-    <PackageVersion Include="System.Collections.Immutable" Version="10.0.9" />
+    <PackageVersion Include="Avalonia" Version="12.1.0" />
+    <PackageVersion Include="Avalonia.Controls.ItemsRepeater" Version="12.0.0" />
+    <PackageVersion Include="TreeDataGrid" Version="12.0.0" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="12.1.0" />
+    <PackageVersion Include="Avalonia.Fonts.Inter" Version="12.1.0" />
+    <PackageVersion Include="Avalonia.Desktop" Version="12.1.0" />
+    <PackageVersion Include="Avalonia.Controls.DataGrid" Version="12.1.0" />
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageVersion Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3" />
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
+    <PackageVersion Include="Dock.Avalonia" Version="12.0.0.2" />
+    <PackageVersion Include="Dock.Avalonia.Themes.Fluent" Version="12.0.0.2" />
+    <PackageVersion Include="Dock.Model.Avalonia" Version="12.0.0.2" />
+    <PackageVersion Include="Dock.Model.Mvvm" Version="12.0.0.2" />
+    <PackageVersion Include="Avalonia.AvaloniaEdit" Version="12.0.0" />
+    <PackageVersion Include="AvaloniaEdit.TextMate" Version="12.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.ObjectPool" Version="10.0.10" />
+    <PackageVersion Include="System.Collections.Immutable" Version="10.0.10" />
     <PackageVersion Include="Microsoft.Build" Version="18.4.0" />
     <PackageVersion Include="Microsoft.Build.Locator" Version="1.11.2" />
     <PackageVersion Include="Microsoft.Build.Framework" Version="18.4.0" /> <!-- We no need the package as it's transitive from Microsoft.Build. But we need this registration to be able to configure Package reference with ExcludeAssets="runtime" PrivateAssets="all" to break copying the assembly to app's output directory. https://developercommunity.visualstudio.com/t/MSBL001triggeredbytransitiveMicrosoft.Build.FrameworkreferencesfromMicrosoft.CodeAnalysis.Workspaces.MSBuilddespiteExcludeAssetsconfiguratio/11003897; https://github.com/microsoft/MSBuildLocator/issues/364-->
@@ -33,20 +32,19 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="5.0.0" />
-	 <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Features" Version="5.0.0" />
-	 <PackageVersion Include="Microsoft.CodeAnalysis.Features" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Features" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Features" Version="5.0.0" />
     <PackageVersion Include="Microsoft.NET.HostModel" Version="3.1.16" />
-    <PackageVersion Include="LibGit2Sharp" Version="0.31.0" />
+    <PackageVersion Include="LibGit2Sharp" Version="0.32.0" />
     <PackageVersion Include="Microsoft.Diagnostics.DbgShim" Version="9.0.661903" />
     <PackageVersion Include="Microsoft.Diagnostics.DbgShim.Win-x64" Version="9.0.661903" />
     <PackageVersion Include="Microsoft.Diagnostics.DbgShim.Linux-x64" Version="9.0.661903" />
     <PackageVersion Include="ClrDebug" Version="0.3.4" />
     <PackageVersion Include="System.Xml.XmlDocument" version="4.3.0" />
     <PackageVersion Include="System.Reflection.Metadata" Version="10.0.5" />
-    <PackageVersion Include="Tmds.DBus.Protocol" Version="0.21.3" /> <!-- Just to resolve vulnerability. Transitive from Avalonia.FreeDesktop. -->
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" /> <!-- Just to resolve vulnerability. Transitive from ???. -->
-    <PackageVersion Include="Xaml.Behaviors" Version="11.3.9.6" />
-    <PackageVersion Include="Xaml.Behaviors.Interactivity" Version="11.3.9.6" />
-	 <PackageVersion Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.3" /> <!-- Just to resolve vulnerability. Transitive from Microsoft.Data.Sqlite. -->
+    <PackageVersion Include="Xaml.Behaviors" Version="12.0.5" />
+    <PackageVersion Include="Xaml.Behaviors.Interactivity" Version="12.0.5" />
+    <PackageVersion Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.4" /> <!-- Just to resolve vulnerability. Transitive from Microsoft.Data.Sqlite. -->
   </ItemGroup>
 </Project>

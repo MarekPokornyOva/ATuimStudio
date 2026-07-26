@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 
 namespace ATuimStudio.Extensions.Git;
 
-public sealed partial class GitViewModel : ViewModelBase<GitViewModel.RepoNode>
+public sealed partial class GitViewModel : ViewModelBase<ViewModelBase.RepoNodeBase>
 {
 	public ObservableCollection<StatusNode> StatusUnstaged { get; } = [];
 	public ObservableCollection<StatusNode> StatusStaged { get; } = [];
@@ -30,7 +30,7 @@ public sealed partial class GitViewModel : ViewModelBase<GitViewModel.RepoNode>
 		PostInitialize();
 	}
 
-	protected override void SelectedRepoChanged(RepoNode? value)
+	protected override void SelectedRepoChanged(ViewModelBase.RepoNodeBase? value)
 	{
 		RefreshStatus();
 	}
@@ -44,7 +44,7 @@ public sealed partial class GitViewModel : ViewModelBase<GitViewModel.RepoNode>
 
 	void DiskContentChanged(FileSystemEventArgs args)
 	{
-		RepoNode? selectedRepo = SelectedRepo;
+		ViewModelBase.RepoNodeBase? selectedRepo = SelectedRepo;
 		if (selectedRepo == _allRepos || (selectedRepo != null && PathHelper.IsRootPathOf(selectedRepo.Path, args.FullPath)))
 			Dispatcher.UIThread.Invoke(RefreshStatus);
 	}
@@ -97,7 +97,7 @@ public sealed partial class GitViewModel : ViewModelBase<GitViewModel.RepoNode>
 
 	void RefreshStatus()
 	{
-		RepoNode? selectedRepo = SelectedRepo;
+		ViewModelBase.RepoNodeBase? selectedRepo = SelectedRepo;
 		ISourceRepository? repository = selectedRepo?.Repository;
 
 		StatusUnstaged.Clear();

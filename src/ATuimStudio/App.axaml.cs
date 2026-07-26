@@ -20,10 +20,6 @@ public partial class App : Application
 
 	public override void OnFrameworkInitializationCompleted()
 	{
-		// Line below is needed to remove Avalonia data validation.
-		// Without this line you will get duplicate validations from both Avalonia and CT
-		BindingPlugins.DataValidators.RemoveAt(0);
-
 		//https://docs.avaloniaui.net/docs/guides/implementation-guides/how-to-implement-dependency-injection
 		TopLevelVisualProvider topLevelVisualProvider = new TopLevelVisualProvider();
 		ServiceProvider sp = AppServicesBuilder.BuildServiceProvider(topLevelVisualProvider);

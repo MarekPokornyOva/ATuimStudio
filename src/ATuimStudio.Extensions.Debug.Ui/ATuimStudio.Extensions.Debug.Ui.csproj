@@ -21,7 +21,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Avalonia" />
-		<PackageReference Include="Avalonia.Controls.TreeDataGrid" />
+		<PackageReference Include="TreeDataGrid" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
 	</ItemGroup>
 

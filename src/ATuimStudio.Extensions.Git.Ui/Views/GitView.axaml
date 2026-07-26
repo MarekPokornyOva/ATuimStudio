@@ -62,7 +62,7 @@
 										</StackPanel>
 									</StackPanel>
 									<StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0 0 5 0">
-										<Button ToolTip.Tip="Unstage" Command="{Binding DataContext.UnstageCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" CommandParameter="{Binding}">-</Button>
+										<Button ToolTip.Tip="Unstage" Command="{Binding #ThisControl.DataContext.UnstageCommand}" CommandParameter="{Binding}">-</Button>
 									</StackPanel>
 								</Grid>
 							</TreeDataTemplate>
@@ -90,8 +90,8 @@
 								</StackPanel>
 							</StackPanel>
 							<StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0 0 5 0">
-								<Button ToolTip.Tip="Undo changes" Command="{Binding DataContext.UndoChangesCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" CommandParameter="{Binding}">&lt;-</Button>
-								<Button ToolTip.Tip="Stage" Command="{Binding DataContext.StageCommand, RelativeSource={RelativeSource AncestorType=TreeView}}" CommandParameter="{Binding}">+</Button>
+								<Button ToolTip.Tip="Undo changes" Command="{Binding #ThisControl.DataContext.UndoChangesCommand}" CommandParameter="{Binding}">&lt;-</Button>
+								<Button ToolTip.Tip="Stage" Command="{Binding #ThisControl.DataContext.StageCommand}" CommandParameter="{Binding}">+</Button>
 							</StackPanel>
 						</Grid>
 					</TreeDataTemplate>
