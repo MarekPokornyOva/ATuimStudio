@@ -197,7 +197,7 @@ namespace Mono.Debugging.ClrDebug
 			return HRESULT.S_OK;
 		}
 
-		public HRESULT ResolveTypeRef(mdTypeRef tr, in Guid riid, out object ppIScope, out mdTypeDef ptd)
+		public HRESULT ResolveTypeRef(mdTypeRef tr, Guid riid, out object ppIScope, out mdTypeDef ptd)
 		{
 			//https://stackoverflow.com/questions/8865239/problems-with-imetadataimportresolvetyperef-method
 			//https://web.archive.org/web/20190114032248/https://blogs.msdn.microsoft.com/davbr/2011/10/17/metadata-tokens-run-time-ids-and-type-loading/

@@ -39,7 +39,7 @@
     <PackageVersion Include="Microsoft.Diagnostics.DbgShim" Version="9.0.661903" />
     <PackageVersion Include="Microsoft.Diagnostics.DbgShim.Win-x64" Version="9.0.661903" />
     <PackageVersion Include="Microsoft.Diagnostics.DbgShim.Linux-x64" Version="9.0.661903" />
-    <PackageVersion Include="ClrDebug" Version="0.3.4" />
+    <PackageVersion Include="ClrDebug" Version="0.4.0" />
     <PackageVersion Include="System.Xml.XmlDocument" version="4.3.0" />
     <PackageVersion Include="System.Reflection.Metadata" Version="10.0.5" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" /> <!-- Just to resolve vulnerability. Transitive from ???. -->
