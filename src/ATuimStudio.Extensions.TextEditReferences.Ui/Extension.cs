@@ -53,6 +53,7 @@ namespace ATuimStudio.Extensions.TextEditReferences
 			_pubImplementations = pubImplementations;
 
 			ContextMenu contextMenu = textArea.ContextMenu ??= new ContextMenu { Cursor = Cursor.Default };
+			KeyGesture goToDefinitionKeyGesture, goToImplementationKeyGesture;
 			contextMenu.Items.Add(new MenuItem
 			{
 				Header = "Find all references",
@@ -61,16 +62,18 @@ namespace ATuimStudio.Extensions.TextEditReferences
 			contextMenu.Items.Add(new MenuItem
 			{
 				Header = "Go to definition",
-				Command = new RelayCommand(GoToDefinition)
+				Command = new RelayCommand(GoToDefinition),
+				InputGesture = goToDefinitionKeyGesture = new KeyGesture(Key.F12)
 			});
 			contextMenu.Items.Add(new MenuItem
 			{
 				Header = "Go to implementation",
-				Command = new RelayCommand(GoToImplementation)
+				Command = new RelayCommand(GoToImplementation),
+				InputGesture = goToImplementationKeyGesture = new KeyGesture(Key.F12, KeyModifiers.Control)
 			});
 
-			_textArea.DefaultInputHandler.CommandBindings.Add(new RoutedCommandBinding(new RoutedCommand("F12Completion", new KeyGesture(Key.F12)), (_, _) => GoToDefinition()));
-			_textArea.DefaultInputHandler.CommandBindings.Add(new RoutedCommandBinding(new RoutedCommand("CtrlF12Insight", new KeyGesture(Key.F12, KeyModifiers.Control)), (_, _) => GoToImplementation()));
+			_textArea.DefaultInputHandler.CommandBindings.Add(new RoutedCommandBinding(new RoutedCommand("F12Definition", goToDefinitionKeyGesture), (_, _) => GoToDefinition()));
+			_textArea.DefaultInputHandler.CommandBindings.Add(new RoutedCommandBinding(new RoutedCommand("CtrlF12Implementation", goToImplementationKeyGesture), (_, _) => GoToImplementation()));
 		}
 
 		void FindAllReferences()
