@@ -83,10 +83,10 @@ namespace Microsoft.Samples.Debugging.CorMetadata
 			m_name = szProperty.ToString ();
 			MetadataHelperFunctionsExtensions.GetCustomAttribute (importer, propertyToken, typeof (System.Diagnostics.DebuggerBrowsableAttribute));
 
-			if (m_pmdGetter.Rid == 0 || !m_importer.IsValidToken ((uint)m_pmdGetter))
+			if (m_pmdGetter.Rid == 0 /*|| !m_importer.IsValidToken ((uint)m_pmdGetter)*/)
 				m_pmdGetter = 0;
 
-			if (m_pmdSetter.Rid == 0 || !m_importer.IsValidToken ((uint)m_pmdSetter))
+			if (m_pmdSetter.Rid == 0 /*|| !m_importer.IsValidToken ((uint)m_pmdSetter)*/)
 				m_pmdSetter = 0;
 		}
 

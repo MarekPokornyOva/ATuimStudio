@@ -507,7 +507,7 @@ namespace Mono.Debugging.ClrDebug
 			string name = _metadataReader.GetString(fieldDef.Name);
 			BlobReader signatureReader = _metadataReader.GetBlobReader(fieldDef.Signature);
 
-			pClass = default;
+			pClass = MetadataTokens.GetToken(fieldDef.GetDeclaringType());
 			pchField = name.Length + 1;
 			pdwAttr = (CorFieldAttr)fieldDef.Attributes;
 			ppvSigBlob = (IntPtr)signatureReader.StartPointer;
