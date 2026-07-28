@@ -8,7 +8,7 @@ namespace ATuimStudio.Extensions.Git
 	{
 		readonly Repository _repo;
 		readonly ITimeProvider _timeProvider;
-		readonly CredentialsHandler? _credentialsHandler;
+		readonly CredentialsHandler? _credentialsHandler = default;
 
 		public GitSourceRepository(string path, ITimeProvider timeProvider)
 		{

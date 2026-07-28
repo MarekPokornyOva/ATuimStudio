@@ -19,7 +19,7 @@
 				</StackPanel>
 			</DataTemplate>
 			<DataTemplate x:Key="ExpressionCellEdit" DataType="vm:DebugWatchViewModel+VariableItemBase">
-				<TextBox Text="{Binding Expression, UpdateSourceTrigger=LostFocus}" Watermark="Add item to watch"/>
+				<TextBox Text="{Binding Expression, UpdateSourceTrigger=LostFocus}" PlaceholderText="Add item to watch"/>
 			</DataTemplate>
 		</TreeDataGrid.Resources>
 	</TreeDataGrid>

@@ -10,7 +10,6 @@
 	<ItemGroup>
 		<PackageReference Include="Avalonia.AvaloniaEdit" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-		<PackageReference Include="System.Collections.Immutable" />
 	</ItemGroup>
 
 </Project>

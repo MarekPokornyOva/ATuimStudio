@@ -49,9 +49,9 @@
 			return PathHelper.PathEqualityComparer.Equals(x.FullPath, y.FullPath);
 		}
 
-		static void TimerHandler(object state)
+		static void TimerHandler(object? state)
 		{
-			DebouncingHandler self = (DebouncingHandler)state;
+			DebouncingHandler self = (DebouncingHandler)state!;
 
 			TimerStop(self._timer);
 			if (self._lastArgs != null)

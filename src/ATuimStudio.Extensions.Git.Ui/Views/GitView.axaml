@@ -24,7 +24,7 @@
 						<Button Command="{Binding PullCommand}">Pull</Button>
 						<Button Command="{Binding PushCommand}">Push</Button>
 					</StackPanel>
-					<TextBox Watermark="A commit message..." Text="{Binding CommitMessage}"/>
+					<TextBox PlaceholderText="A commit message..." Text="{Binding CommitMessage}"/>
 					<StackPanel Orientation="Horizontal">
 						<Label Content="Amend:"/>
 						<CheckBox IsChecked="{Binding Amend}"/>

@@ -17,7 +17,7 @@
 	</UserControl.Resources>
 
 	<Grid RowDefinitions="Auto,*,Auto">
-		<TextBox Grid.Row="0" Text="{Binding SearchText}" Watermark="Filter..."/>
+		<TextBox Grid.Row="0" Text="{Binding SearchText}" PlaceholderText="Filter..."/>
 		<DataGrid Grid.Row="1" ItemsSource="{Binding Options}" CanUserResizeColumns="True">
 			<DataGrid.Columns>
 				<DataGridTemplateColumn MinWidth="80" CanUserResize="True" IsReadOnly="True" Width="*">
