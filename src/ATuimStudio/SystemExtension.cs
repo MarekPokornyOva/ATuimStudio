@@ -33,6 +33,9 @@ namespace ATuimStudio
 			commandRegistrator.Register(SaveAllCommandCode, new AsyncRelayCommand(() => SaveAll(dockFactory)), () => AssetLoader.Open(new Uri("avares://ATuimStudio/Assets/SaveAll.png")));
 			commandRegistrator.Register(ExitCommandCode, new RelayCommand(ExitApplication), null);
 			commandRegistrator.Register(UserOptionsCommandCode, new RelayCommand(() => Options(dialogService)), null);
+
+			commandRegistrator.ServiceProvider.GetRequiredService<IUserOptionsRegistrator>()
+				.RegisterDefault(UserOptionsCodes.DocumentEditorZoom, 100d);
 		}
 
 		public override void RegisterMenu(IMenuRegistrator menuRegistrator)

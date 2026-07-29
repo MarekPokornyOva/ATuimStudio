@@ -167,9 +167,7 @@ namespace ATuimStudio.Extensions.Git
 		{
 			SelectionsArePinned = value;
 
-			IUserOptionsEdit edit = _userOptionsManager.GetEdit();
-			edit.SetValue(UserOptionsCodes.ReposAndBranchesPinned, value);
-			edit.Apply();
+			_userOptionsManager.SetValue(UserOptionsCodes.ReposAndBranchesPinned, value);
 		}
 
 		[RelayCommand]

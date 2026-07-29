@@ -11,9 +11,24 @@
 	<Design.DataContext>
 		<vm:DocumentViewModel />
 	</Design.DataContext>
-	<AvaloniaEdit:TextEditor
-		x:Name="Editor"
-		Document="{Binding FileContent}"
-		ShowLineNumbers="True"
-		FontFamily="Cascadia Code,Consolas,Menlo,Monospace"/>
+	<Grid RowDefinitions="*,Auto">
+		<AvaloniaEdit:TextEditor
+			Grid.Row="0"
+			x:Name="Editor"
+			Document="{Binding FileContent}"
+			ShowLineNumbers="True"
+			FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
+			/>
+		<Grid Grid.Row="1">
+			<ComboBox x:Name="ZoomSelector" SelectedIndex="3" IsEditable="True" SelectionChanged="ZoomSelected" LosingFocus="ZoomLosingFocus">
+				<ComboBoxItem>20 %</ComboBoxItem>
+				<ComboBoxItem>50 %</ComboBoxItem>
+				<ComboBoxItem>70 %</ComboBoxItem>
+				<ComboBoxItem>100 %</ComboBoxItem>
+				<ComboBoxItem>150 %</ComboBoxItem>
+				<ComboBoxItem>200 %</ComboBoxItem>
+				<ComboBoxItem>400 %</ComboBoxItem>
+			</ComboBox>
+		</Grid>
+	</Grid>
 </UserControl>

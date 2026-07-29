@@ -7,6 +7,9 @@ using System.ComponentModel;
 using ATuimStudio.Extensibility;
 using AvaloniaEdit;
 using Avalonia;
+using ATuimStudio.Extensions.Core;
+using ATuimStudio.ViewModels;
+using Dock.Model.Core;
 
 namespace ATuimStudio.Views;
 
@@ -21,9 +24,18 @@ public partial class DocumentView : UserControl
 	}
 #pragma warning restore CS8618
 
-	public DocumentView(IPluginPartsRegistrator pluginPartsRegistrator, IServiceProvider serviceProvider) : this()
+	readonly static double _defaultFontSize = 14/*TextElement.FontSizeProperty.GetDefaultValue(typeof(TextEditor))*/;
+
+	readonly IUserOptionsManager _userOptionsManager;
+	readonly DockFactory _dockFactory;
+	public DocumentView(IPluginPartsRegistrator pluginPartsRegistrator, IServiceProvider serviceProvider, IUserOptionsManager userOptionsManager, DockFactory dockFactory) : this()
 	{
 		_serviceProvider = serviceProvider;
+		_userOptionsManager = userOptionsManager;
+		_dockFactory = dockFactory;
+
+		if (userOptionsManager.TryGetDouble(UserOptionsCodes.DocumentEditorZoom, out double zoom))
+			NotifyZoom(zoom);
 
 		//Initial setup of TextMate.
 		RegistryOptions registryOptions = new RegistryOptions(ThemeName.DarkPlus);
@@ -53,6 +65,52 @@ public partial class DocumentView : UserControl
 				registration.Callback(context);
 		}
 	}
+
+	#region Zoom
+	readonly static char[] _zoomTrimChars = [' ', '%'];
+	internal void ZoomSelected(object? sender, SelectionChangedEventArgs e)
+	{
+		e.Handled = true;
+
+		if (sender is ComboBox zoomCb
+			&& zoomCb.SelectedItem is ComboBoxItem zoomCbi
+			&& zoomCbi.Content is string zoomStr)
+			SetZoom(zoomStr);
+	}
+
+	public void ZoomLosingFocus(object? sender, Avalonia.Input.FocusChangingEventArgs e)
+	{
+		e.Handled = true;
+		if (sender is ComboBox { Text: { } } zoomCb)
+			SetZoom(zoomCb.Text);
+	}
+
+	void SetZoom(string zoomStr)
+	{
+		if (Editor != null && double.TryParse(zoomStr.TrimEnd(_zoomTrimChars), out double zoom))
+		{
+			ApplyZoom(zoom);
+			_userOptionsManager.SetValue(UserOptionsCodes.DocumentEditorZoom, zoom);
+
+			//Notify other documents to share the zoom value
+			IList<IDockable>? dockables = _dockFactory.DocumentDock.VisibleDockables;
+			if (dockables != null)
+				foreach (DocumentView documentView in dockables.OfType<IGeneralDocumentDockBase>().Select(static x => x.TryGetView(out Control? view) ? view : default).Where(static x => x != default).Where(x => x != this).OfType<DocumentView>())
+					documentView.NotifyZoom(zoom);
+		}
+	}
+
+	void ApplyZoom(double zoom)
+	{
+		Editor.FontSize = _defaultFontSize * zoom / 100.0;
+	}
+
+	void NotifyZoom(double zoom)
+	{
+		ApplyZoom(zoom);
+		ZoomSelector.Text = $"{zoom} %";
+	}
+	#endregion Zoom
 
 	internal void NavigateTo(int offset)
 	{
