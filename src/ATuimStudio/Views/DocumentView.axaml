@@ -19,8 +19,8 @@
 			ShowLineNumbers="True"
 			FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
 			/>
-		<Grid Grid.Row="1">
-			<ComboBox x:Name="ZoomSelector" SelectedIndex="3" IsEditable="True" SelectionChanged="ZoomSelected" LosingFocus="ZoomLosingFocus">
+		<Grid Grid.Row="1" ColumnDefinitions="Auto,Auto">
+			<ComboBox Grid.Column="0" x:Name="ZoomSelector" SelectedIndex="3" IsEditable="True" SelectionChanged="ZoomSelected" LosingFocus="ZoomLosingFocus">
 				<ComboBoxItem>20 %</ComboBoxItem>
 				<ComboBoxItem>50 %</ComboBoxItem>
 				<ComboBoxItem>70 %</ComboBoxItem>
@@ -29,6 +29,9 @@
 				<ComboBoxItem>200 %</ComboBoxItem>
 				<ComboBoxItem>400 %</ComboBoxItem>
 			</ComboBox>
+			<Border Grid.Column="1" BorderBrush="Gray" Margin="10 0 0 0" Padding="5 0" BorderThickness="1" CornerRadius="3">
+				<TextBlock x:Name="CaretPosition" VerticalAlignment="Center"/>
+			</Border>
 		</Grid>
 	</Grid>
 </UserControl>

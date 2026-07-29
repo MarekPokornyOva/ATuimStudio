@@ -53,6 +53,8 @@ public partial class DocumentView : UserControl
 			if (position.HasValue)
 				textArea.Caret.Position = position.Value;
 		};
+		Editor.TextArea.Caret.PositionChanged += CaretPositionChanged;
+		CaretPositionChanged(Editor, EventArgs.Empty);
 
 		//TextArea textArea = Editor.TextArea;
 		//textArea.LeftMargins.Add(new FoldingMargin());
@@ -64,6 +66,12 @@ public partial class DocumentView : UserControl
 			foreach (PluginPartsRegistrator.EditorDecoratorRegistration registration in decorators)
 				registration.Callback(context);
 		}
+	}
+
+	void CaretPositionChanged(object? sender, EventArgs e)
+	{
+		TextViewPosition pos = Editor.TextArea.Caret.Position;
+		CaretPosition.Text = $"{pos.Line} / {pos.Column}";
 	}
 
 	#region Zoom
