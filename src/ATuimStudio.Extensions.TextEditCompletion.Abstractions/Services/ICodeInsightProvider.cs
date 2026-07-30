@@ -2,6 +2,6 @@
 {
 	public interface ICodeInsightProvider
 	{
-		Task<ICodeInsightResult> Get(string path, int position, CancellationToken cancellationToken);
+		Task<ICodeInsightResult> GetAsync(string path, int position, CancellationToken cancellationToken);
 	}
 }

@@ -4,6 +4,7 @@ using ATuimStudio.Extensions.Core.Ui;
 using Avalonia.Controls;
 using Avalonia.Input;
 using AvaloniaEdit;
+using AvaloniaEdit.Document;
 using AvaloniaEdit.Editing;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +20,7 @@ namespace ATuimStudio.Extensions.TextEditReferences
 		{
 			editorDecoratorRegistrator.Register(static context =>
 #pragma warning disable CA1806
-				new FunctionsHelper(context.Editor.TextArea, context.ServiceProvider.GetRequiredService<IUiDocumentService>(), context.ServiceProvider.GetRequiredService<IUiWindowService>(), context.ServiceProvider.GetRequiredService<IReferencesFinder>(), context.ServiceProvider.GetRequiredService<IPub<IAllReferencesResult>>(), context.ServiceProvider.GetRequiredService<IPub<IFindImplementationsResult>>())
+				new FunctionsHelper(context.Editor.TextArea, context.ServiceProvider.GetRequiredService<IUiDocumentService>(), context.ServiceProvider.GetRequiredService<IUiWindowService>(), context.ServiceProvider.GetRequiredService<IReferencesFinder>(), context.ServiceProvider.GetRequiredService<IQuickInfoProvider>(), context.ServiceProvider.GetRequiredService<IPub<IAllReferencesResult>>(), context.ServiceProvider.GetRequiredService<IPub<IFindImplementationsResult>>())
 #pragma warning restore CA1806
 			);
 		}
@@ -43,7 +44,7 @@ namespace ATuimStudio.Extensions.TextEditReferences
 		readonly IReferencesFinder _referencesFinder;
 		readonly IPub<IAllReferencesResult> _pubReferences;
 		readonly IPub<IFindImplementationsResult> _pubImplementations;
-		internal FunctionsHelper(TextArea textArea, IUiDocumentService uiDocumentService, IUiWindowService uiWindowService, IReferencesFinder referencesFinder, IPub<IAllReferencesResult> pubReferences, IPub<IFindImplementationsResult> pubImplementations)
+		internal FunctionsHelper(TextArea textArea, IUiDocumentService uiDocumentService, IUiWindowService uiWindowService, IReferencesFinder referencesFinder, IQuickInfoProvider quickInfoProvider, IPub<IAllReferencesResult> pubReferences, IPub<IFindImplementationsResult> pubImplementations)
 		{
 			_textArea = textArea;
 			_documentService = uiDocumentService;
@@ -74,6 +75,37 @@ namespace ATuimStudio.Extensions.TextEditReferences
 
 			_textArea.DefaultInputHandler.CommandBindings.Add(new RoutedCommandBinding(new RoutedCommand("F12Definition", goToDefinitionKeyGesture), (_, _) => GoToDefinition()));
 			_textArea.DefaultInputHandler.CommandBindings.Add(new RoutedCommandBinding(new RoutedCommand("CtrlF12Implementation", goToImplementationKeyGesture), (_, _) => GoToImplementation()));
+
+			#region QuickInfo
+			EditorHoverDetector hoverDetector = new EditorHoverDetector(textArea, 500, 10);
+			hoverDetector.OnHoverDetected += (sender, position) =>
+			{
+				// Get the word or token at this position
+				TextDocument document = textArea.Document;
+				quickInfoProvider.GetAsync(document.FileName, document.GetOffset(position.Line, position.Column), CancellationToken.None)
+					.ContinueWith(task =>
+					{
+						IQuickInfoResult? result = task.Result;
+							Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+							{
+								if (result == null)
+									ToolTip.SetTip(textArea, null);
+								else
+								{
+									// Display tooltip
+									ToolTip.SetTip(textArea, string.Join(Environment.NewLine, result.Sections));
+									ToolTip.SetIsOpen(textArea, true);
+								}
+							});
+					});
+			};
+			hoverDetector.OnHoverEnded += (sender, e) =>
+			{
+				// Close tooltip
+				ToolTip.SetTip(textArea, null);
+			};
+			_textArea.PointerWheelChanged += (s, e) => ToolTip.SetTip(textArea, null);
+			#endregion QuickInfo
 		}
 
 		void FindAllReferences()

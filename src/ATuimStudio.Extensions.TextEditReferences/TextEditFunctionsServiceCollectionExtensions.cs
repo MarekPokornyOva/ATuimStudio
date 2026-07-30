@@ -7,7 +7,9 @@ namespace Microsoft.Extensions.DependencyInjection
 		public static IServiceCollection AddTextEditReferences(this IServiceCollection services)
 		{
 			return services
-				.AddSingleton<IReferencesFinder, RoslynReferencesFinder>()
+				.AddSingleton<RoslynReferencesFinder>()
+				.AddSingleton<IReferencesFinder>(ServiceProviderServiceExtensions.GetRequiredService<RoslynReferencesFinder>)
+				.AddSingleton<IQuickInfoProvider>(ServiceProviderServiceExtensions.GetRequiredService<RoslynReferencesFinder>)
 				;
 		}
 	}

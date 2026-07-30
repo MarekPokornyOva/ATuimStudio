@@ -1,10 +1,11 @@
 ﻿using ATuimStudio.Extensions.Core;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.FindSymbols;
+using Microsoft.CodeAnalysis.QuickInfo;
 
 namespace ATuimStudio.Extensions.TextEditReferences
 {
-	sealed class RoslynReferencesFinder : IReferencesFinder
+	sealed class RoslynReferencesFinder : IReferencesFinder, IQuickInfoProvider
 	{
 		readonly IDocumentService _documentService;
 		public RoslynReferencesFinder(IDocumentService documentService)
@@ -95,6 +96,28 @@ namespace ATuimStudio.Extensions.TextEditReferences
 
 		sealed record FindImplementationsResult(IReadOnlyCollection<ReferenceItem> Implementations) : IFindImplementationsResult;
 		#endregion FindImplementations
+
+		#region QuickInfo
+		static readonly IQuickInfoResult? _emptyResult = null;
+		async Task<IQuickInfoResult?> IQuickInfoProvider.GetAsync(string path, int position, CancellationToken cancellationToken)
+		{
+			Document? document = _documentService.GetDocument(path);
+			if (document == null)
+				return _emptyResult;
+
+			QuickInfoService? quickInfoService = QuickInfoService.GetService(document);
+			if (quickInfoService == null)
+				return _emptyResult;
+
+			QuickInfoItem? quickInfoItem = await quickInfoService.GetQuickInfoAsync(document, position, cancellationToken);
+			if (quickInfoItem == null)
+				return _emptyResult;
+
+			return new QuickInfoResult([.. quickInfoItem.Sections.Select(static x => x.Text)]);
+		}
+
+		sealed record QuickInfoResult(IReadOnlyList<string> Sections) : IQuickInfoResult;
+		#endregion QuickInfo
 
 		#region internal
 		async Task<(ISymbol? symbol, Document document)> TryFindSymbolAsync(string filename, int offset, CancellationToken cancellationToken)

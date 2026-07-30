@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using System.Globalization;
 
 namespace ATuimStudio.Desktop;
 
@@ -9,8 +10,12 @@ class Program
 	// yet and stuff might break.
 	[STAThread]
 	public static void Main(string[] args)
-		=> BuildAvaloniaApp()
+	{
+		CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+
+		BuildAvaloniaApp()
 			.StartWithClassicDesktopLifetime(args);
+	}
 
 	// Avalonia configuration, don't remove; also used by visual designer.
 	public static AppBuilder BuildAvaloniaApp()

@@ -10,6 +10,7 @@ using Avalonia;
 using ATuimStudio.Extensions.Core;
 using ATuimStudio.ViewModels;
 using Dock.Model.Core;
+using AvaloniaEdit.Rendering;
 
 namespace ATuimStudio.Views;
 
@@ -46,10 +47,10 @@ public partial class DocumentView : UserControl
 		Editor.TextArea.ContextRequested += static (sender, e) =>
 		{
 			TextArea textArea = (TextArea)sender!;
-			double leftMarginsWidth = textArea.LeftMargins.Count == 0 ? 0 : textArea.LeftMargins[^1].Bounds.Right;
-			if (!e.TryGetPosition(textArea, out Point point))
+			TextView textView = textArea.TextView;
+			if (!e.TryGetPosition(textView, out Point point))
 				return;
-			TextViewPosition? position = textArea.TextView.GetPositionFloor(point + textArea.TextView.ScrollOffset - new Point(leftMarginsWidth, 0));
+			TextViewPosition? position = textView.GetPositionFloor(point + textView.ScrollOffset);
 			if (position.HasValue)
 				textArea.Caret.Position = position.Value;
 		};

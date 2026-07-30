@@ -15,7 +15,7 @@ namespace ATuimStudio.Extensions.TextEditCompletion
 		}
 
 		static readonly TextEditCompletionResult _emptyResult = new TextEditCompletionResult([], null);
-		public async Task<ITextEditCompletionResult> GetCompletions(string path, int position, CancellationToken cancellationToken)
+		public async Task<ITextEditCompletionResult> GetCompletionsAsync(string path, int position, CancellationToken cancellationToken)
 		{
 			Document? document = _documentService.GetDocument(path);
 			if (document == null)

@@ -53,7 +53,7 @@ namespace ATuimStudio.Extensions.TextEditCompletion
 
 		void HandleCompletion()
 		{
-			Task<ITextEditCompletionResult> task = _textEditCompletionProvider.GetCompletions(_textArea.Document.FileName, _textArea.Caret.Offset, CancellationToken.None);
+			Task<ITextEditCompletionResult> task = _textEditCompletionProvider.GetCompletionsAsync(_textArea.Document.FileName, _textArea.Caret.Offset, CancellationToken.None);
 			task.GetAwaiter().OnCompleted(() =>
 			{
 				ITextEditCompletionResult completionResult = task.Result;
@@ -134,7 +134,7 @@ namespace ATuimStudio.Extensions.TextEditCompletion
 		{
 			e.Handled = true;
 
-			Task<ICodeInsightResult> task = _codeInsightProvider.Get(_textArea.Document.FileName, _textArea.Caret.Offset, CancellationToken.None);
+			Task<ICodeInsightResult> task = _codeInsightProvider.GetAsync(_textArea.Document.FileName, _textArea.Caret.Offset, CancellationToken.None);
 			task.GetAwaiter().OnCompleted(() =>
 			{
 				ICodeInsightResult result = task.Result;

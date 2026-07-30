@@ -13,7 +13,7 @@ namespace ATuimStudio.Extensions.TextEditCompletion
 		}
 
 		static readonly CodeInsightResult _emptyResult = new CodeInsightResult([], null);
-		public async Task<ICodeInsightResult> Get(string path, int position, CancellationToken cancellationToken)
+		public async Task<ICodeInsightResult> GetAsync(string path, int position, CancellationToken cancellationToken)
 		{
 			Document? document = _documentService.GetDocument(path);
 			if (document == null)
