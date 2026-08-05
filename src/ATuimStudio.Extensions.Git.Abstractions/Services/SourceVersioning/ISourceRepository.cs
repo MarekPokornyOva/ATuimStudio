@@ -2,6 +2,7 @@
 {
 	public interface ISourceRepository : IDisposable
 	{
+		bool IsRemoteAvailable { get; }
 		IBranch Head { get; }
 		IEnumerable<IBranch> GetBranches();
 		IEnumerable<IFileStatus> GetFilesStatus();

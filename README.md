@@ -24,6 +24,7 @@ Tested on:
   - Stage/Unstage files
   - Undo uncommitted changes
   - Commit/Amend locally
+  - Checkout/Fetch/Pull/Push
 - Build using MsBuild
 - Debugger
   - Breakpoints

@@ -5,6 +5,7 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ATuimStudio.Extensions.Git;
 
@@ -14,10 +15,13 @@ public sealed partial class GitViewModel : ViewModelBase<ViewModelBase.RepoNodeB
 	public ObservableCollection<StatusNode> StatusStaged { get; } = [];
 
 	[ObservableProperty]
-	string? _commitMessage;
+	public partial string? CommitMessage { get; private set; }
 
 	[ObservableProperty]
-	bool _amend;
+	public partial bool Amend { get; private set; }
+
+	[ObservableProperty]
+	public partial bool IsRemoteRepo { get; private set; }
 
 	readonly IDiskWatchService _diskWatchService;
 	readonly IDialogService _dialogService;
@@ -33,6 +37,7 @@ public sealed partial class GitViewModel : ViewModelBase<ViewModelBase.RepoNodeB
 	protected override void SelectedRepoChanged(ViewModelBase.RepoNodeBase? value)
 	{
 		RefreshStatus();
+		IsRemoteRepo = EnsureRepo(out ISourceRepository? repo) && repo.IsRemoteAvailable;
 	}
 
 	readonly Action<FileSystemEventArgs> _diskWatchHandler;
@@ -104,14 +109,12 @@ public sealed partial class GitViewModel : ViewModelBase<ViewModelBase.RepoNodeB
 		StatusStaged.Clear();
 
 		if (selectedRepo == _allRepos)
-		{
-			foreach (RepoNode repo in Repos.Skip(1))
+			foreach (ViewModelBase.RepoNodeBase repo in Repos.Skip(1))
 			{
 				(IEnumerable<StatusNode> unstaged, IEnumerable<StatusNode> staged) = BuildStatusesStructure(repo.Repository.GetFilesStatus(), repo.Repository);
 				StatusUnstaged.Add(new StatusNode("", repo.Path, unstaged, repo.Repository, null));
 				StatusStaged.Add(new StatusNode("", repo.Path, staged, repo.Repository, null));
 			}
-		}
 		else
 			if (repository != null)
 			{
@@ -189,11 +192,18 @@ public sealed partial class GitViewModel : ViewModelBase<ViewModelBase.RepoNodeB
 	}
 
 	[RelayCommand]
+	void Fetch()
+	{
+		if (EnsureRepo(out ISourceRepository? repo))
+			repo.Fetch();
+	}
+
+	[RelayCommand]
 	void Pull()
 	{
-		if (SelectedRepo == null || SelectedRepo == _allRepos)
+		if (!EnsureRepo(out ISourceRepository? repo))
 			return;
-		IMergeResult res = SelectedRepo.Repository.Pull();
+		IMergeResult res = repo.Pull();
 		if (res.Status == MergeStatus.Conflicts)
 			_dialogService.ShowMessage("Git pull resulted with conflict.");
 	}
@@ -201,8 +211,19 @@ public sealed partial class GitViewModel : ViewModelBase<ViewModelBase.RepoNodeB
 	[RelayCommand]
 	void Push()
 	{
-		if (SelectedRepo == null || SelectedRepo == _allRepos)
-			return;
-		SelectedRepo.Repository.Push();
+		if (EnsureRepo(out ISourceRepository? repo))
+			repo.Push();
+	}
+
+	bool EnsureRepo([NotNullWhen(true)] out ISourceRepository? sourceRepository)
+	{
+		var repoItem = SelectedRepo;
+		if (repoItem == null || repoItem == _allRepos)
+		{
+			sourceRepository = default;
+			return false;
+		}
+		sourceRepository = repoItem.Repository;
+		return true;
 	}
 }

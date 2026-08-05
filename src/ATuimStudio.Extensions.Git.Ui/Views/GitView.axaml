@@ -20,9 +20,10 @@
 				
 				<StackPanel IsVisible="{Binding !!SelectedRepo.Path}">
 					<StackPanel Orientation="Horizontal">
-						<Button Command="{Binding CheckoutCommand}">Checkout</Button>
-						<Button Command="{Binding PullCommand}">Pull</Button>
-						<Button Command="{Binding PushCommand}">Push</Button>
+						<Button Command="{Binding CheckoutCommand}" IsEnabled="{Binding #ThisControl.DataContext.IsRemoteRepo}">Checkout</Button>
+						<Button Command="{Binding FetchCommand}" IsEnabled="{Binding #ThisControl.DataContext.IsRemoteRepo}">Fetch</Button>
+						<Button Command="{Binding PullCommand}" IsEnabled="{Binding #ThisControl.DataContext.IsRemoteRepo}">Pull</Button>
+						<Button Command="{Binding PushCommand}" IsEnabled="{Binding #ThisControl.DataContext.IsRemoteRepo}">Push</Button>
 					</StackPanel>
 					<TextBox PlaceholderText="A commit message..." Text="{Binding CommitMessage}"/>
 					<StackPanel Orientation="Horizontal">
