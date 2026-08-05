@@ -7,5 +7,6 @@
 		DateTimeOffset When { get; }
 		ISignature Author { get; }
 		IReadOnlyList<ICommit> Parents { get; }
+		bool IsHead { get; }
 	}
 }

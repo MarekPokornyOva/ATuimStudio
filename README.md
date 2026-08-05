@@ -63,4 +63,5 @@ Workaround:
 - Microsoft CodeAnalysis - https://github.com/dotnet/roslyn
 - Microsoft.Diagnostics.DbgShim - https://github.com/dotnet/diagnostics
 - Mono:debugger-libs - https://github.com/mono/debugger-libs
+- SourceGit - https://github.com/sourcegit-scm/sourcegit
 - VitalElement.AvalonStudio - https://github.com/VitalElement/AvalonStudio

@@ -19,17 +19,9 @@
 		<PackageReference Include="Avalonia" />
 		<PackageReference Include="Avalonia.Controls.DataGrid" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
+		<PackageReference Include="System.Reactive" />
 		<PackageReference Include="Xaml.Behaviors" />
 		<PackageReference Include="Xaml.Behaviors.Interactivity" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Update="Views\ReposAndBranchesView.axaml.cs">
-	    <DependentUpon>ReposAndBranchesView.axaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\ReposAndBranchesSubView.axaml.cs">
-	    <DependentUpon>ReposAndBranchesSubView.axaml</DependentUpon>
-	  </Compile>
 	</ItemGroup>
 
 </Project>

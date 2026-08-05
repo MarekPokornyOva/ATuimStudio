@@ -1,4 +1,5 @@
 ﻿using ATuimStudio.Extensions.Core;
+using ATuimStudio.Extensions.Git.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 
@@ -9,7 +10,10 @@ namespace ATuimStudio.Extensions.Git
 		public int IncommingCount { get; private set; }
 		public int OutgoingCount { get; private set; }
 		[ObservableProperty]
-		public IEnumerable<ICommit>? _commits;
+		public partial IEnumerable<ICommit>? Commits { get; private set; }
+		
+		[ObservableProperty]
+		public partial CommitGraphData? CommitGraph { get; private set; }
 
 		public GitRepositoryViewModel(ISourceRepositoryFactory sourceRepositoryFactory, ISolutionService solutionService, IUserOptionsManager userOptionsManager) : base(sourceRepositoryFactory, solutionService, userOptionsManager, false)
 		{
@@ -53,10 +57,12 @@ namespace ATuimStudio.Extensions.Git
 					}
 
 					(IncommingCount, Commits) = incomming == null ? (0, commits) : (incomming.Count, incomming.Concat(commits));
+					CommitGraph = CommitGraphData.Parse(commits, true);
 					return;
 				}
 			}
 			Commits = null;
+			CommitGraph = null;
 		}
 
 		internal void SelectBranch(string repo, string branch)

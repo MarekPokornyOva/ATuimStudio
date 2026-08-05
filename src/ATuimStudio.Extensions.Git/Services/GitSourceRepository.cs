@@ -41,7 +41,7 @@ namespace ATuimStudio.Extensions.Git
 			{
 				SortBy = CommitSortStrategies.Topological,
 				IncludeReachableFrom = b.Inner
-			}));
+			}), b.Inner);
 		}
 
 		Branch? _head;
@@ -85,7 +85,7 @@ namespace ATuimStudio.Extensions.Git
 		public ICommit Commit(string message, bool amend)
 		{
 			LibGit2Sharp.Signature sig = CreateDefaultSignature();
-			return new CommitItem(_repo.Commit(message, sig, sig, new CommitOptions { AmendPreviousCommit = amend }));
+			return new CommitItem(_repo.Commit(message, sig, sig, new CommitOptions { AmendPreviousCommit = amend }), _repo.Head);
 		}
 
 		readonly string[] _configUserParts = ["user", ""];
@@ -211,7 +211,7 @@ namespace ATuimStudio.Extensions.Git
 			}
 
 			ICommit? _tip;
-			public ICommit Tip => _tip ??= new CommitItem(_inner.Tip);
+			public ICommit Tip => _tip ??= new CommitItem(_inner.Tip, _inner);
 
 			public bool Equals(IBranch? other)
 				=> other is Branch b && b._inner.CanonicalName.Equals(_inner.CanonicalName);
@@ -226,16 +226,24 @@ namespace ATuimStudio.Extensions.Git
 		sealed class CommitItem : ICommit
 		{
 			readonly LibGit2Sharp.Commit _inner;
-			internal CommitItem(LibGit2Sharp.Commit inner)
+			readonly LibGit2Sharp.Branch _branch;
+			internal CommitItem(LibGit2Sharp.Commit inner, LibGit2Sharp.Branch branch)
 			{
 				_inner = inner;
+				_branch = branch;
 			}
 
-			internal static IEnumerable<ICommit> MapCollection(IEnumerable<Commit> commits)
-				=> commits.Select(static x => new CommitItem(x));
+			internal static IEnumerable<ICommit> MapCollection(IEnumerable<Commit> commits, LibGit2Sharp.Branch branch)
+				=> commits.Select(x => new CommitItem(x, branch));
 
 			public bool Equals(ICommit? other)
-				=> other is CommitItem c && c._inner.Sha.EqualsOrdinal(_inner.Sha);
+				=> other is CommitItem c && EqualSha(c._inner.Sha, _inner.Sha);
+
+			private static bool Equal(LibGit2Sharp.Commit? x, LibGit2Sharp.Commit? y)
+				=> EqualSha(x?.Sha, y?.Sha);
+
+			private static bool EqualSha(string? x, string? y)
+				=> x.EqualsOrdinal(y);
 
 			public override bool Equals(object? obj)
 				=> Equals(obj as ICommit);
@@ -249,8 +257,10 @@ namespace ATuimStudio.Extensions.Git
 			ISignature? _author;
 			public ISignature Author => _author ??= new Signature(_inner.Author.Name, _inner.Author.Email);
 
+			public bool IsHead => Equal(_branch.Tip, _inner);
+
 			IReadOnlyList<ICommit>? _parents;
-			public IReadOnlyList<ICommit> Parents => _parents ??= [.. MapCollection(_inner.Parents)];
+			public IReadOnlyList<ICommit> Parents => _parents ??= [.. MapCollection(_inner.Parents, _branch)];
 		}
 
 		sealed record Signature(string Name, string Email) : ISignature;

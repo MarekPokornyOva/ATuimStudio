@@ -18,10 +18,30 @@
 		<ui:GitCommitTimeConverter x:Key="GitCommitTimeConverter"/>
 	</UserControl.Resources>
 
-	<Grid RowDefinitions="Auto,*">
-		<ui:ReposAndBranchesView Grid.Row="0"/>
+	<Grid RowDefinitions="Auto,*" ColumnDefinitions="Auto,*">
+		<ui:ReposAndBranchesView Grid.Row="0" Grid.ColumnSpan="2"/>
 
-		<DataGrid Grid.Row="1" ItemsSource="{Binding Commits}" CanUserResizeColumns="True">
+		<ScrollViewer Grid.Row="1" Grid.Column="0" x:Name="CommitGraphControlScroller" VerticalScrollBarVisibility="Disabled">
+			<ui:CommitGraphControl
+				CommitGraphData="{Binding CommitGraph}"
+				Margin="0 24 0 0"
+				HorizontalAlignment="Stretch" VerticalAlignment="Top"
+				IsHitTestVisible="False"
+				ClipToBounds="True"
+				RowHeight="26"
+				/>
+		</ScrollViewer>
+		<DataGrid Grid.Row="1" Grid.Column="1" x:Name="CommitListContainer"
+			ItemsSource="{Binding Commits}"
+			CanUserResizeColumns="True"
+			ColumnHeaderHeight="24"
+			AutoGenerateColumns="False"
+			IsReadOnly="True"
+			HeadersVisibility="Column"
+			ClipboardCopyMode="None"
+			Focusable="False"
+			RowHeight="26"
+			>
 			<DataGrid.Columns>
 				<DataGridTemplateColumn Width="15" IsReadOnly="True" CanUserResize="False">
 					<DataGridTemplateColumn.CellTemplate>

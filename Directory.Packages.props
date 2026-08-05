@@ -6,6 +6,7 @@
   <ItemGroup>
     <PackageVersion Include="Avalonia" Version="12.1.0" />
     <PackageVersion Include="Avalonia.Controls.ItemsRepeater" Version="12.0.0" />
+    <PackageVersion Include="System.Reactive" Version="7.0.0" />
     <PackageVersion Include="TreeDataGrid" Version="12.0.0" />
     <PackageVersion Include="Avalonia.Themes.Fluent" Version="12.1.0" />
     <PackageVersion Include="Avalonia.Fonts.Inter" Version="12.1.0" />
