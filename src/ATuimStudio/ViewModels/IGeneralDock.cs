@@ -29,13 +29,16 @@ namespace ATuimStudio.ViewModels
 		public string CacheId { get; }
 		public Func<IServiceProvider, Control> ViewFactory { get; }
 
-		public bool ViewModelCreated { get; private set; }
+		readonly TaskCompletionSource<object> _viewModelCreated = new TaskCompletionSource<object>();
+		public Task<object> ViewModelCreatedTask => _viewModelCreated.Task;
+		public bool ViewModelCreated => _viewModelCreated.Task.IsCompletedSuccessfully;
+
 		public object GetViewModel(IServiceProvider serviceProvider)
 		{
 			if (!ViewModelCreated)
 			{
 				_viewModel = _viewModelFactory(serviceProvider);
-				ViewModelCreated = true;
+				_viewModelCreated.SetResult(_viewModel);
 			}
 			return _viewModel;
 		}

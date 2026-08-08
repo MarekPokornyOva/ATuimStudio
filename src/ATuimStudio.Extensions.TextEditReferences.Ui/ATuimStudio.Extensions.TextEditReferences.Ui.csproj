@@ -14,14 +14,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Avalonia.Controls.DataGrid" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Update="AllReferencesView.axaml.cs">
-	    <DependentUpon>AllReferencesView.axaml</DependentUpon>
-	  </Compile>
 	</ItemGroup>
 
 </Project>

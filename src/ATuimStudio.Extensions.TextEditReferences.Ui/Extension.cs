@@ -113,8 +113,8 @@ namespace ATuimStudio.Extensions.TextEditReferences
 			Task<IAllReferencesResult> task = _referencesFinder.FindAllReferencesAsync(_textArea.Document.FileName, _textArea.Caret.Offset, CancellationToken.None);
 			task.GetAwaiter().OnCompleted(() =>
 			{
-				_uiWindowService.OpenPane(Extension.TypeReferences, WellKnownLayoutConstants.IdBasicInfo, Extension.IdReferences, "References");
-				_pubReferences.Raise(task.Result);
+				_uiWindowService.OpenPane(Extension.TypeReferences, WellKnownLayoutConstants.IdBasicInfo, Extension.IdReferences, "References")
+					?.ContinueWith(_ => _pubReferences.Raise(task.Result));
 			});
 		}
 
@@ -145,8 +145,8 @@ namespace ATuimStudio.Extensions.TextEditReferences
 						_documentService.SetActiveDocument(impl.FilePath, impl.Position);
 						break;
 					default:
-						_uiWindowService.OpenPane(Extension.TypeReferences, WellKnownLayoutConstants.IdBasicInfo, Extension.IdReferences, "Implementations");
-						_pubImplementations.Raise(task.Result);
+						_uiWindowService.OpenPane(Extension.TypeReferences, WellKnownLayoutConstants.IdBasicInfo, Extension.IdReferences, "Implementations")
+							?.ContinueWith(_ => _pubImplementations.Raise(task.Result));
 						break;
 				}
 			});

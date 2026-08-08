@@ -34,6 +34,12 @@ namespace ATuimStudio
 			return dialogWindow.ShowDialog(mainWindow);
 		}
 
+		public void OpenNonModal<TViewModel>(DialogWindowParameters dialogWindowParameters, object[] viewModelParameters)
+		{
+			(DialogWindow dialogWindow, Window mainWindow) = CreateDialog<TViewModel>(dialogWindowParameters, viewModelParameters);
+			dialogWindow.Show(mainWindow);
+		}
+
 		public Task ShowMessage(string message)
 			=> OpenModal<MessageBoxViewModel>(new DialogWindowParameters("Message"), message);
 
@@ -48,7 +54,7 @@ namespace ATuimStudio
 			Array.Resize(ref viewModelParameters, viewModelParametersLen + 1);
 			viewModelParameters[viewModelParametersLen] = dialogWindow;
 			object viewModel = ActivatorUtilities.CreateInstance<TViewModel>(_serviceProvider, viewModelParameters)
-				?? throw new InvalidOperationException("Dialog view model can't be creted.");
+				?? throw new InvalidOperationException("Dialog view model can't be created.");
 			dialogWindow.Content = viewModel;
 			return (dialogWindow, _mainWindow);
 		}

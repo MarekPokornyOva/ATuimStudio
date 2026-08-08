@@ -376,24 +376,26 @@ public class DockFactory : Factory, IUiDocumentService, ILayoutManager, IUiWindo
 	#endregion ILayoutManager
 
 	#region IUiWindowService
-	public void OpenPane(Guid type, string parentId, string id, string title)
+	public Task<object>? OpenPane(Guid type, string parentId, string id, string title)
 	{
 		if (this.Find(RootDock, x => x.Id == parentId).FirstOrDefault() is not IDock parent)
-			return;
+			return null;
 
 		IDockable? paneCandidate = this.Find(RootDock, x => x.Id == id && x.Owner?.Id == parentId).FirstOrDefault();
 		if (paneCandidate != null && paneCandidate is not GeneralTool)
-			return;
+			return null;
 		GeneralTool? pane = (GeneralTool?)paneCandidate;
 		if (pane == null)
 		{
 			if (!_paneTypeFactories.TryGetValue(type, out var facts))
-				return;
+				return null;
 			pane = new GeneralTool(id, facts.ViewModelFactory, facts.ViewFactory) { Id = id, Title = title };
 			(parent.VisibleDockables ??= CreateList<IDockable>()).Add(pane);
 		}
 
 		parent.ActiveDockable = pane;
+
+		return pane.ViewModelCreatedTask;
 	}
 	#endregion IUiWindowService
 }

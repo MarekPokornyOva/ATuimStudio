@@ -2,6 +2,6 @@
 {
 	public interface IUiWindowService
 	{
-		void OpenPane(Guid type, string parentId, string id, string title);
+		Task<object>? OpenPane(Guid type, string parentId, string id, string title);
 	}
 }

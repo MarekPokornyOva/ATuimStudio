@@ -8,7 +8,7 @@ namespace ATuimStudio.Extensions.TextEditReferences;
 sealed partial class AllReferencesViewModel : ObservableObject, IDisposable
 {
 	[ObservableProperty]
-	IReadOnlyCollection<ReferenceItem> _references = [];
+	public partial IReadOnlyCollection<ReferenceItem> References { get; private set; } = [];
 
 	readonly ISub<IAllReferencesResult> _subReferences;
 	readonly ISub<IFindImplementationsResult> _subImplementations;

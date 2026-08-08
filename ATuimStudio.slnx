@@ -27,6 +27,9 @@
   <Project Path="src/ATuimStudio.Extensions.Debug.Abstractions/ATuimStudio.Extensions.Debug.Abstractions.csproj" />
   <Project Path="src/ATuimStudio.Extensions.Debug.Ui/ATuimStudio.Extensions.Debug.Ui.csproj" />
   <Project Path="src/ATuimStudio.Extensions.Debug/ATuimStudio.Extensions.Debug.csproj" Id="11c613d6-8486-4948-8703-de043db9f950" />
+  <Project Path="src/ATuimStudio.Extensions.FindInFiles.Abstractions/ATuimStudio.Extensions.FindInFiles.Abstractions.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.FindInFiles.Ui/ATuimStudio.Extensions.FindInFiles.Ui.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.FindInFiles/ATuimStudio.Extensions.FindInFiles.csproj" />
   <Project Path="src/ATuimStudio.Extensions.Git.Abstractions/ATuimStudio.Extensions.Git.Abstractions.csproj" />
   <Project Path="src/ATuimStudio.Extensions.Git.Ui/ATuimStudio.Extensions.Git.Ui.csproj" />
   <Project Path="src/ATuimStudio.Extensions.Git/ATuimStudio.Extensions.Git.csproj" />
