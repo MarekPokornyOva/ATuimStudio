@@ -13,9 +13,11 @@ namespace ATuimStudio.Extensions.Core
 		Solution? _rawSolution;
 
 		readonly ISolutionDataStorage _solutionDataStorage;
-		public DefaultSolutionService(ISolutionDataStorage solutionDataStorage)
+		readonly IPub<DocumentContentUpdatedNotification> _pubDocumentContentUpdatedNotification;
+		public DefaultSolutionService(ISolutionDataStorage solutionDataStorage, IPub<DocumentContentUpdatedNotification> pubDocumentContentUpdatedNotification)
 		{
 			_solutionDataStorage = solutionDataStorage;
+			_pubDocumentContentUpdatedNotification = pubDocumentContentUpdatedNotification;
 		}
 
 		public async Task LoadSolutionAsync(string path, CancellationToken cancellationToken)
@@ -61,6 +63,8 @@ namespace ATuimStudio.Extensions.Core
 			sourceText = sourceText.WithChanges(new TextChange(new TextSpan(documentUpdateInfo.Position, documentUpdateInfo.RemovedText.Length), documentUpdateInfo.InsertedText));
 			Document newDocument = msDoc.WithText(sourceText);
 			UpdateRawSolution(newDocument.Project.Solution);
+
+			_pubDocumentContentUpdatedNotification.Raise(new DocumentContentUpdatedNotification(path, documentUpdateInfo));
 		}
 
 		Document? FindDocument(string path)

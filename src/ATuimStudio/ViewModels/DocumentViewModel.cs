@@ -4,17 +4,22 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace ATuimStudio.ViewModels
 {
-	public sealed partial class DocumentViewModel : ObservableObject, IDisposable
+	sealed partial class DocumentViewModel : ObservableObject, IDisposable
 	{
 		readonly ISolutionService _solutionService;
 		readonly ICodeDiagnosticsManager _codeDiagnosticsManager;
-		public DocumentViewModel(ISolutionService solutionService, ICodeDiagnosticsManager codeDiagnosticsManager)
+		readonly ISub<DocumentContentUpdatedNotification> _subDocumentContentUpdatedNotification;
+		public DocumentViewModel(ISolutionService solutionService, ICodeDiagnosticsManager codeDiagnosticsManager, ISub<DocumentContentUpdatedNotification> subDocumentContentUpdatedNotification)
 		{
 			_solutionService = solutionService;
 			_codeDiagnosticsManager = codeDiagnosticsManager;
+			_subDocumentContentUpdatedNotification = subDocumentContentUpdatedNotification;
+
+			subDocumentContentUpdatedNotification.Register(HandleDocumentContentUpdated);
 		}
 
-		public IDocument? FileContent { get; set; }
+		[ObservableProperty]
+		public partial IDocument? FileContent { get; private set; }
 
 		IProjectFileData? _fileData;
 		internal IProjectFileData? FileData { get => _fileData; set { _fileData = value; LoadFile(value); } }
@@ -24,20 +29,23 @@ namespace ATuimStudio.ViewModels
 			if (fileData == null)
 				FileContent = null;
 			else
-			{
-				string path = fileData.Path;
-				string source = _solutionService.GetDocumentContent(path)
-					?? ""/*File.ReadAllText(fileData.Path)*/;
-
-				TextDocument textDocument = new TextDocument(new StringTextSource(source)) { FileName = path };
-				textDocument.Changed += TextDocument_Changed;
-				FileContent = textDocument;
-
-				_diagRefreshTimer = new Timer(DiagRefresh, path, Timeout.Infinite, Timeout.Infinite);
-				_codeDiagnosticsManager.Refresh(path);
-			}
+				LoadFile(fileData.Path);
 		}
 
+		void LoadFile(string path)
+		{
+			string source = _solutionService.GetDocumentContent(path)
+				?? ""/*File.ReadAllText(fileData.Path)*/;
+
+			TextDocument textDocument = new TextDocument(new StringTextSource(source)) { FileName = path };
+			textDocument.Changed += TextDocument_Changed;
+			FileContent = textDocument;
+
+			_diagRefreshTimer = new Timer(DiagRefresh, path, Timeout.Infinite, Timeout.Infinite);
+			_codeDiagnosticsManager.Refresh(path);
+		}
+
+		bool isChanging = false;
 		Timer? _diagRefreshTimer;
 		private void TextDocument_Changed(object? sender, DocumentChangeEventArgs e)
 		{
@@ -45,8 +53,12 @@ namespace ATuimStudio.ViewModels
 			if (_fileData == null)
 				return;
 
-			string path = _fileData.Path;
-			_solutionService.UpdateDocumentContent(path, new DocumentUpdateInfo(e.Offset, e.InsertedText.Text, e.RemovedText.Text));
+			if (!isChanging)
+			{
+				isChanging = true;
+				_solutionService.UpdateDocumentContent(_fileData.Path, new DocumentUpdateInfo(e.Offset, e.InsertedText.Text, e.RemovedText.Text));
+				isChanging = false;
+			}
 
 			IsDirty = true;
 
@@ -61,9 +73,26 @@ namespace ATuimStudio.ViewModels
 			_codeDiagnosticsManager.Refresh((string)state!);
 		}
 
+		void HandleDocumentContentUpdated(DocumentContentUpdatedNotification notification)
+		{
+			if (isChanging)
+				return;
+
+
+			string path = notification.FilePath;
+			if (path == FileData?.Path)
+			{
+				isChanging = true;
+				DocumentUpdateInfo documentUpdateInfo = notification.DocumentUpdateInfo;
+				FileContent?.Replace(documentUpdateInfo.Position, documentUpdateInfo.RemovedText.Length, documentUpdateInfo.InsertedText);
+				isChanging = false;
+			}
+		}
+
 		public void Dispose()
 		{
 			_diagRefreshTimer?.Dispose();
+			_subDocumentContentUpdatedNotification.Unregister(HandleDocumentContentUpdated);
 		}
 
 		internal void UnmarkDirty()
