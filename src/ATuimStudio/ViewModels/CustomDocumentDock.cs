@@ -49,7 +49,7 @@ namespace ATuimStudio.ViewModels
 				return null;
 
 			if (Factory.FindDockable(this, x => x.Id == id) is not GeneralDocument document)
-				Factory.AddDockable(this, document = new GeneralDocument(viewModelFactory(_serviceProvider), viewFactory) { Id = id, Title = title });
+				Factory.AddDockable(this, document = new GeneralDocument(viewModelFactory(_serviceProvider), viewFactory, title) { Id = id });
 			Factory.SetActiveDockable(document);
 			Factory.SetFocusedDockable(this, document);
 			return document;

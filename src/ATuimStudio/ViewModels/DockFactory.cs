@@ -158,18 +158,23 @@ public class DockFactory : Factory, IUiDocumentService, ILayoutManager, IUiWindo
 	}
 
 	public Task SaveCurrentDocument(CancellationToken cancellationToken)
-		=> SaveDocument(this.ActiveDocument?.FileContent, cancellationToken);
+		=> this.ActiveDocument == null
+			? Task.CompletedTask
+			: SaveDocument(this.ActiveDocument, cancellationToken);
 
 	public async Task SaveAllOpenedDocuments(CancellationToken cancellationToken)
 	{
 		foreach (DocumentViewModel document in this.Documents)
-			await SaveDocument(document.FileContent, cancellationToken);			
+			await SaveDocument(document, cancellationToken);
 	}
 
-	Task SaveDocument(AvaloniaEdit.Document.IDocument? document, CancellationToken cancellationToken)
-		=> document == null
-			? Task.CompletedTask
-			: _solutionService.SaveDocumentAsync(document.FileName, document.Text, cancellationToken);
+	async Task SaveDocument(DocumentViewModel documentVm, CancellationToken cancellationToken)
+	{
+		AvaloniaEdit.Document.IDocument? document = documentVm.FileContent;
+		if (document != null)
+			await _solutionService.SaveDocumentAsync(document.FileName, document.Text, cancellationToken);
+		documentVm.UnmarkDirty();
+	}
 
 	public void AddSpecialDocument(string id, string title, Func<IServiceProvider, object> viewModelFactory, Func<IServiceProvider, Control> viewFactory)
 		=> DocumentDock.AddDocument(id, title, viewModelFactory, viewFactory);

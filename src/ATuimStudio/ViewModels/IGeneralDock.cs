@@ -45,16 +45,26 @@ namespace ATuimStudio.ViewModels
 	{
 		object ViewModel { get; }
 		bool TryGetView(out Control? view);
+		bool IsDirty { get; set; }
 	}
 
 	sealed class GeneralDocument : Document, IGeneralDocumentDockBase
 	{
 		WeakReference<Control>? _view;
-		internal GeneralDocument(object viewModel, Func<IServiceProvider, Control> viewFactory)
+		readonly string _title;
+		internal GeneralDocument(object viewModel, Func<IServiceProvider, Control> viewFactory, string title)
 		{
 			ViewModel = viewModel;
+
+			if (viewModel is DocumentViewModel dvm)
+				dvm.PropertyChanged += (s, e) => { if (e.PropertyName.EqualsOrdinal(nameof(DocumentViewModel.IsDirty))) IsDirty = dvm.IsDirty; };
+
 			ViewFactory = sp => { Control view = viewFactory(sp); _view = new WeakReference<Control>(view); return view; };
+			_title = title;
+			Title = title;
 		}
+
+		public bool IsDirty { get; set { field = value; Title = value ? _title + "*" : _title; this.OnPropertyChanged(Title); } }
 
 		public object ViewModel { get; }
 		public Func<IServiceProvider, Control> ViewFactory { get; }

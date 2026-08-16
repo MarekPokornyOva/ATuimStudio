@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace ATuimStudio.ViewModels
 {
-	public sealed class DocumentViewModel : ObservableObject, IDisposable
+	public sealed partial class DocumentViewModel : ObservableObject, IDisposable
 	{
 		readonly ISolutionService _solutionService;
 		readonly ICodeDiagnosticsManager _codeDiagnosticsManager;
@@ -48,8 +48,13 @@ namespace ATuimStudio.ViewModels
 			string path = _fileData.Path;
 			_solutionService.UpdateDocumentContent(path, new DocumentUpdateInfo(e.Offset, e.InsertedText.Text, e.RemovedText.Text));
 
+			IsDirty = true;
+
 			_diagRefreshTimer?.Change(1000, Timeout.Infinite);
 		}
+
+		[ObservableProperty]
+		public partial bool IsDirty { get; private set; }
 
 		void DiagRefresh(object? state)
 		{
@@ -59,6 +64,11 @@ namespace ATuimStudio.ViewModels
 		public void Dispose()
 		{
 			_diagRefreshTimer?.Dispose();
+		}
+
+		internal void UnmarkDirty()
+		{
+			IsDirty = false;
 		}
 	}
 }
