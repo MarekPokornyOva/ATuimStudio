@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AvalonStudio.Debugging.DotNetCore
 {
-	static class DotNetCoreDebugger
+	public static class DotNetCoreDebugger
 	{
 		public static DebuggerSession CreateSession()
 		{
@@ -48,7 +48,8 @@ namespace AvalonStudio.Debugging.DotNetCore
 			};
 
 			if (environmentVariables != null)
-				startInfo.EnvironmentVariables.AddRange(environmentVariables);
+				foreach (var item in environmentVariables)
+					startInfo.EnvironmentVariables.Add(item.Key, item.Value);
 
 			return startInfo;
 		}

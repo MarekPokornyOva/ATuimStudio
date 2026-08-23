@@ -1,8 +1,11 @@
 <Solution>
-  <Folder Name="/Mono.DebuggerLibs/">
-    <Project Path="src/Mono.DebuggerLibs/CorApi2/CorApi2.csproj" />
-    <Project Path="src/Mono.DebuggerLibs/Mono.Debugging.ClrDebug/Mono.Debugging.ClrDebug.csproj" />
-    <Project Path="src/Mono.DebuggerLibs/Mono.Debugging/Mono.Debugging.csproj" />
+  <Folder Name="/Debugger/">
+    <Project Path="src/Debugger/ATuimStudio.Debugger/ATuimStudio.Debugger.csproj" />
+  </Folder>
+  <Folder Name="/Debugger/Mono.DebuggerLibs/">
+    <Project Path="src/Debugger/Mono.DebuggerLibs/CorApi2/CorApi2.csproj" />
+    <Project Path="src/Debugger/Mono.DebuggerLibs/Mono.Debugging.ClrDebug/Mono.Debugging.ClrDebug.csproj" />
+    <Project Path="src/Debugger/Mono.DebuggerLibs/Mono.Debugging/Mono.Debugging.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
