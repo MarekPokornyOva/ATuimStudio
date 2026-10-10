@@ -10,7 +10,7 @@
 		<vm:DebugWatchViewModel />
 	</Design.DataContext>
 
-	<TreeDataGrid Source="{Binding Source}">
+	<TreeDataGrid Source="{Binding Source}" CanUserResizeColumns="True">
 		<TreeDataGrid.Resources>
 			<DataTemplate x:Key="ExpressionCell" DataType="vm:DebugWatchViewModel+VariableItemBase">
 				<StackPanel Orientation="Horizontal">

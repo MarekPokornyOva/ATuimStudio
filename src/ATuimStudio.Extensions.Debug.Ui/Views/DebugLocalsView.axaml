@@ -10,5 +10,5 @@
 		<vm:DebugLocalsViewModel />
 	</Design.DataContext>
 
-	<TreeDataGrid Source="{Binding Source}"/>
+	<TreeDataGrid Source="{Binding Source}" CanUserResizeColumns="True"/>
 </UserControl>
