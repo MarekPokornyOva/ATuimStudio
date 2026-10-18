@@ -10,7 +10,8 @@ namespace ATuimStudio.Extensions.Core
 		public async Task<ISolutionData> GetSolutionDataAsync(string path, CancellationToken cancellationToken)
 		{
 			if (!MSBuildLocator.IsRegistered)
-				MSBuildLocator.RegisterDefaults();
+				if (MSBuildLocator.RegisterDefaults().Version.Major < 10)
+					throw new InvalidOperationException("No MsBuild version 10+ found.");
 
 			SolutionData slnInfo;
 			MSBuildWorkspace ws = MSBuildWorkspace.Create();
