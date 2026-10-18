@@ -50,11 +50,15 @@ public sealed class DebugWatchViewModel : ObservableObject, IDisposable
 
 	void ProcessSelectedFrameChanged()
 	{
-		Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
-		{
-			foreach (ExpressionItem expressionItem in _expressionItems)
-				expressionItem.Reevaluate();
-		});
+		if (_expressionItems.Count == 0)
+			return;
+		Task.WhenAll(_expressionItems.Select(static async x => (x, await x.Reevaluate()))).ContinueWith<(ExpressionItem, IDebugItem?)[]>(ress =>
+			Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+			{
+				foreach ((ExpressionItem expressionItem, IDebugItem? debugItem) in ress)
+					expressionItem.Apply(debugItem);
+			})
+		);
 	}
 
 	void NewExpressionItem()
@@ -106,14 +110,17 @@ public sealed class DebugWatchViewModel : ObservableObject, IDisposable
 
 				_expression = value;
 				OnPropertyChanged(nameof(Expression));
-				Reevaluate();
+				Reevaluate().ContinueWith(res => Avalonia.Threading.Dispatcher.UIThread.Invoke(() => Apply(res)));
 			}
 		}
 		public string Value { get; protected set { field = value; OnPropertyChanged(nameof(Value)); } }
 		public string TypeName { get; protected set { field = value; OnPropertyChanged(nameof(TypeName)); } }
 		public bool CanEdit { get; }
 
-		internal virtual void Reevaluate() { }
+		readonly Task<IDebugItem?> _nullValue = Task.FromResult<IDebugItem?>(null);
+
+		internal virtual Task<IDebugItem?> Reevaluate() => _nullValue;
+		internal virtual void Apply(IDebugItem? debugItem) { }
 
 		protected abstract void ExpandChildren();
 
@@ -157,10 +164,24 @@ public sealed class DebugWatchViewModel : ObservableObject, IDisposable
 			_frameProvider = frameProvider;
 		}
 
-		internal override void Reevaluate()
+		internal override Task<IDebugItem?> Reevaluate()
 		{
 			string expression = Expression;
 			_objectValue = null;
+
+			if (expression == "")
+				return base.Reevaluate();
+			else
+			{
+				IStackFrame? selectedFrame = _frameProvider();
+				if (selectedFrame == null)
+					return base.Reevaluate();
+				return selectedFrame.EvaluateAsync(expression, CancellationToken.None)!;
+			}
+		}
+		internal override void Apply(IDebugItem? objectValue)
+		{
+			_objectValue = objectValue;
 
 			if (IsExpanded)
 			{
@@ -168,27 +189,24 @@ public sealed class DebugWatchViewModel : ObservableObject, IDisposable
 				OnPropertyChanged(nameof(IsExpanded));
 			}
 
-			if (expression == "")
+			if (Expression == "")
 			{
 				Value = "";
 				TypeName = "";
 				Children.Clear();
+				return;
 			}
-			else
-			{
-				IStackFrame? selectedFrame = _frameProvider();
-				if (selectedFrame == null)
-					return;
-				IDebugItem objectValue = selectedFrame.Evaluate(expression);
-				Value = objectValue.Value;
-				TypeName = objectValue.TypeName;
-				_objectValue = objectValue;
 
-				if (Children.Count != 1 || Children[0] != _dummyItem)
-				{
-					Children.Clear();
-					Children.Add(_dummyItem);
-				}
+			if (objectValue == null)
+				return;
+
+			Value = objectValue.Value;
+			TypeName = objectValue.TypeName;
+
+			if (Children.Count != 1 || Children[0] != _dummyItem)
+			{
+				Children.Clear();
+				Children.Add(_dummyItem);
 			}
 		}
 
@@ -198,7 +216,6 @@ public sealed class DebugWatchViewModel : ObservableObject, IDisposable
 		{
 			if (_objectValue == null)
 				return;
-
 			ExpandChildren(_objectValue);
 		}
 	};

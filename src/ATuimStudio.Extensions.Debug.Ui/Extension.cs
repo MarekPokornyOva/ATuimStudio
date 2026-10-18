@@ -33,7 +33,10 @@ namespace ATuimStudio.Extensions.Debug
 
 		public override void RegisterCommand(ICommandRegistrator commandRegistrator)
 		{
-			IDebuggerService debuggerService = commandRegistrator.ServiceProvider.GetRequiredService<IDebuggerService>();
+			commandRegistrator.ServiceProvider.GetRequiredService<IUserOptionsRegistrator>()
+				.RegisterDefault(UserOptionsCodes.Selected, "Mono");
+
+			IDebuggerFactory debuggerService = commandRegistrator.ServiceProvider.GetRequiredService<IDebuggerFactory>();
 			IDebuggerProvider debuggerProvider = commandRegistrator.ServiceProvider.GetRequiredService<IDebuggerProvider>();
 			IBreakpointManager breakpointManager = commandRegistrator.ServiceProvider.GetRequiredService<IBreakpointManager>();
 			IBuildService buildService = commandRegistrator.ServiceProvider.GetRequiredService<IBuildService>();
@@ -100,7 +103,7 @@ namespace ATuimStudio.Extensions.Debug
 						layoutManager.SwitchLayout("Debug");
 
 						foreach (Breakpoint bp in breakpointManager.Breakpoints)
-							debugger.ToggleBreakpoint(bp.Filepath, new SourcePosition(bp.Range.Start.Line, bp.Range.Start.Column));
+							debugger.ToggleBreakpointAsync(bp.Filepath, new SourcePosition(bp.Range.Start.Line, bp.Range.Start.Column), cancellationToken).AwaitSync(false);
 
 						RefreshCommands();
 					}
@@ -132,43 +135,48 @@ namespace ATuimStudio.Extensions.Debug
 					debugger.OnBreakpoint += DebugBreakpoint;
 					debugger.OnContinued += DebugContinued;
 					debugger.OnTerminated += DebugTerminated;
-					debugger.Start();
+					await debugger.StartAsync(cancellationToken);
 				}, CanStart)),
 				() => AssetLoader.Open(new Uri("avares://ATuimStudio.Extensions.Debug.Ui/Assets/DebugStart.png"))
 			);
 
-			commandRegistrator.Register(ContinueCommandCode, AddCommand(new RelayCommand(() =>
-				{
-					debuggerProvider.Current?.Continue();
-				}, CanContinue)),
+			commandRegistrator.Register(ContinueCommandCode, AddCommand(new AsyncRelayCommand(cancellationToken =>
+				debuggerProvider.Current == null
+					? Task.CompletedTask
+					: debuggerProvider.Current.ContinueAsync(cancellationToken)
+				, CanContinue)),
 				() => AssetLoader.Open(new Uri("avares://ATuimStudio.Extensions.Debug.Ui/Assets/DebugStart.png"))
 				);
 
-			commandRegistrator.Register(StopCommandCode, AddCommand(new RelayCommand(() =>
-				{
-					debuggerProvider.Current?.Terminate();
-				}, CanStop)),
+			commandRegistrator.Register(StopCommandCode, AddCommand(new AsyncRelayCommand(cancellationToken =>
+				debuggerProvider.Current == null
+					? Task.CompletedTask
+					: debuggerProvider.Current.TerminateAsync(cancellationToken)
+				, CanStop)),
 				() => AssetLoader.Open(new Uri("avares://ATuimStudio.Extensions.Debug.Ui/Assets/DebugStop.png"))
 				);
 
-			commandRegistrator.Register(StepInCommandCode, AddCommand(new RelayCommand(() =>
-				{
-					debuggerProvider.Current?.StepIn();
-				}, CanContinue)),
+			commandRegistrator.Register(StepInCommandCode, AddCommand(new AsyncRelayCommand(cancellationToken =>
+				debuggerProvider.Current == null
+					? Task.CompletedTask
+					: debuggerProvider.Current.StepInAsync(cancellationToken)
+				, CanContinue)),
 				() => AssetLoader.Open(new Uri("avares://ATuimStudio.Extensions.Debug.Ui/Assets/DebugStepIn.png"))
 				);
 
-			commandRegistrator.Register(StepOverCommandCode, AddCommand(new RelayCommand(() =>
-				{
-					debuggerProvider.Current?.StepOver();
-				}, CanContinue)),
+			commandRegistrator.Register(StepOverCommandCode, AddCommand(new AsyncRelayCommand(cancellationToken =>
+				debuggerProvider.Current == null
+					? Task.CompletedTask
+					: debuggerProvider.Current.StepOverAsync(cancellationToken)
+				, CanContinue)),
 				() => AssetLoader.Open(new Uri("avares://ATuimStudio.Extensions.Debug.Ui/Assets/DebugStepOver.png"))
 				);
 
-			commandRegistrator.Register(StepOutCommandCode, AddCommand(new RelayCommand(() =>
-				{
-					debuggerProvider.Current?.StepOut();
-				}, CanContinue)),
+			commandRegistrator.Register(StepOutCommandCode, AddCommand(new AsyncRelayCommand(cancellationToken =>
+				debuggerProvider.Current == null
+					? Task.CompletedTask
+					: debuggerProvider.Current.StepOutAsync(cancellationToken)
+				, CanContinue)),
 				() => AssetLoader.Open(new Uri("avares://ATuimStudio.Extensions.Debug.Ui/Assets/DebugStepOut.png"))
 				);
 		}

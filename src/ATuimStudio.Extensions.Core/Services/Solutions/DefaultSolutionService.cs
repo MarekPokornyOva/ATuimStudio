@@ -78,7 +78,7 @@ namespace ATuimStudio.Extensions.Core
 			Document? msDoc = FindDocument(path);
 			if (msDoc == null)
 				return null;
-			return (msDoc, msDoc.GetTextAsync().GetAwaiter().GetResult());
+			return (msDoc, msDoc.GetTextAsync().AwaitSync(true));
 		}
 
 		public void DeleteFile(string path)

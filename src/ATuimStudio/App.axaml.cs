@@ -32,8 +32,8 @@ public partial class App : Application
 		IUserOptionsRepository userOptionsRepository = sp.GetRequiredService<IUserOptionsRepository>();
 		DefaultUserOptionsManager userOptionsManager = sp.GetRequiredService<DefaultUserOptionsManager>();
 		userOptionsManager.Changed += (_, values) =>
-			userOptionsRepository.SaveAsync(values, CancellationToken.None).GetAwaiter().GetResult();
-		userOptionsManager.LoadAsync(userOptionsRepository, CancellationToken.None).GetAwaiter().GetResult();
+			userOptionsRepository.SaveAsync(values, CancellationToken.None).AwaitSync(true);
+		userOptionsManager.LoadAsync(userOptionsRepository, CancellationToken.None).AwaitSync(true);
 		#endregion UserOptions
 
 		PluginManager.Register(sp);

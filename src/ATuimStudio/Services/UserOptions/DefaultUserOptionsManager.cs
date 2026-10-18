@@ -1,5 +1,4 @@
-﻿using ATuimStudio.Extensions.Core;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 
 namespace ATuimStudio.Extensions.Core

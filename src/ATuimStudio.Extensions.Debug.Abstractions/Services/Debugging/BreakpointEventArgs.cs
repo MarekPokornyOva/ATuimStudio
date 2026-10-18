@@ -45,12 +45,12 @@
 
 	public interface IStackFrame
 	{
-		IReadOnlyCollection<IDebugItem> GetArguments();
-		IReadOnlyCollection<IDebugItem> GetLocals();
+		Task<IReadOnlyCollection<IDebugItem>> GetArgumentsAsync(CancellationToken cancellationToken);
+		Task<IReadOnlyCollection<IDebugItem>> GetLocalsAsync(CancellationToken cancellationToken);
 		string SourceFilePath { get; }
 		SourceRange? Range { get; }
 		string FullStackFrameText { get; }
-		IDebugItem Evaluate(string expressions);
+		Task<IDebugItem> EvaluateAsync(string expressions, CancellationToken cancellationToken);
 	}
 
 	public interface IDebugItem

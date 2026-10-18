@@ -1,8 +1,10 @@
-﻿using AvalonStudio.Debugging.DotNetCore;
+﻿using ATuimStudio.Extensions.Debug;
+using AvalonStudio.Debugging.DotNetCore;
 using Mono.Debugging.Client;
 using System.Collections;
+using BreakpointEventArgs = ATuimStudio.Extensions.Debug.BreakpointEventArgs;
 
-namespace ATuimStudio.Extensions.Debug
+namespace ATuimStudio.Extensions.Debugger.Mono
 {
 	sealed class MonoDebugger : IDebugger
 	{
@@ -42,8 +44,11 @@ namespace ATuimStudio.Extensions.Debug
 			OnTerminated?.Invoke(this, TerminatedEventArgs.Instance);
 		}
 
-		public void Start()
-			=> _start();
+		public Task StartAsync(CancellationToken cancellationToken)
+		{
+			_start();
+			return Task.CompletedTask;
+		}
 
 		static BreakpointEventArgs CreateBreakpointArgs(Backtrace backtrace)
 			=> new BreakpointEventArgs(new Stack(backtrace));
@@ -78,10 +83,11 @@ namespace ATuimStudio.Extensions.Debug
 			session.Dispose();
 		}
 
-		public void Continue()
+		public Task ContinueAsync(CancellationToken cancellationToken)
 		{
 			OnContinued?.Invoke(this, _currentBreakpoint!);
 			_session.Continue();
+			return Task.CompletedTask;
 		}
 
 		//public void Pause()
@@ -89,41 +95,45 @@ namespace ATuimStudio.Extensions.Debug
 		//	_session.Stop();
 		//}
 
-		public void StepIn()
+		public Task StepInAsync(CancellationToken cancellationToken)
 		{
 			OnContinued?.Invoke(this, _currentBreakpoint!);
 			_session.StepLine();
+			return Task.CompletedTask;
 		}
 
-		public void StepOut()
+		public Task StepOutAsync(CancellationToken cancellationToken)
 		{
 			OnContinued?.Invoke(this, _currentBreakpoint!);
 			_session.Finish();
+			return Task.CompletedTask;
 		}
 
-		public void StepOver()
+		public Task StepOverAsync(CancellationToken cancellationToken)
 		{
 			OnContinued?.Invoke(this, _currentBreakpoint!);
 			_session.NextLine();
+			return Task.CompletedTask;
 		}
 
-		public void Terminate()
+		public Task TerminateAsync(CancellationToken cancellationToken)
 		{
 			OnContinued?.Invoke(this, _currentBreakpoint!);
 			_session.Exit();
+			return Task.CompletedTask;
 		}
 
-		public bool ToggleBreakpoint(string sourceFilePath, SourcePosition position)
+		public Task<bool> ToggleBreakpointAsync(string sourceFilePath, SourcePosition position, CancellationToken cancellationToken)
 		{
 			if (_session == null)
-				return false;
+				return Task.FromResult(false);
 
 			BreakpointStore bps = _session.Breakpoints;
-			Mono.Debugging.Client.Breakpoint? bp = bps.GetBreakpointsAtFileLine(sourceFilePath, position.Line).FirstOrDefault(x => x.Column == position.Column);
+			global::Mono.Debugging.Client.Breakpoint? bp = bps.GetBreakpointsAtFileLine(sourceFilePath, position.Line).FirstOrDefault(x => x.Column == position.Column);
 			if (bp != null)
-				return bps.Remove(bp);
+				return Task.FromResult(bps.Remove(bp));
 
-			return bps.Add(sourceFilePath, position.Line, position.Column) != null;
+			return Task.FromResult(bps.Add(sourceFilePath, position.Line, position.Column) != null);
 		}
 
 		sealed class Stack : IReadOnlyList<IStackFrame>, IEnumerator<IStackFrame>
@@ -183,22 +193,22 @@ namespace ATuimStudio.Extensions.Debug
 
 		class StackFrame : IStackFrame
 		{
-			readonly Mono.Debugging.Client.StackFrame _inner;
-			internal StackFrame(Mono.Debugging.Client.StackFrame inner)
+			readonly global::Mono.Debugging.Client.StackFrame _inner;
+			internal StackFrame(global::Mono.Debugging.Client.StackFrame inner)
 				=> _inner = inner;
 
 			public string SourceFilePath => _inner.SourceLocation.FileName;
 
 			public SourceRange? Range { get { SourceLocation loc = _inner.SourceLocation; return new SourceRange(loc.Line, loc.Column, loc.EndLine, loc.EndColumn); } }
 
-			public IReadOnlyCollection<IDebugItem> GetArguments()
-				=> [.. _inner.GetParameters().Select(static x => new ReadOnlyDebugItem(x))];
+			public Task<IReadOnlyCollection<IDebugItem>> GetArgumentsAsync(CancellationToken cancellationToken)
+				=> Task.FromResult<IReadOnlyCollection<IDebugItem>>([.. _inner.GetParameters().Select(static x => new ReadOnlyDebugItem(x))]);
 
-			public IReadOnlyCollection<IDebugItem> GetLocals()
-				=> [.. _inner.GetLocalVariables().Select(static x => new ReadOnlyDebugItem(x))];
+			public Task<IReadOnlyCollection<IDebugItem>> GetLocalsAsync(CancellationToken cancellationToken)
+				=> Task.FromResult<IReadOnlyCollection<IDebugItem>>([.. _inner.GetLocalVariables().Select(static x => new ReadOnlyDebugItem(x))]);
 
-			public IDebugItem Evaluate(string expression)
-				=> new ExpressionDebugItem(expression, _inner.GetExpressionValue(expression, true));
+			public Task<IDebugItem> EvaluateAsync(string expression, CancellationToken cancellationToken)
+				=> Task.FromResult<IDebugItem>(new ExpressionDebugItem(expression, _inner.GetExpressionValue(expression, true)));
 
 #pragma warning disable CS0612
 			public string FullStackFrameText => string.Concat(_inner.FullStackframeText, ":0x", _inner.Address.ToString("x"));

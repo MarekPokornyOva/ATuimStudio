@@ -80,12 +80,19 @@ public sealed class DebugLocalsViewModel : ObservableObject, IDisposable
 		}
 
 		IStackFrame? stackFrame = _stackTraceProvider.SelectedFrame;
-		Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+		if (stackFrame == null)
+			Avalonia.Threading.Dispatcher.UIThread.Invoke(
+				_locals.Clear
+			);
+		else
 		{
-			_locals.Clear();
-			if (stackFrame != null)
-				FillCollection(stackFrame.GetArguments().Union(stackFrame.GetLocals()), _locals);
-		});
+			stackFrame.GetLocalsAsync(CancellationToken.None)
+				.ContinueWith(result => Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+					{
+						_locals.Clear();
+						FillCollection(result, _locals);
+					}));
+		}
 	}
 
 	public class VariableItem

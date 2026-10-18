@@ -16,7 +16,7 @@
 		{
 			IDebugger? debugger = _debuggerProvider.Current;
 			if (debugger != null)
-				if (!debugger.ToggleBreakpoint(filepath, new SourcePosition(line, col)))
+				if (!debugger.ToggleBreakpointAsync(filepath, new SourcePosition(line, col), CancellationToken.None).AwaitSync(true))
 					return false;
 
 			int existingIndex = _breakpoints.FindIndex(x => x.Filepath.EqualsOrdinal(filepath) && x.Range.Start.Line == line);

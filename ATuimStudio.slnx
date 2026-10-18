@@ -1,4 +1,9 @@
 <Solution>
+  <Folder Name="/Debugger.Dap/">
+    <Project Path="src/Debugger.Dap/ATuimStudio.Debugger.Dap.Adapter/ATuimStudio.Debugger.Dap.Adapter.csproj" />
+    <Project Path="src/Debugger.Dap/ATuimStudio.Debugger.Dap.Client/ATuimStudio.Debugger.Dap.Client.csproj" />
+    <Project Path="tests/Debugger.Dap/ATuimStudio.Debugger.Dap.Adapter.Tests/ATuimStudio.Debugger.Dap.Adapter.Tests.csproj" />
+  </Folder>
   <Folder Name="/Debugger/">
     <Project Path="src/Debugger/ATuimStudio.Debugger/ATuimStudio.Debugger.csproj" />
   </Folder>
@@ -29,7 +34,9 @@
   <Project Path="src/ATuimStudio.Extensions.Core/ATuimStudio.Extensions.Core.csproj" />
   <Project Path="src/ATuimStudio.Extensions.Debug.Abstractions/ATuimStudio.Extensions.Debug.Abstractions.csproj" />
   <Project Path="src/ATuimStudio.Extensions.Debug.Ui/ATuimStudio.Extensions.Debug.Ui.csproj" />
-  <Project Path="src/ATuimStudio.Extensions.Debug/ATuimStudio.Extensions.Debug.csproj" Id="11c613d6-8486-4948-8703-de043db9f950" />
+  <Project Path="src/ATuimStudio.Extensions.Debug/ATuimStudio.Extensions.Debug.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.Debugger.Dap/ATuimStudio.Extensions.Debugger.Dap.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.Debugger.Mono/ATuimStudio.Extensions.Debugger.Mono.csproj" />
   <Project Path="src/ATuimStudio.Extensions.FindInFiles.Abstractions/ATuimStudio.Extensions.FindInFiles.Abstractions.csproj" />
   <Project Path="src/ATuimStudio.Extensions.FindInFiles.Ui/ATuimStudio.Extensions.FindInFiles.Ui.csproj" />
   <Project Path="src/ATuimStudio.Extensions.FindInFiles/ATuimStudio.Extensions.FindInFiles.csproj" />

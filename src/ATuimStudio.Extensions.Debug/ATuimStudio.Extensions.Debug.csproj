@@ -11,6 +11,5 @@
 		<ProjectReference Include="..\ATuimStudio.Common\ATuimStudio.Common.csproj" />
 		<ProjectReference Include="..\ATuimStudio.Extensions.Core.Abstractions\ATuimStudio.Extensions.Core.Abstractions.csproj" />
 		<ProjectReference Include="..\ATuimStudio.Extensions.Debug.Abstractions\ATuimStudio.Extensions.Debug.Abstractions.csproj" />
-		<ProjectReference Include="..\Debugger\ATuimStudio.Debugger\ATuimStudio.Debugger.csproj" />
 	</ItemGroup>
 </Project>

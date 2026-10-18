@@ -26,7 +26,7 @@ using (sp)
 		throw new InvalidOperationException("Build failed.");
 
 	Console.WriteLine("Starting debug...");
-	using (IDebugger debugger = await sp.GetRequiredService<IDebuggerService>()
+	using (IDebugger debugger = await sp.GetRequiredService<IDebuggerFactory>()
 		.CreateDebuggerAsync(buildResult.OutputPath!, null, null, cancellationToken))
 		//.StartAsync("dotnet", [buildResult.OutputPath!], cancellationToken))
 	{
@@ -35,17 +35,21 @@ using (sp)
 	
 		debugger.OnStarted += (sender, e) =>
 		{
-			debugger.ToggleBreakpoint(SettingsHelper.GetToDebugProgramCs(), new SourcePosition(7, 1));
-			((IDebugger)sender!).Continue();
+			async Task ProcessOnStarted()
+			{
+				await debugger.ToggleBreakpointAsync(SettingsHelper.GetToDebugProgramCs(), new SourcePosition(7, 1), cancellationToken);
+				await ((IDebugger)sender!).ContinueAsync(cancellationToken);
+			}
+			ProcessOnStarted().AwaitSync(true);
 		};
 		debugger.OnBreakpoint += (sender, e) =>
 		{
 			IStackFrame frame = e.CallStack[0];
 			Console.WriteLine($"{frame.SourceFilePath}::{frame.Range!.Value.Start.Line}x{frame.Range!.Value.Start.Column}");
-			((IDebugger)sender!).Continue();
+			((IDebugger)sender!).ContinueAsync(cancellationToken).AwaitSync(true);
 		};
 
-		debugger.Start();
+		await debugger.StartAsync(cancellationToken);
 
 		ManualResetEvent mre = new ManualResetEvent(false);
 		debugger.OnTerminated += (sender, e) => mre.Set();

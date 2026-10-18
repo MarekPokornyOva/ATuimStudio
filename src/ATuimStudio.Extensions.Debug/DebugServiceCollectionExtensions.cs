@@ -6,9 +6,9 @@ namespace Microsoft.Extensions.DependencyInjection
 	{
 		public static IServiceCollection AddDebug(this IServiceCollection services)
 			=> services
-				.AddSingleton<MonoDebuggerService>()
-				.AddTransient<IDebuggerService>(sp => sp.GetRequiredService<MonoDebuggerService>())
-				.AddTransient<IDebuggerProvider>(sp => sp.GetRequiredService<MonoDebuggerService>())
+				.AddSingleton<DebuggerProvider>()
+				.AddTransient<IDebuggerProvider>(ServiceProviderServiceExtensions.GetRequiredService<DebuggerProvider>)
+				.AddTransient<IDebuggerFactory>(ServiceProviderServiceExtensions.GetRequiredService<DebuggerProvider>)
 				.AddSingleton<IBreakpointManager, DefaultBreakpointManager>()
 				.AddSingleton<IStackTraceProvider, DefaultStackTraceProvider>()
 				;

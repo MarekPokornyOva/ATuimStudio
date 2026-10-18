@@ -19,6 +19,8 @@ dotnet_diagnostic.IDE0090.severity = none
 dotnet_diagnostic.IDE0130.severity = none
 # IDE0290: Use primary constructor
 dotnet_diagnostic.IDE0290.severity = none
+# VSTHRD002: Avoid problematic synchronous waits
+dotnet_diagnostic.VSTHRD002.severity = none
 
 # Do not use 'var' when generating code, but allow developers to use it
 csharp_style_var_for_built_in_types = false:silent

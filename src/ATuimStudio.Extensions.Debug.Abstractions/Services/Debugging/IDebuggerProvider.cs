@@ -2,7 +2,7 @@
 {
 	public interface IDebuggerProvider
 	{
-		IDebugger? Current { get; }
+		IDebugger? Current { get; set; }
 		event EventHandler<EventArgs>? OnChanged;
 	}
 }

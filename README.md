@@ -31,6 +31,7 @@ Tested on:
   - Stepping
   - Call stack view
   - Local variables and parameters view
+  - DebugAdapterProtocol / Remote debugging
 
 ![Screenshot](./Screenshot.png "Screenshot")
 
@@ -59,6 +60,7 @@ Workaround:
 - CommunityToolkit.Mvvm - https://github.com/CommunityToolkit/dotnet
 - Dock.Avalonia - https://github.com/wieslawsoltes/Dock
 - LibGit2Sharp - https://github.com/libgit2/libgit2sharp
+- OmniSharp - https://github.com/OmniSharp/csharp-language-server-protocol
 - Microsoft .NET - https://github.com/microsoft/dotnet
 - Microsoft Build - https://github.com/dotnet/msbuild
 - Microsoft CodeAnalysis - https://github.com/dotnet/roslyn
