@@ -23,6 +23,7 @@ public class DockFactory : Factory, IUiDocumentService, ILayoutManager, IUiWindo
 		_serviceProvider = serviceProvider;
 		_solutionService = solutionService;
 		ActiveDockableChanged += DockFactory_ActiveDockableChanged;
+		DockableClosed += DockFactory_DockableClosed;
 		_dockLayoutMaterializer = new DockLayoutMaterializer(_serviceProvider, _paneTypeFactories, CreateList);
 
 		//Initialize LayoutManager
@@ -115,6 +116,13 @@ public class DockFactory : Factory, IUiDocumentService, ILayoutManager, IUiWindo
 	{
 		if (e.Dockable is GeneralDocument gd && gd.ViewModel is DocumentViewModel dv)
 			ActiveDocument = dv;
+	}
+
+	void DockFactory_DockableClosed(object? sender, Dock.Model.Core.Events.DockableClosedEventArgs e)
+	{
+		IList<IDockable>? docks = DocumentDock.VisibleDockables;
+		if (docks == null || docks.Count == 0)
+			ActiveDocument = null;
 	}
 
 	public void SetActiveDocument(string path)
