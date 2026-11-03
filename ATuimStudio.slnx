@@ -44,6 +44,7 @@
   <Project Path="src/ATuimStudio.Extensions.Git.Ui/ATuimStudio.Extensions.Git.Ui.csproj" />
   <Project Path="src/ATuimStudio.Extensions.Git/ATuimStudio.Extensions.Git.csproj" />
   <Project Path="src/ATuimStudio.Extensions.OpenCode.Ui/ATuimStudio.Extensions.OpenCode.Ui.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.Terminal.Ui/ATuimStudio.Extensions.Terminal.Ui.csproj" />
   <Project Path="src/ATuimStudio.Extensions.TextEditCompletion.Abstractions/ATuimStudio.Extensions.TextEditCompletion.Abstractions.csproj" />
   <Project Path="src/ATuimStudio.Extensions.TextEditCompletion.Ui/ATuimStudio.Extensions.TextEditCompletion.Ui.csproj" />
   <Project Path="src/ATuimStudio.Extensions.TextEditCompletion/ATuimStudio.Extensions.TextEditCompletion.csproj" />

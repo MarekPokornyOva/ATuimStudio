@@ -35,6 +35,7 @@ Tested on:
   - DebugAdapterProtocol / Remote debugging
 - OpenCode integration
   - Agent mode
+- Terminal integration
 
 ![Screenshot](./Screenshot.png "Screenshot")
 
@@ -73,4 +74,5 @@ Workaround:
 - Mono:debugger-libs - https://github.com/mono/debugger-libs
 - OpenCode - https://github.com/anomalyco/opencode
 - SourceGit - https://github.com/sourcegit-scm/sourcegit
+- Terminal - https://github.com/tomlm/Iciclecreek.Avalonia.Terminal
 - VitalElement.AvalonStudio - https://github.com/VitalElement/AvalonStudio
