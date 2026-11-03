@@ -32,7 +32,7 @@ namespace ATuimStudio
 			commandRegistrator.Register(SaveDocumentCommandCode, new AsyncRelayCommand(() => SaveDocument(dockFactory)), () => AssetLoader.Open(new Uri("avares://ATuimStudio/Assets/SaveDocument.png")));
 			commandRegistrator.Register(SaveAllCommandCode, new AsyncRelayCommand(() => SaveAll(dockFactory)), () => AssetLoader.Open(new Uri("avares://ATuimStudio/Assets/SaveAll.png")));
 			commandRegistrator.Register(ExitCommandCode, new RelayCommand(ExitApplication), null);
-			commandRegistrator.Register(UserOptionsCommandCode, new RelayCommand(() => Options(dialogService)), null);
+			commandRegistrator.Register(UserOptionsCommandCode, new RelayCommand(() => _ = Options(dialogService)), null);
 
 			commandRegistrator.ServiceProvider.GetRequiredService<IUserOptionsRegistrator>()
 				.RegisterDefault(UserOptionsCodes.DocumentEditorZoom, 100d);

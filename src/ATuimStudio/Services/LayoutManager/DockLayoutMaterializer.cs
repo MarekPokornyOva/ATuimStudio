@@ -1,4 +1,5 @@
-﻿using ATuimStudio.Extensions.Core.Ui;
+﻿using ATuimStudio.Extensions.Core;
+using ATuimStudio.Extensions.Core.Ui;
 using ATuimStudio.ViewModels;
 using Avalonia.Controls;
 using Dock.Model.Core;
@@ -11,12 +12,14 @@ namespace ATuimStudio
 	class DockLayoutMaterializer
 	{
 		readonly IServiceProvider _serviceProvider;
+		readonly IApplicationLifetimeService _applicationLifetimeService;
 		readonly Dictionary<Guid, (Func<IServiceProvider, object> ViewModelFactory, Func<IServiceProvider, Control> ViewFactory)> _paneTypeFactories;
 		readonly Func<IDockable[], IList<IDockable>> CreateList;
 
-		internal DockLayoutMaterializer(IServiceProvider serviceProvider, Dictionary<Guid, (Func<IServiceProvider, object> ViewModelFactory, Func<IServiceProvider, Control> ViewFactory)> paneTypeFactories, Func<IDockable[], IList<IDockable>> createList)
+		internal DockLayoutMaterializer(IServiceProvider serviceProvider, IApplicationLifetimeService applicationLifetimeService, Dictionary<Guid, (Func<IServiceProvider, object> ViewModelFactory, Func<IServiceProvider, Control> ViewFactory)> paneTypeFactories, Func<IDockable[], IList<IDockable>> createList)
 		{
 			_serviceProvider = serviceProvider;
+			_applicationLifetimeService = applicationLifetimeService;
 			_paneTypeFactories = paneTypeFactories;
 			CreateList = createList;
 		}
@@ -40,7 +43,7 @@ namespace ATuimStudio
 		{
 			if (!_paneTypeFactories.TryGetValue(layoutPane.Type, out var facts))
 				return new ToolDock { Id = layoutPane.Id };
-			return new GeneralTool(layoutPane.Id, facts.ViewModelFactory, facts.ViewFactory) { Id = layoutPane.Id, Title = layoutPane.Title };
+			return new GeneralTool(_applicationLifetimeService, layoutPane.Id, facts.ViewModelFactory, facts.ViewFactory) { Id = layoutPane.Id, Title = layoutPane.Title };
 		}
 
 		CustomDocumentDock? _customDocumentDockSingleton;

@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using ATuimStudio.Extensions.Core;
+using Avalonia.Controls;
 using Dock.Model.Mvvm.Controls;
 
 namespace ATuimStudio.ViewModels
@@ -17,10 +18,12 @@ namespace ATuimStudio.ViewModels
 
 	sealed class GeneralTool : Tool, IGeneralToolDockBase
 	{
+		readonly IApplicationLifetimeService _applicationLifetimeService;
 		readonly Func<IServiceProvider, object> _viewModelFactory;
 		object _viewModel = default!;
-		internal GeneralTool(string cacheId, Func<IServiceProvider, object> viewModelFactory, Func<IServiceProvider, Control> viewFactory)
+		internal GeneralTool(IApplicationLifetimeService applicationLifetimeService, string cacheId, Func<IServiceProvider, object> viewModelFactory, Func<IServiceProvider, Control> viewFactory)
 		{
+			_applicationLifetimeService = applicationLifetimeService;
 			CacheId = cacheId;
 			_viewModelFactory = viewModelFactory;
 			ViewFactory = viewFactory;
@@ -38,6 +41,7 @@ namespace ATuimStudio.ViewModels
 			if (!ViewModelCreated)
 			{
 				_viewModel = _viewModelFactory(serviceProvider);
+				_applicationLifetimeService.RegisterDisposable(_viewModel);
 				_viewModelCreated.SetResult(_viewModel);
 			}
 			return _viewModel;

@@ -15,16 +15,18 @@ public class DockFactory : Factory, IUiDocumentService, ILayoutManager, IUiWindo
 {
 	#region ctor
 	readonly IServiceProvider _serviceProvider;
+	readonly IApplicationLifetimeService _applicationLifetimeService;
 	readonly ISolutionService _solutionService;
 	readonly DockLayoutMaterializer _dockLayoutMaterializer;
 
-	public DockFactory(IServiceProvider serviceProvider, ISolutionService solutionService)
+	public DockFactory(IServiceProvider serviceProvider, IApplicationLifetimeService applicationLifetimeService, ISolutionService solutionService)
 	{
 		_serviceProvider = serviceProvider;
+		_applicationLifetimeService = applicationLifetimeService;
 		_solutionService = solutionService;
 		ActiveDockableChanged += DockFactory_ActiveDockableChanged;
 		DockableClosed += DockFactory_DockableClosed;
-		_dockLayoutMaterializer = new DockLayoutMaterializer(_serviceProvider, _paneTypeFactories, CreateList);
+		_dockLayoutMaterializer = new DockLayoutMaterializer(serviceProvider, applicationLifetimeService, _paneTypeFactories, CreateList);
 
 		//Initialize LayoutManager
 		RegisterPaneFactory(WellKnownLayoutConstants.TypeSolutionExplorer, static sp => ActivatorUtilities.CreateInstance<SolutionViewModel>(sp), static sp => new SolutionView());
@@ -397,7 +399,7 @@ public class DockFactory : Factory, IUiDocumentService, ILayoutManager, IUiWindo
 		{
 			if (!_paneTypeFactories.TryGetValue(type, out var facts))
 				return null;
-			pane = new GeneralTool(id, facts.ViewModelFactory, facts.ViewFactory) { Id = id, Title = title };
+			pane = new GeneralTool(_applicationLifetimeService, id, facts.ViewModelFactory, facts.ViewFactory) { Id = id, Title = title };
 			(parent.VisibleDockables ??= CreateList<IDockable>()).Add(pane);
 		}
 

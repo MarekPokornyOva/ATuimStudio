@@ -4,7 +4,6 @@ using ATuimStudio.Views;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,13 +21,15 @@ public partial class App : Application
 	{
 		//https://docs.avaloniaui.net/docs/guides/implementation-guides/how-to-implement-dependency-injection
 		TopLevelVisualProvider topLevelVisualProvider = new TopLevelVisualProvider();
-		ServiceProvider sp = AppServicesBuilder.BuildServiceProvider(topLevelVisualProvider);
+		ApplicationLifetimeService applicationLifetimeService = new ApplicationLifetimeService();
+		ServiceProvider sp = AppServicesBuilder.BuildServiceProvider(topLevelVisualProvider, applicationLifetimeService);
 		ViewLocator.ServiceProvider = sp;
+		applicationLifetimeService.RegisterDisposable((IAsyncDisposable)sp);
 
 		if (ApplicationLifetime is IControlledApplicationLifetime controlled)
-			controlled.Exit += async (sender, args) => await sp.DisposeAsync();
+			controlled.Exit += (sender, args) => applicationLifetimeService.Dispose();
 
-		#region UserOptions
+			#region UserOptions
 		IUserOptionsRepository userOptionsRepository = sp.GetRequiredService<IUserOptionsRepository>();
 		DefaultUserOptionsManager userOptionsManager = sp.GetRequiredService<DefaultUserOptionsManager>();
 		userOptionsManager.Changed += (_, values) =>

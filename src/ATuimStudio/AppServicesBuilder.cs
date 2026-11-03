@@ -9,7 +9,7 @@ namespace ATuimStudio
 {
 	static class AppServicesBuilder
 	{
-		internal static ServiceProvider BuildServiceProvider(ITopLevelVisualProvider topLevelVisualProvider)
+		internal static ServiceProvider BuildServiceProvider(ITopLevelVisualProvider topLevelVisualProvider, IApplicationLifetimeService applicationLifetimeService)
 		{
 			IServiceCollection services = new ServiceCollection()
 				.AddSingleton(typeof(IPub<>), typeof(Pub<>))
@@ -25,6 +25,7 @@ namespace ATuimStudio
 				.AddTransient<IEditorDecoratorRegistrator>(ServiceProviderServiceExtensions.GetRequiredService<IPluginPartsRegistrator>)
 				.AddSingleton<ILayoutManager>(ServiceProviderServiceExtensions.GetRequiredService<DockFactory>)
 				.AddSingleton<ITopLevelVisualProvider>(topLevelVisualProvider)
+				.AddSingleton<IApplicationLifetimeService>(applicationLifetimeService)
 				.AddSingleton<IDialogService, DefaultDialogService>()
 				.AddSingleton<ICodeDiagnosticsManager, DefaultCodeDiagnosticsManages>()
 				.AddSingleton<DefaultUserOptionsManager>()
