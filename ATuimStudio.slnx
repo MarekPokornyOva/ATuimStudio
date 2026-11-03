@@ -43,11 +43,14 @@
   <Project Path="src/ATuimStudio.Extensions.Git.Abstractions/ATuimStudio.Extensions.Git.Abstractions.csproj" />
   <Project Path="src/ATuimStudio.Extensions.Git.Ui/ATuimStudio.Extensions.Git.Ui.csproj" />
   <Project Path="src/ATuimStudio.Extensions.Git/ATuimStudio.Extensions.Git.csproj" />
+  <Project Path="src/ATuimStudio.Extensions.OpenCode.Ui/ATuimStudio.Extensions.OpenCode.Ui.csproj" />
   <Project Path="src/ATuimStudio.Extensions.TextEditCompletion.Abstractions/ATuimStudio.Extensions.TextEditCompletion.Abstractions.csproj" />
   <Project Path="src/ATuimStudio.Extensions.TextEditCompletion.Ui/ATuimStudio.Extensions.TextEditCompletion.Ui.csproj" />
   <Project Path="src/ATuimStudio.Extensions.TextEditCompletion/ATuimStudio.Extensions.TextEditCompletion.csproj" />
   <Project Path="src/ATuimStudio.Extensions.TextEditReferences.Abstractions/ATuimStudio.Extensions.TextEditReferences.Abstractions.csproj" />
   <Project Path="src/ATuimStudio.Extensions.TextEditReferences.Ui/ATuimStudio.Extensions.TextEditReferences.Ui.csproj" />
   <Project Path="src/ATuimStudio.Extensions.TextEditReferences/ATuimStudio.Extensions.TextEditReferences.csproj" />
+  <Project Path="src/ATuimStudio.OpenCode.Client/ATuimStudio.OpenCode.Client.csproj" />
+  <Project Path="src/ATuimStudio.OpenCode.Sdk/ATuimStudio.OpenCode.Sdk.csproj" />
   <Project Path="src/ATuimStudio/ATuimStudio.csproj" />
 </Solution>

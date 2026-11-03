@@ -1,0 +1,99 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			xmlns:vm="using:ATuimStudio.Extensions.OpenCode"
+			xmlns:common="using:ATuimStudio.Common.Ui"
+			xmlns:md="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia"
+			xmlns:mdt="clr-namespace:Markdown.Avalonia;assembly=Markdown.Avalonia" 
+			mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			x:Class="ATuimStudio.Extensions.OpenCode.OpenCodeChatView"
+			x:DataType="vm:OpenCodeChatViewModel"
+			>
+	<Design.DataContext>
+		<vm:OpenCodeChatViewModel />
+	</Design.DataContext>
+
+	<Grid Margin="5" RowDefinitions="Auto,*">
+		<!-- Shown when OpenCode is not available -->
+		<TextBlock Grid.Row="0"
+			   Text="OpenCode is not available"
+			   IsVisible="{Binding !IsAvailable}"
+			   Margin="0 0 0 5"
+			   Foreground="{DynamicResource SystemControlErrorTextForegroundBrush}"
+			   FontWeight="Bold"
+			   TextWrapping="Wrap" />
+
+		<!-- All other controls are visible only when OpenCode is available -->
+		<Grid Grid.Row="1"
+		      RowDefinitions="Auto,*,Auto,Auto"
+		      IsVisible="{Binding IsAvailable}">
+			<!-- Session list -->
+			<Border Grid.Row="0"
+			        BorderBrush="{DynamicResource TextControlBorderBrush}"
+			        BorderThickness="1"
+			        CornerRadius="4"
+			        Padding="4">
+				<Grid ColumnDefinitions="*,Auto" Height="120">
+					<ListBox Grid.Column="0" ItemsSource="{Binding Sessions}" SelectedItem="{Binding SelectedSession}" IsEnabled="{Binding !IsExecuted}">
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding Title}"/>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+					<StackPanel Grid.Column="1" Orientation="Vertical">
+						<Button Command="{Binding NewSessionCommand}">+</Button>
+						<Button Command="{Binding DeleteSessionCommand}">-</Button>
+					</StackPanel>
+				</Grid>
+			</Border>
+
+			<!-- Main area: chat history -->
+			<Border Grid.Row="1"
+			        BorderBrush="{DynamicResource TextControlBorderBrush}"
+			        BorderThickness="1"
+			        CornerRadius="4"
+			        Padding="4">
+				<md:MarkdownScrollViewer
+					   Markdown="{Binding MdText}"
+					   SelectionEnabled="true" />
+			</Border>
+
+			<!-- Prompt input (approx. three rows high) -->
+			<TextBox x:Name="Prompt"
+				   Grid.Row="2"
+				   Height="75"
+				   TextWrapping="Wrap"
+				   Text="{Binding Prompt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+			<!-- Bottom row: model selector + submit -->
+			<Grid Grid.Row="3" ColumnDefinitions="*,*,Auto" Margin="0 5 0 0">
+				<TextBlock Grid.Column="0" IsVisible="{Binding IsExecuted}">
+					Running
+				</TextBlock>
+				<ComboBox Grid.Column="1"
+					  ItemsSource="{Binding AvailableModels}"
+					  SelectedItem="{Binding SelectedModel, Mode=TwoWay}"
+				  IsEnabled="{Binding IsModelSelectionEnabled}">
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock>
+								<Run Text="{Binding ProviderId}" />
+								<Run Text=":" />
+								<Run Text="{Binding Name}" />
+							</TextBlock>
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+
+				<Button Grid.Column="2"
+				    Content="Submit"
+				    Command="{Binding SubmitCommand}"
+				    CommandParameter="{Binding Text, ElementName=Prompt}"
+				    Margin="10 0 0 0"
+				    HorizontalAlignment="Right" />
+			</Grid>
+		</Grid>
+	</Grid>
+</UserControl>

@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ATuimStudio.Common.Ui\ATuimStudio.Common.Ui.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Common\ATuimStudio.Common.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Extensions.Core.Abstractions\ATuimStudio.Extensions.Core.Abstractions.csproj" />
+		<ProjectReference Include="..\ATuimStudio.Extensions.Core.Ui.Abstractions\ATuimStudio.Extensions.Core.Ui.Abstractions.csproj" />
+		<ProjectReference Include="..\ATuimStudio.OpenCode.Sdk\ATuimStudio.OpenCode.Sdk.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Avalonia" />
+		<PackageReference Include="CommunityToolkit.Mvvm" />
+		<PackageReference Include="Markdown.Avalonia.Tight" />
+	</ItemGroup>
+
+</Project>

@@ -16,9 +16,10 @@ Tested on:
 - Edit
   - Members recommendations
   - Code insights
-  - Find all refrences
+  - Find all references
   - Go to definition
   - Go to implementation
+  - Find in file / Find in files
 - Git
   - Multi repo support
   - Stage/Unstage files
@@ -32,6 +33,8 @@ Tested on:
   - Call stack view
   - Local variables and parameters view
   - DebugAdapterProtocol / Remote debugging
+- OpenCode integration
+  - Agent mode
 
 ![Screenshot](./Screenshot.png "Screenshot")
 
@@ -61,10 +64,13 @@ Workaround:
 - Dock.Avalonia - https://github.com/wieslawsoltes/Dock
 - LibGit2Sharp - https://github.com/libgit2/libgit2sharp
 - OmniSharp - https://github.com/OmniSharp/csharp-language-server-protocol
+- Markdown.Avalonia - https://github.com/whistyun/Markdown.Avalonia
 - Microsoft .NET - https://github.com/microsoft/dotnet
 - Microsoft Build - https://github.com/dotnet/msbuild
 - Microsoft CodeAnalysis - https://github.com/dotnet/roslyn
 - Microsoft.Diagnostics.DbgShim - https://github.com/dotnet/diagnostics
+- Microsoft.Kiota - https://github.com/microsoft/kiota
 - Mono:debugger-libs - https://github.com/mono/debugger-libs
+- OpenCode - https://github.com/anomalyco/opencode
 - SourceGit - https://github.com/sourcegit-scm/sourcegit
 - VitalElement.AvalonStudio - https://github.com/VitalElement/AvalonStudio

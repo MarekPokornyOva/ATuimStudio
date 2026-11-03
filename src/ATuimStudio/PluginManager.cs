@@ -15,7 +15,8 @@ namespace ATuimStudio
 			new ATuimStudio.Extensions.Debugger.Dap.Extension(),
 			new ATuimStudio.Extensions.TextEditCompletion.Extension(),
 			new ATuimStudio.Extensions.TextEditReferences.Extension(),
-			new ATuimStudio.Extensions.FindInFiles.Extension()
+			new ATuimStudio.Extensions.FindInFiles.Extension(),
+			new ATuimStudio.Extensions.OpenCode.Extension(),
 			];
 
 		internal static void Register(Action<IStyle> styleAppender)

@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Kiota.Bundle" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\ATuimStudio.Common\ATuimStudio.Common.csproj" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<!-- Define the Kiota command to generate client code -->
+		<KiotaCommand>
+			<![CDATA[
+        dotnet tool run kiota generate ^
+          --language CSharp ^
+          --class-name OpenCodeClient ^
+          --namespace-name ATuimStudio.OpenCode.Client ^
+          --openapi ./openapi-opencode.json ^
+          --output ./OpenCodeClient ^
+          --clean-output
+          ]]>
+		</KiotaCommand>
+	</PropertyGroup>
+
+	<!-- This executes on rebuilds targeting Debug -->
+	<Target Name="CreateKiotaClient" BeforeTargets="Rebuild" Condition="'$(Configuration)' == 'Debug'">
+		<!-- First we restore dotnet tools in case we don't have Kiota installed -->
+		<Exec Command="dotnet tool restore" WorkingDirectory="$(ProjectDir)" />
+		<!-- Next we execute our KiotaCommand -->
+		<Exec Command="$(KiotaCommand)" WorkingDirectory="$(ProjectDir)" ContinueOnError="true" />
+	</Target>
+
+</Project>

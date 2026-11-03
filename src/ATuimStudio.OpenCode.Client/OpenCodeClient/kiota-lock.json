@@ -1,0 +1,35 @@
+{
+  "descriptionHash": "7FC4AAB504D4C936FB4275D93C2FDAA7A88F491521DF2E89D08365E549C985B17DE7737791BF45E0865334746374D3D51CBBA194D978810157511CA0BD84736B",
+  "descriptionLocation": "../openapi-opencode.json",
+  "lockFileVersion": "1.0.0",
+  "kiotaVersion": "1.36.0",
+  "clientClassName": "OpenCodeClient",
+  "typeAccessModifier": "Public",
+  "clientNamespaceName": "ATuimStudio.OpenCode.Client",
+  "language": "CSharp",
+  "usesBackingStore": false,
+  "excludeBackwardCompatible": false,
+  "includeAdditionalData": true,
+  "disableSSLValidation": false,
+  "serializers": [
+    "Microsoft.Kiota.Serialization.Json.JsonSerializationWriterFactory",
+    "Microsoft.Kiota.Serialization.Text.TextSerializationWriterFactory",
+    "Microsoft.Kiota.Serialization.Form.FormSerializationWriterFactory",
+    "Microsoft.Kiota.Serialization.Multipart.MultipartSerializationWriterFactory"
+  ],
+  "deserializers": [
+    "Microsoft.Kiota.Serialization.Json.JsonParseNodeFactory",
+    "Microsoft.Kiota.Serialization.Text.TextParseNodeFactory",
+    "Microsoft.Kiota.Serialization.Form.FormParseNodeFactory"
+  ],
+  "structuredMimeTypes": [
+    "application/json",
+    "text/plain;q=0.9",
+    "application/x-www-form-urlencoded;q=0.2",
+    "multipart/form-data;q=0.1"
+  ],
+  "includePatterns": [],
+  "excludePatterns": [],
+  "disabledValidationRules": [],
+  "allowedExternalOrigins": []
+}
