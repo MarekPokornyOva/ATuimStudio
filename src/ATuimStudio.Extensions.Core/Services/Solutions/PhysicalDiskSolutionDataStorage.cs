@@ -2,43 +2,59 @@
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
+using Microsoft.VisualStudio.SolutionPersistence;
+using Microsoft.VisualStudio.SolutionPersistence.Model;
+using Microsoft.VisualStudio.SolutionPersistence.Serializer;
 
 namespace ATuimStudio.Extensions.Core
 {
-	sealed class PhysicalDiskSolutionDataStorage : ISolutionDataStorage
+	sealed class PhysicalDiskSolutionDataStorage : ISolutionDataStorage, IDisposable
 	{
-		public async Task<ISolutionData> GetSolutionDataAsync(string path, CancellationToken cancellationToken)
+		readonly MSBuildWorkspace _workspace;
+
+		static PhysicalDiskSolutionDataStorage()
 		{
 			if (!MSBuildLocator.IsRegistered)
 				if (MSBuildLocator.RegisterDefaults().Version.Major < 10)
 					throw new InvalidOperationException("No MsBuild version 10+ found.");
+		}
 
-			SolutionData slnInfo;
-			MSBuildWorkspace ws = MSBuildWorkspace.Create();
-			try
+		public PhysicalDiskSolutionDataStorage()
+		{
+			_workspace = MSBuildWorkspace.Create();
+		}
+
+		public async Task<ISolutionData> GetSolutionDataAsync(string path, CancellationToken cancellationToken)
+		{
+			Task<Solution> solutionLoader = _workspace.OpenSolutionAsync(path, cancellationToken: cancellationToken);
+
+			SolutionModel? solutionModel = null;
+			ISolutionSerializer? serializer = SolutionSerializers.GetSerializerByMoniker(path);
+			if (serializer != null)
 			{
-				Solution sln = await ws.OpenSolutionAsync(path, cancellationToken: cancellationToken);
+				//string basePath = Path.GetDirectoryName(path)!;
+				solutionModel = await serializer.OpenAsync(path, cancellationToken).ConfigureAwait(false);
+				//solutionModel.SolutionFolders
+				//solutionModel.SolutionProjects.Select(p => p.Parent == null ? null : p.Parent.Path))];
+			}
+			Solution sln = await solutionLoader;
+#error dodelat solutionFolders
 
-				//string solutionDir = Path.GetDirectoryName(sln.FilePath)!;
-				slnInfo = new SolutionData(sln, Path.GetDirectoryName(sln.FilePath)!, Path.GetFileNameWithoutExtension(sln.FilePath)!, [.. sln.Projects.Select(proj=>
+			//string solutionDir = Path.GetDirectoryName(sln.FilePath)!;
+			SolutionData slnInfo = new SolutionData(sln, Path.GetDirectoryName(sln.FilePath)!, Path.GetFileNameWithoutExtension(sln.FilePath)!, [.. sln.Projects.Select(proj=>
 					new ProjectData(proj.Name, Path.GetDirectoryName(proj.FilePath)!, BuildProjectDocumentsStructure(proj.Documents, Path.GetDirectoryName(proj.FilePath)!))
 					).OrderBy(static x=>x.Name, PathHelper.PathComparer)]);
-				return slnInfo;
-			}
-			catch
-			{
-				ws.Dispose();
-				throw;
-			}
+			return slnInfo;
 		}
 
 		#region BuildProjectDocumentsStructure
-		readonly static char[] _pathSeparators = [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar];
 		static IReadOnlyCollection<IProjectFilesystemItemData> BuildProjectDocumentsStructure(IEnumerable<Document> documents, string projDir)
 		{
 			IEnumerable<TreeMaker.INode<Document>> tree = TreeMaker.Make(
-				documents.Select(document => (Segments: Path.GetRelativePath(projDir, document.FilePath!).Split(_pathSeparators, StringSplitOptions.RemoveEmptyEntries), document))
-					.Where(static x => x.Segments.Length > 0 && !x.Segments[0].EqualsOrdinal("obj"))
+				documents
+					.Where(static x => x.Folders.Count == 0 || !x.Folders[0].EqualsOrdinal("obj"))
+					.Select<Document, (string[], Document)>(static document => ([.. document.Folders, document.Name], document))
+					
 				);
 
 			static IReadOnlyCollection<IProjectFilesystemItemData> ConvertNodes(IEnumerable<TreeMaker.INode<Document>> nodes, string parentPath)
@@ -61,8 +77,13 @@ namespace ATuimStudio.Extensions.Core
 		public void DeleteFile(string path)
 			=> File.Delete(path);
 
+		public void Dispose()
+		{
+			_workspace.Dispose();
+		}
+
 		#region data implementations
-		internal sealed class SolutionData : ISolutionData, IDisposable
+		internal sealed class SolutionData : ISolutionData
 		{
 			public SolutionData(Solution solution, string path, string name, IReadOnlyCollection<IProjectData> projects)
 			{
@@ -76,11 +97,6 @@ namespace ATuimStudio.Extensions.Core
 			public string Path { get; }
 			public object? RawData { get; set; }
 			public IReadOnlyCollection<IProjectData> Projects { get; }
-
-			public void Dispose()
-			{
-				((Solution)RawData!).Workspace.Dispose();
-			}
 		}
 
 		sealed record ProjectData(
