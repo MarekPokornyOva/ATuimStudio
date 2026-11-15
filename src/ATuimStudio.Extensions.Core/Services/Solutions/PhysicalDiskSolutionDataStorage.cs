@@ -1,8 +1,7 @@
-﻿using ATuimStudio.Common;
+using ATuimStudio.Common;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
-using Microsoft.VisualStudio.SolutionPersistence;
 using Microsoft.VisualStudio.SolutionPersistence.Model;
 using Microsoft.VisualStudio.SolutionPersistence.Serializer;
 
@@ -26,24 +25,39 @@ namespace ATuimStudio.Extensions.Core
 
 		public async Task<ISolutionData> GetSolutionDataAsync(string path, CancellationToken cancellationToken)
 		{
-			Task<Solution> solutionLoader = _workspace.OpenSolutionAsync(path, cancellationToken: cancellationToken);
+			Task<Solution> solutionOpenTask = _workspace.OpenSolutionAsync(path, cancellationToken: cancellationToken);
+			Task<SolutionModel>? serializerTask = SolutionSerializers.GetSerializerByMoniker(path)?.OpenAsync(path, cancellationToken);
 
-			SolutionModel? solutionModel = null;
-			ISolutionSerializer? serializer = SolutionSerializers.GetSerializerByMoniker(path);
-			if (serializer != null)
-			{
-				//string basePath = Path.GetDirectoryName(path)!;
-				solutionModel = await serializer.OpenAsync(path, cancellationToken).ConfigureAwait(false);
-				//solutionModel.SolutionFolders
-				//solutionModel.SolutionProjects.Select(p => p.Parent == null ? null : p.Parent.Path))];
-			}
-			Solution sln = await solutionLoader;
-#error dodelat solutionFolders
+			Solution sln = await solutionOpenTask;
+			SolutionModel? solutionModel = serializerTask is null ? null : await serializerTask;
 
-			//string solutionDir = Path.GetDirectoryName(sln.FilePath)!;
-			SolutionData slnInfo = new SolutionData(sln, Path.GetDirectoryName(sln.FilePath)!, Path.GetFileNameWithoutExtension(sln.FilePath)!, [.. sln.Projects.Select(proj=>
-					new ProjectData(proj.Name, Path.GetDirectoryName(proj.FilePath)!, BuildProjectDocumentsStructure(proj.Documents, Path.GetDirectoryName(proj.FilePath)!))
-					).OrderBy(static x=>x.Name, PathHelper.PathComparer)]);
+			ProjectData[] mappedProjects = [.. sln.Projects.Select(proj =>
+						new ProjectData(proj.Name, Path.GetDirectoryName(proj.FilePath)!, proj.FilePath!, BuildProjectDocumentsStructure(proj.Documents, Path.GetDirectoryName(proj.FilePath)!))
+						).OrderBy(static x => x.Name, PathHelper.PathComparer)];
+
+			string solutionDir = Path.GetDirectoryName(sln.FilePath)!;
+			Dictionary<SolutionFolderModel, ProjectData[]> projectsByParentFolder = solutionModel == null
+				? []
+				: mappedProjects
+					.Join(solutionModel.SolutionProjects,
+						static p => p.FilePath,
+						sp => Path.Combine(solutionDir, sp.FilePath),
+						static (p, sp) => (p, sp),
+						PathHelper.PathEqualityComparer)
+					.Where(x => x.sp.Parent is not null)
+					.GroupBy(x => x.sp.Parent!)
+					.ToDictionary(static g => g.Key, static g => g.Select(static x => x.p).ToArray());
+			IReadOnlyCollection<ISolutionFolderData> MapSolutionFolder(IReadOnlyCollection<TreeMaker.INode<SolutionFolderModel>> nodes)
+				=> new MappingReadOnlyCollection<TreeMaker.INode<SolutionFolderModel>, ISolutionFolderData>(nodes,
+					node => new SolutionFolderData(node.Name, node.Data.Path, MapSolutionFolder(node.Children),
+						projectsByParentFolder.TryGetValue(node.Data, out var folderProjects) ? folderProjects : [],
+						node.Data.Files));
+
+			SolutionData slnInfo = new SolutionData(sln, solutionDir, Path.GetFileNameWithoutExtension(sln.FilePath)!,
+					mappedProjects,
+					solutionModel == null
+						? []
+						: MapSolutionFolder(TreeMaker.Make(solutionModel.SolutionFolders.Select(sf => (sf.Path.Split('/', StringSplitOptions.RemoveEmptyEntries), sf)))));
 			return slnInfo;
 		}
 
@@ -85,23 +99,26 @@ namespace ATuimStudio.Extensions.Core
 		#region data implementations
 		internal sealed class SolutionData : ISolutionData
 		{
-			public SolutionData(Solution solution, string path, string name, IReadOnlyCollection<IProjectData> projects)
+			public SolutionData(Solution solution, string path, string name, IReadOnlyCollection<IProjectData> projects, IReadOnlyCollection<ISolutionFolderData> folders)
 			{
 				RawData = solution;
 				Path = path;
 				Name = name;
 				Projects = projects;
+				Folders = folders;
 			}
 
 			public string Name { get; }
 			public string Path { get; }
 			public object? RawData { get; set; }
 			public IReadOnlyCollection<IProjectData> Projects { get; }
+			public IReadOnlyCollection<ISolutionFolderData> Folders { get; }
 		}
 
 		sealed record ProjectData(
 			string Name,
 			string Path,
+			string FilePath,
 			IReadOnlyCollection<IProjectItemData> Items
 			) : IProjectData;
 
@@ -115,6 +132,14 @@ namespace ATuimStudio.Extensions.Core
 			string Path,
 			IReadOnlyCollection<IProjectFilesystemItemData> Items
 			) : IProjectDirectoryData;
+
+		sealed record SolutionFolderData(
+			string Name,
+			string Path,
+			IReadOnlyCollection<ISolutionFolderData> Folders,
+			IReadOnlyCollection<IProjectData> Projects,
+			IReadOnlyCollection<string>? Files
+			) : ISolutionFolderData;
 		#endregion data implementations
 	}
 }

@@ -46,19 +46,47 @@ public sealed partial class SolutionViewModel : ViewModelBase
 		else
 		{
 			SolutionDataNode solutionNode = new SolutionDataNode(null, solutionData, true) { IsExpanded = true };
-			foreach (IProjectData proj in solutionData.Projects)
-			{
-				SolutionDataNode projNode = new SolutionDataNode(solutionNode, proj, true);
-				solutionNode.Children!.Add(projNode);
-				FillNode(projNode, proj.Items);
-			}
+			AddSolutionContents(solutionNode, solutionData);
 			SelectedItem = solutionNode;
 			SolutionNodes.Add(solutionNode);
 		}
 
+		static void AddSolutionContents(SolutionDataNode solutionNode, ISolutionData data)
+		{
+			List<IProjectData> folderedProjects = [];
+			CollectFolderedProjects(folderedProjects, data.Folders);
+
+			FillFolders(solutionNode, data.Folders, data.Projects.Where(p => !folderedProjects.Contains(p)));
+		}
+
+		static void CollectFolderedProjects(List<IProjectData> folderedProjects, IEnumerable<ISolutionFolderData> folders)
+		{
+			foreach (ISolutionFolderData folder in folders)
+			{
+				folderedProjects.AddRange(folder.Projects);
+				CollectFolderedProjects(folderedProjects, folder.Folders);
+			}
+		}
+
+		static void FillFolders(SolutionDataNode parNode, IEnumerable<ISolutionFolderData> folders, IEnumerable<IProjectData> projects)
+		{
+			foreach (ISolutionFolderData sub in folders.OrderBy(static f => f.Name, PathHelper.PathComparer))
+			{
+				SolutionDataNode subNode = new SolutionDataNode(parNode, sub, true);
+				parNode.Children!.Add(subNode);
+				FillFolders(subNode, sub.Folders, sub.Projects);
+			}
+			foreach (IProjectData proj in projects.OrderBy(static p => p.Name, PathHelper.PathComparer))
+			{
+				SolutionDataNode projNode = new SolutionDataNode(parNode, proj, true);
+				parNode.Children!.Add(projNode);
+				FillNode(projNode, proj.Items);
+			}
+		}
+
 		static void FillNode(SolutionDataNode parNode, IEnumerable<IProjectItemData> items)
 		{
-			foreach (IProjectItemData item in items)
+			foreach (IProjectItemData item in items.OrderBy(static item => item is IProjectDirectoryData ? 0 : 1))
 			{
 				SolutionDataNode node;
 				if (item is IProjectDirectoryData dir)
