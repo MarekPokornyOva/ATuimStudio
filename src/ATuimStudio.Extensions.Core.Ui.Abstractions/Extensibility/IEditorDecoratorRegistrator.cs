@@ -4,7 +4,7 @@ namespace ATuimStudio.Extensibility
 {
 	public interface IEditorDecoratorRegistrator
 	{
-		void Register(Action<IEditorDecoratorRegistratorContext> callback);
+		void Register(string?[] languageIds, Action<IEditorDecoratorRegistratorContext> callback);
 	}
 
 	public interface IEditorDecoratorRegistratorContext

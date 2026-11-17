@@ -75,6 +75,10 @@ public sealed partial class SolutionViewModel : ViewModelBase
 				SolutionDataNode subNode = new SolutionDataNode(parNode, sub, true);
 				parNode.Children!.Add(subNode);
 				FillFolders(subNode, sub.Folders, sub.Projects);
+
+				if (sub.Files != null)
+					foreach (IProjectFileData file in sub.Files)
+						subNode.Children!.Add(new SolutionDataNode(parNode, file, false));
 			}
 			foreach (IProjectData proj in projects.OrderBy(static p => p.Name, PathHelper.PathComparer))
 			{

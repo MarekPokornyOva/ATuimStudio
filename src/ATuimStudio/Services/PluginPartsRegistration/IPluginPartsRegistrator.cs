@@ -8,7 +8,7 @@ namespace ATuimStudio.Services
 		IReadOnlyDictionary<string, PluginPartsRegistrator.CommandRegistration> GetCommands();
 		IReadOnlyCollection<PluginPartsRegistrator.LayoutPaneFactoryRegistration> GetLayoutPaneFactories();
 		IReadOnlyCollection<(string LayoutName, Action<ILayoutWindowRegistratorContext> Registrator)> GetLayoutPartRegistrations();
-		IReadOnlyCollection<PluginPartsRegistrator.EditorDecoratorRegistration> GetEditorDecorators();
+		IReadOnlyCollection<PluginPartsRegistrator.EditorDecoratorRegistration> GetEditorDecorators(string? languageId);
 		void Clear();
 	}
 }

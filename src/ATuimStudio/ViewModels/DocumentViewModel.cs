@@ -23,6 +23,8 @@ namespace ATuimStudio.ViewModels
 
 		IProjectFileData? _fileData;
 		internal IProjectFileData? FileData { get => _fileData; set { _fileData = value; LoadFile(value); } }
+
+		internal string? FileExtension => _fileData == null ? null : Path.GetExtension(_fileData.Path);
 		
 		void LoadFile(IProjectFileData? fileData)
 		{
@@ -35,7 +37,7 @@ namespace ATuimStudio.ViewModels
 		void LoadFile(string path)
 		{
 			string source = _solutionService.GetDocumentContent(path)
-				?? ""/*File.ReadAllText(fileData.Path)*/;
+				?? File.ReadAllText(path);
 
 			TextDocument textDocument = new TextDocument(new StringTextSource(source)) { FileName = path };
 			textDocument.Changed += TextDocument_Changed;

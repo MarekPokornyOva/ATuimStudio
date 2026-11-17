@@ -17,6 +17,11 @@ namespace ATuimStudio.Views;
 public partial class DocumentView : UserControl
 {
 	readonly IServiceProvider _serviceProvider;
+	readonly IUserOptionsManager _userOptionsManager;
+	readonly DockFactory _dockFactory;
+	readonly IPluginPartsRegistrator _pluginPartsRegistrator;
+	readonly RegistryOptions _registryOptions;
+	readonly TextMate.Installation _textMateInstallation;
 	[EditorBrowsable(EditorBrowsableState.Never)]
 #pragma warning disable CS8618
 	public DocumentView()
@@ -27,10 +32,9 @@ public partial class DocumentView : UserControl
 
 	readonly static double _defaultFontSize = 14/*TextElement.FontSizeProperty.GetDefaultValue(typeof(TextEditor))*/;
 
-	readonly IUserOptionsManager _userOptionsManager;
-	readonly DockFactory _dockFactory;
 	public DocumentView(IPluginPartsRegistrator pluginPartsRegistrator, IServiceProvider serviceProvider, IUserOptionsManager userOptionsManager, DockFactory dockFactory) : this()
 	{
+		_pluginPartsRegistrator = pluginPartsRegistrator;
 		_serviceProvider = serviceProvider;
 		_userOptionsManager = userOptionsManager;
 		_dockFactory = dockFactory;
@@ -39,9 +43,12 @@ public partial class DocumentView : UserControl
 			NotifyZoom(zoom);
 
 		//Initial setup of TextMate.
-		RegistryOptions registryOptions = new RegistryOptions(ThemeName.DarkPlus);
-		TextMate.Installation textMateInstallation = Editor.InstallTextMate(registryOptions);
-		textMateInstallation.SetGrammar(registryOptions.GetScopeByLanguageId("csharp"));
+		_registryOptions = new RegistryOptions(ThemeName.DarkPlus);
+		_textMateInstallation = Editor.InstallTextMate(_registryOptions);
+
+		//The editor's syntax highlighting is chosen from the document's file extension
+		//as soon as the viewmodel (which knows the document path) is bound to the view.
+		DataContextChanged += DocumentView_DataContextChanged;
 
 		//Set Caret position on mouse right click
 		Editor.TextArea.ContextRequested += static (sender, e) =>
@@ -59,8 +66,18 @@ public partial class DocumentView : UserControl
 
 		//TextArea textArea = Editor.TextArea;
 		//textArea.LeftMargins.Add(new FoldingMargin());
+	}
 
-		IReadOnlyCollection<PluginPartsRegistrator.EditorDecoratorRegistration> decorators = pluginPartsRegistrator.GetEditorDecorators();
+	void DocumentView_DataContextChanged(object? sender, EventArgs e)
+	{
+		if (DataContext is not DocumentViewModel viewModel)
+			return;
+
+		Language? language = _registryOptions.GetLanguageByExtension(viewModel.FileExtension ?? "");
+		if (language is not null)
+			_textMateInstallation.SetGrammar(_registryOptions.GetScopeByLanguageId(language.Id));
+
+		IReadOnlyCollection<PluginPartsRegistrator.EditorDecoratorRegistration> decorators = _pluginPartsRegistrator.GetEditorDecorators(language?.Id);
 		if (decorators.Count != 0)
 		{
 			EditorDecoratorRegistratorContext context = new EditorDecoratorRegistratorContext(Editor, _serviceProvider);

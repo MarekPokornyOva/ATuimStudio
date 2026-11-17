@@ -42,6 +42,6 @@
 		string Path { get; }
 		IReadOnlyCollection<ISolutionFolderData> Folders { get; }
 		IReadOnlyCollection<IProjectData> Projects { get; }
-		IReadOnlyCollection<string>? Files { get; }
+		IReadOnlyCollection<IProjectFileData>? Files { get; }
 	}
 }

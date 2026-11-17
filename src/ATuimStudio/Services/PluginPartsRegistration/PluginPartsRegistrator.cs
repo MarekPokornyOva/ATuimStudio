@@ -49,10 +49,18 @@ namespace ATuimStudio.Services
 		#endregion ILayoutWindowRegistrator
 
 		#region IEditorDecoratorRegistrator
-		readonly List<EditorDecoratorRegistration> _editorLayoutRegistrations = [];
-		public void Register(Action<IEditorDecoratorRegistratorContext> callback)
+		readonly Dictionary<string, List<EditorDecoratorRegistration>> _editorLayoutRegistrations = [];
+		readonly List<EditorDecoratorRegistration> _commonEditorLayoutRegistrations = [];
+		public void Register(string?[] languageIds, Action<IEditorDecoratorRegistratorContext> callback)
 		{
-			_editorLayoutRegistrations.Add(new EditorDecoratorRegistration(callback));
+			EditorDecoratorRegistration editorDecoratorRegistration = new EditorDecoratorRegistration(callback);
+			foreach (string? languageId in languageIds)
+				if (languageId == null)
+					_commonEditorLayoutRegistrations.Add(editorDecoratorRegistration);
+				else if (_editorLayoutRegistrations.TryGetValue(languageId, out List<EditorDecoratorRegistration>? editorDecoratorRegistrations))
+					editorDecoratorRegistrations.Add(editorDecoratorRegistration);
+				else
+					_editorLayoutRegistrations.Add(languageId, [editorDecoratorRegistration]);
 		}
 		#endregion IEditorDecoratorRegistrator
 
@@ -70,8 +78,12 @@ namespace ATuimStudio.Services
 			=> _layoutPaneFactories;
 		IReadOnlyCollection<(string LayoutName, Action<ILayoutWindowRegistratorContext> Registrator)> IPluginPartsRegistrator.GetLayoutPartRegistrations()
 			=> _layoutPartRegistrations;
-		IReadOnlyCollection<EditorDecoratorRegistration> IPluginPartsRegistrator.GetEditorDecorators()
-			=> _editorLayoutRegistrations;
+		IReadOnlyCollection<EditorDecoratorRegistration> IPluginPartsRegistrator.GetEditorDecorators(string? languageId)
+			=> languageId == null
+				? _commonEditorLayoutRegistrations
+				: _editorLayoutRegistrations.TryGetValue(languageId, out List<EditorDecoratorRegistration>? editorDecoratorRegistrations)
+					? editorDecoratorRegistrations
+					: [];
 		void IPluginPartsRegistrator.Clear()
 		{
 			_menuRegistrations.Clear();

@@ -51,7 +51,7 @@ namespace ATuimStudio.Extensions.Core
 				=> new MappingReadOnlyCollection<TreeMaker.INode<SolutionFolderModel>, ISolutionFolderData>(nodes,
 					node => new SolutionFolderData(node.Name, node.Data.Path, MapSolutionFolder(node.Children),
 						projectsByParentFolder.TryGetValue(node.Data, out var folderProjects) ? folderProjects : [],
-						node.Data.Files));
+						node.Data.Files == null ? null : new MappingReadOnlyCollection<string, IProjectFileData>(node.Data.Files, f => new ProjectFileData(f, Path.Combine(solutionDir, f)))));
 
 			SolutionData slnInfo = new SolutionData(sln, solutionDir, Path.GetFileNameWithoutExtension(sln.FilePath)!,
 					mappedProjects,
@@ -77,7 +77,7 @@ namespace ATuimStudio.Extensions.Core
 			{
 				string name = node.Name;
 				string path = Path.Combine(parentPath, name);
-				return node.Children.Any()
+				return node.Children.Count != 0
 					? new ProjectDirectoryData(name, path, ConvertNodes(node.Children, path))
 					: new ProjectFileData(name, path);
 			}
@@ -138,7 +138,7 @@ namespace ATuimStudio.Extensions.Core
 			string Path,
 			IReadOnlyCollection<ISolutionFolderData> Folders,
 			IReadOnlyCollection<IProjectData> Projects,
-			IReadOnlyCollection<string>? Files
+			IReadOnlyCollection<IProjectFileData>? Files
 			) : ISolutionFolderData;
 		#endregion data implementations
 	}

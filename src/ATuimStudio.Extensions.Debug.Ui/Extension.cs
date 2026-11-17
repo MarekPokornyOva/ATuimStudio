@@ -218,7 +218,7 @@ namespace ATuimStudio.Extensions.Debug
 
 		public override void RegisterEditorDecorator(IEditorDecoratorRegistrator editorDecoratorRegistrator)
 		{
-			editorDecoratorRegistrator.Register(context =>
+			editorDecoratorRegistrator.Register(["csharp"], context =>
 			{
 				IBreakpointManager breakpointManager = context.ServiceProvider.GetRequiredService<IBreakpointManager>();
 				IStackTraceProvider stackTraceProvider = context.ServiceProvider.GetRequiredService<IStackTraceProvider>();

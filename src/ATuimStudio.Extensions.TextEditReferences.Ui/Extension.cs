@@ -18,7 +18,7 @@ namespace ATuimStudio.Extensions.TextEditReferences
 
 		public override void RegisterEditorDecorator(IEditorDecoratorRegistrator editorDecoratorRegistrator)
 		{
-			editorDecoratorRegistrator.Register(static context =>
+			editorDecoratorRegistrator.Register(["csharp"], static context =>
 #pragma warning disable CA1806
 				new FunctionsHelper(context.Editor.TextArea, context.ServiceProvider.GetRequiredService<IUiDocumentService>(), context.ServiceProvider.GetRequiredService<IUiWindowService>(), context.ServiceProvider.GetRequiredService<IReferencesFinder>(), context.ServiceProvider.GetRequiredService<IQuickInfoProvider>(), context.ServiceProvider.GetRequiredService<IPub<IAllReferencesResult>>(), context.ServiceProvider.GetRequiredService<IPub<IFindImplementationsResult>>())
 #pragma warning restore CA1806

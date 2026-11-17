@@ -15,7 +15,7 @@ namespace ATuimStudio.Extensions.TextEditCompletion
 	{
 		public override void RegisterEditorDecorator(IEditorDecoratorRegistrator editorDecoratorRegistrator)
 		{
-			editorDecoratorRegistrator.Register(static context =>
+			editorDecoratorRegistrator.Register(["csharp"], static context =>
 #pragma warning disable CA1806
 				new CompletionHelper(context.Editor.TextArea, context.ServiceProvider.GetRequiredService<ITextEditCompletionProvider>(), context.ServiceProvider.GetRequiredService<ICodeInsightProvider>())
 #pragma warning restore CA1806
